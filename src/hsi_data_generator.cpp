@@ -2,7 +2,7 @@
 
 #include "gui/main_window.h"
 
-#include "QApplication"
+#include "QApplication.h"
 
 int main(int argc, char** argv) {
   std::cout << "Hello, world!" << std::endl;
