@@ -22,7 +22,7 @@ def read_spectra():
     all_spectra.append((element, spectrum))
   return all_spectra
 
-def plot_data():
+def plot_spectra():
   spectra = read_spectra()
   for title_and_spectrum in spectra:
     title = title_and_spectrum[0]
@@ -32,4 +32,4 @@ def plot_data():
     plt.show()
 
 if __name__ == '__main__':
-  plot_data()
+  plot_spectra()
