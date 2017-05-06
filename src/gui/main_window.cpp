@@ -6,6 +6,10 @@
 #include <QWidget>
 #include <QTabWidget>
 
+#include "gui/class_spectra_widget.h"
+#include "gui/image_degradation_widget.h"
+#include "gui/image_layout_widget.h"
+
 namespace hsi_data_generator {
 
 MainWindow::MainWindow() {
@@ -24,9 +28,9 @@ MainWindow::MainWindow() {
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 //  tabs->setFixedSize(330, 220);
-  tabs->addTab(new QWidget(), "Class Spectra");
-  tabs->addTab(new QWidget(), "Image Map");
-  tabs->addTab(new QWidget(), "Add Noise");
+  tabs->addTab(new ClassSpectraWidget(), "Class Spectra");
+  tabs->addTab(new ImageLayoutWidget(), "Image Layout");
+  tabs->addTab(new ImageDegradationWidget(), "Image Degradation");
   setCentralWidget(central_widget);
 }
 
