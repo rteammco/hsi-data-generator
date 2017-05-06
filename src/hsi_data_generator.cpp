@@ -2,12 +2,10 @@
 #include <QFile>
 #include <QString>
 
-#include <string>
-
 #include "gui/main_window.h"
 #include "util/util.h"
 
-static const std::string kQtStyleSheetPath =
+static const QString kQtStyleSheetPath =
     hsi_data_generator::util::GetAbsolutePath(
         "qt_stylesheets/main_style.qss");
 
@@ -15,7 +13,7 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
 
   // Load the stylesheet:
-  QFile stylesheet_file(kQtStyleSheetPath.c_str());
+  QFile stylesheet_file(kQtStyleSheetPath);
   stylesheet_file.open(QFile::ReadOnly);
   QString stylesheet_string = QLatin1String(stylesheet_file.readAll());
   app.setStyleSheet(stylesheet_string);

@@ -6,8 +6,6 @@
 #include <QWidget>
 #include <QTabWidget>
 
-#include <iostream>
-
 namespace hsi_data_generator {
 
 MainWindow::MainWindow() {
@@ -30,10 +28,6 @@ MainWindow::MainWindow() {
   tabs->addTab(new QWidget(), "Image Map");
   tabs->addTab(new QWidget(), "Add Noise");
   setCentralWidget(central_widget);
-}
-
-void MainWindow::NewFile() {
-  std::cout << "New File Pressed!" << std::endl;
 }
 
 }  // namespace hsi_data_generator

@@ -12,8 +12,6 @@ class MainWindow : public QMainWindow {
   MainWindow();
 
 // TODO: Use "private slots:" instead?
- private:
-  void NewFile();
 };
 
 }  // namespace hsi_data_generator
