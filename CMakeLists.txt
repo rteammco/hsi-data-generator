@@ -23,6 +23,9 @@ ENDIF()
 # Require C++ 11.
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+# Define the code root directory for use as a defined macro in the code.
+add_definitions(-DROOT_CODE_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}")
+
 # Libraries will be stored in the "lib" directory, and binaries in "bin".
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -32,13 +35,15 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/*")
 
 # Other source files:
-file(GLOB   gui_SRC   "src/gui/*.cpp")
+file(GLOB   gui_SRC    "src/gui/*.cpp")
+file(GLOB   util_SRC   "src/util/*.cpp")
 
 # Add the test binary.
 add_executable(
   HSIDataGenerator
   src/hsi_data_generator.cpp
   ${gui_SRC}
+  ${util_SRC}
 )
 target_link_libraries(
   HSIDataGenerator

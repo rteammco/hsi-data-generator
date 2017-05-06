@@ -1,12 +1,15 @@
+#include <QApplication>
+#include <QFile>
+#include <QString>
+
 #include <string>
 
 #include "gui/main_window.h"
+#include "util/util.h"
 
-#include "QApplication.h"
-#include "QFile.h"
-#include "QString.h"
-
-static const std::string kQtStyleSheetPath = "../src/gui/qt_style.qss";
+static const std::string kQtStyleSheetPath =
+    hsi_data_generator::util::GetAbsolutePath(
+        "qt_stylesheets/main_style.qss");
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
@@ -18,7 +21,7 @@ int main(int argc, char** argv) {
   app.setStyleSheet(stylesheet_string);
 
   // Create the main window:
-  MainWindow main_window;
+  hsi_data_generator::MainWindow main_window;
   main_window.show();
   return app.exec();
 }

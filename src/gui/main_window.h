@@ -1,7 +1,9 @@
 #ifndef SRC_GUI_MAIN_WINDOW_H_
 #define SRC_GUI_MAIN_WINDOW_H_
 
-#include "QMainWindow.h"
+#include <QMainWindow>
+
+namespace hsi_data_generator {
 
 class MainWindow : public QMainWindow {
 //  Q_OBJECT
@@ -13,5 +15,7 @@ class MainWindow : public QMainWindow {
  private:
   void NewFile();
 };
+
+}  // namespace hsi_data_generator
 
 #endif  // SRC_GUI_MAIN_WINDOW_H_

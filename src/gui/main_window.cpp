@@ -1,12 +1,14 @@
 #include "gui/main_window.h"
 
+#include <QAction>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QWidget>
+#include <QTabWidget>
+
 #include <iostream>
 
-#include "QAction.h"
-#include "QMenuBar.h"
-#include "QToolBar.h"
-#include "QWidget.h"
-#include "QTabWidget.h"
+namespace hsi_data_generator {
 
 MainWindow::MainWindow() {
 //  QMenu* file_menu = menuBar()->addMenu(tr("&File"));
@@ -33,3 +35,5 @@ MainWindow::MainWindow() {
 void MainWindow::NewFile() {
   std::cout << "New File Pressed!" << std::endl;
 }
+
+}  // namespace hsi_data_generator
