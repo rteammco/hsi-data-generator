@@ -14,7 +14,8 @@
 namespace hsi_data_generator {
 
 class ClassSpectraWidget : public QWidget {
-  // TODO: Implement this widget.
+ public:
+  ClassSpectraWidget();
 };
 
 }  // namespace hsi_data_generator
