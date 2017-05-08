@@ -16,6 +16,16 @@ QString GetRootCodeDirectory();
 // directory (returned by GetRootCodeDirectory()).
 QString GetAbsolutePath(const QString& relative_path);
 
+// Reads the given Qt stylesheet file (typically a *.qss file) and returns the
+// contents as a string.
+//
+// This requires a RELATIVE PATH and will use GetRootCodeDirectory() to aquire
+// the base code path. For example, if all Qt stylesheets are stored in
+// "qt_stylesheets" in the root project directory, specify the path
+// "qt_stylesheets/my_style.qss" and the absolute path will be automatically
+// resolved.
+QString GetStylesheetRelativePath(const QString& stylesheet_relative_path);
+
 }  // namespace util
 }  // namespace hsi_data_generator
 

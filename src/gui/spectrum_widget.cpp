@@ -3,14 +3,19 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+#include "util/util.h"
+
 namespace hsi_data_generator {
+namespace {
+
+static const QString kQtSpectrumStyle = "qt_stylesheets/spectrum_widget.qss";
+
+}  // namespace
 
 SpectrumWidget::SpectrumWidget() {
-  // TODO: These should be adjusted using a stylesheet!
-  // TODO: Set an "id" or whatever QSS stylesheets use as unique IDs.
-  setStyleSheet("background-color: white;");
-  setFixedHeight(100);
-  setMinimumWidth(400);
+  const QString stylesheet_string =
+      util::GetStylesheetRelativePath(kQtSpectrumStyle);
+  setStyleSheet(stylesheet_string);
 }
 
 void SpectrumWidget::paintEvent(QPaintEvent* event) {
