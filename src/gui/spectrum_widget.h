@@ -10,7 +10,12 @@
 namespace hsi_data_generator {
 
 class SpectrumWidget : public QWidget {
+ public:
+  SpectrumWidget();
+
  protected:
+  // Uses a QPainter to draw the spectrum, or the current edit visualization,
+  // inside the widget.
   void paintEvent(QPaintEvent* event) override;
 };
 

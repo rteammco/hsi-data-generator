@@ -18,11 +18,7 @@ ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
   layout->addWidget(new QLabel(class_name));
   // TODO: Color coding label and color picker.
 
-  // TODO: Fix up the spectrum widget.
   SpectrumWidget* spectrum_widget = new SpectrumWidget();
-  spectrum_widget->setFixedWidth(400);
-  spectrum_widget->setFixedHeight(200);
-  spectrum_widget->setStyleSheet("background-color: white;");
   layout->addWidget(spectrum_widget);
 
   layout->addWidget(new QPushButton("Edit"));
