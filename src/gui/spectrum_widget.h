@@ -7,6 +7,8 @@
 #include <QPaintEvent>
 #include <QWidget>
 
+#include <vector>
+
 namespace hsi_data_generator {
 
 class SpectrumWidget : public QWidget {
@@ -17,6 +19,9 @@ class SpectrumWidget : public QWidget {
   // Uses a QPainter to draw the spectrum, or the current edit visualization,
   // inside the widget.
   void paintEvent(QPaintEvent* event) override;
+
+ private:
+  std::vector<double> spectrum_values_;
 };
 
 }  // namespace hsi_data_generator
