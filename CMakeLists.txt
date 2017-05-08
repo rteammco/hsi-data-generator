@@ -35,14 +35,16 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/*")
 
 # Other source files:
-file(GLOB   gui_SRC    "src/gui/*.cpp")
-file(GLOB   util_SRC   "src/util/*.cpp")
+file(GLOB   gui_SRC        "src/gui/*.cpp")
+file(GLOB   spectrum_SRC   "src/spectrum/*.cpp")
+file(GLOB   util_SRC       "src/util/*.cpp")
 
 # Add the test binary.
 add_executable(
   HSIDataGenerator
   src/hsi_data_generator.cpp
   ${gui_SRC}
+  ${spectrum_SRC}
   ${util_SRC}
 )
 target_link_libraries(

@@ -4,8 +4,7 @@
 #include <QPaintEvent>
 #include <QtDebug>
 
-#include <cmath>  // TODO: Remove when debug code is gone (for sin and abs).
-
+#include "spectrum/spectrum_generator.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -22,12 +21,8 @@ SpectrumWidget::SpectrumWidget() {
   setStyleSheet(stylesheet_string);
 
   // TODO: This is temporary, fix!
-  for (int i = 0; i < 200; ++i) {
-    const double d = static_cast<double>(i) / 10.0;
-    const double s = (1.0 + (i % 10)) / 20.0;
-    const double value = s * sin(d);
-    spectrum_values_.push_back(std::abs(value));
-  }
+  SpectrumGenerator spectrum_generator(200);
+  spectrum_values_ = spectrum_generator.GetNormalizedSpectrum();
 }
 
 void SpectrumWidget::paintEvent(QPaintEvent* event) {
