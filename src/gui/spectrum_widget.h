@@ -20,6 +20,11 @@ class SpectrumWidget : public QWidget {
  public:
   SpectrumWidget();
 
+  // Switches the rendering and user interaction between render mode (just
+  // displaying the spectrum as is) and edit mode (allowing the user to create
+  // or modify the spectrum).
+  void SetMode(const SpectrumWidgetPaintMode mode);
+
  protected:
   // Uses a QPainter to draw the spectrum, or the current edit visualization,
   // inside the widget.

@@ -6,3 +6,5 @@ CMakeFiles/
 Makefile
 CTestTestfile.cmake
 cmake_install.cmake
+HSIDataGenerator_automoc.cpp
+HSIDataGenerator_automoc.dir/

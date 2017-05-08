@@ -39,7 +39,10 @@ file(GLOB   gui_SRC        "src/gui/*.cpp")
 file(GLOB   spectrum_SRC   "src/spectrum/*.cpp")
 file(GLOB   util_SRC       "src/util/*.cpp")
 
-# Add the test binary.
+# This is for Qt to allow using the Q_OBJECT macro.
+set(CMAKE_AUTOMOC TRUE)
+
+# Add the app binary.
 add_executable(
   HSIDataGenerator
   src/hsi_data_generator.cpp
