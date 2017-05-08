@@ -53,7 +53,7 @@ void PaintSpectrumEditMode(
 
 }  // namespace
 
-SpectrumWidget::SpectrumWidget() : paint_mode_(SPECTRUM_RENDER_MODE) {
+SpectrumWidget::SpectrumWidget() : display_mode_(SPECTRUM_RENDER_MODE) {
   // Set the stylesheet of this widget.
   const QString stylesheet_string =
       util::GetStylesheetRelativePath(kQtSpectrumStyle);
@@ -64,8 +64,8 @@ SpectrumWidget::SpectrumWidget() : paint_mode_(SPECTRUM_RENDER_MODE) {
   spectrum_values_ = spectrum_generator.GetNormalizedSpectrum();
 }
 
-void SpectrumWidget::SetDisplayMode(const SpectrumWidgetPaintMode mode) {
-  paint_mode_ = mode;
+void SpectrumWidget::SetDisplayMode(const SpectrumWidgetDisplayMode mode) {
+  display_mode_ = mode;
   update();
 }
 
@@ -73,7 +73,7 @@ void SpectrumWidget::paintEvent(QPaintEvent* event) {
   QPainter painter(this);
   const double canvas_width = static_cast<double>(width());
   const double canvas_height = static_cast<double>(height());
-  if (paint_mode_ == SPECTRUM_RENDER_MODE) {
+  if (display_mode_ == SPECTRUM_RENDER_MODE) {
     PaintSpectrumRenderMode(
         canvas_width, canvas_height, spectrum_values_, &painter);
   } else {

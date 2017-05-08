@@ -11,7 +11,10 @@
 
 namespace hsi_data_generator {
 
-enum SpectrumWidgetPaintMode {
+// The display modes for the SpectrumWidget. This is used by the class to
+// determine how the information is displayed for the user (just rendering the
+// spectrum, or providing an interface for the user to edit it).
+enum SpectrumWidgetDisplayMode {
   SPECTRUM_RENDER_MODE,
   SPECTRUM_EDIT_MODE
 };
@@ -23,11 +26,11 @@ class SpectrumWidget : public QWidget {
   // Switches the rendering and user interaction between render mode (just
   // displaying the spectrum as is) and edit mode (allowing the user to create
   // or modify the spectrum).
-  void SetDisplayMode(const SpectrumWidgetPaintMode mode);
+  void SetDisplayMode(const SpectrumWidgetDisplayMode mode);
 
   // Returns the current display mode (edit or render).
-  SpectrumWidgetPaintMode GetDisplayMode() const {
-    return paint_mode_;
+  SpectrumWidgetDisplayMode GetDisplayMode() const {
+    return display_mode_;
   }
 
  protected:
@@ -36,10 +39,12 @@ class SpectrumWidget : public QWidget {
   void paintEvent(QPaintEvent* event) override;
 
  private:
+  // The spectrum values that will be displayed when the widget is in render
+  // mode.
   std::vector<double> spectrum_values_;
 
   // This is the current.
-  SpectrumWidgetPaintMode paint_mode_;
+  SpectrumWidgetDisplayMode display_mode_;
 };
 
 }  // namespace hsi_data_generator
