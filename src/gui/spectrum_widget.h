@@ -11,6 +11,11 @@
 
 namespace hsi_data_generator {
 
+enum SpectrumWidgetPaintMode {
+  SPECTRUM_RENDER_MODE,
+  SPECTRUM_EDIT_MODE
+};
+
 class SpectrumWidget : public QWidget {
  public:
   SpectrumWidget();
@@ -22,6 +27,9 @@ class SpectrumWidget : public QWidget {
 
  private:
   std::vector<double> spectrum_values_;
+
+  // This is the current.
+  SpectrumWidgetPaintMode paint_mode_;
 };
 
 }  // namespace hsi_data_generator
