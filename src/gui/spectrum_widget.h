@@ -4,10 +4,13 @@
 #ifndef SRC_GUI_SPECTRUM_WIDGET_H_
 #define SRC_GUI_SPECTRUM_WIDGET_H_
 
+#include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
 
 #include <vector>
+
+#include "spectrum/spectrum_generator.h"
 
 namespace hsi_data_generator {
 
@@ -38,10 +41,15 @@ class SpectrumWidget : public QWidget {
   // inside the widget.
   void paintEvent(QPaintEvent* event) override;
 
+  void mousePressEvent(QMouseEvent* event) override;
+
  private:
   // The spectrum values that will be displayed when the widget is in render
   // mode.
   std::vector<double> spectrum_values_;
+
+  // The edit peak locations.
+  std::vector<PeakDistribution> peaks_;
 
   // This is the current.
   SpectrumWidgetDisplayMode display_mode_;

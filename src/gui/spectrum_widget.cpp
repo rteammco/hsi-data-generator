@@ -2,7 +2,8 @@
 
 #include <QPainter>
 #include <QPaintEvent>
-#include <QtDebug>
+#include <QPen>
+#include <QPoint>
 
 #include <vector>
 
@@ -39,16 +40,23 @@ void PaintSpectrumRenderMode(
 // Draws the spectrum in edit mode, which displays the individual peaks such
 // that the user can click and drag to edit the spectrum, modifying existing
 // peaks or adding new ones.
-//
-// TODO: Fix the arguments as needed.
 void PaintSpectrumEditMode(
     const double canvas_width,
     const double canvas_height,
+    const std::vector<PeakDistribution>& peaks,
     QPainter* painter) {
 
-  // TODO: Implement this rendering. For now just draws a line to show
-  // something changed.
-  painter->drawLine(0, 100, 400, 0);
+  // TODO: Use consts for the pen parameters.
+  QPen point_pen(Qt::black);
+  point_pen.setCapStyle(Qt::RoundCap);
+  point_pen.setWidth(10);
+  painter->setRenderHint(QPainter::Antialiasing, true);
+  painter->setPen(point_pen);
+  for (const PeakDistribution& peak : peaks) {
+    const double peak_x = canvas_width * peak.peak_position;
+    const double peak_y = canvas_height - (canvas_height * peak.amplitude);
+    painter->drawPoint(QPoint(peak_x, peak_y));
+  }
 }
 
 }  // namespace
@@ -77,10 +85,24 @@ void SpectrumWidget::paintEvent(QPaintEvent* event) {
     PaintSpectrumRenderMode(
         canvas_width, canvas_height, spectrum_values_, &painter);
   } else {
-    PaintSpectrumEditMode(canvas_width, canvas_height, &painter);
+    PaintSpectrumEditMode(canvas_width, canvas_height, peaks_, &painter);
   }
   // TODO: Draw the x-axis step indicator bars (ruler).
   // TODO: Draw the x and y axis numbers.
+}
+
+void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
+  if (display_mode_ != SPECTRUM_EDIT_MODE) {
+    return;
+  }
+  const double canvas_width = static_cast<double>(width());
+  const double canvas_height = static_cast<double>(height());
+  PeakDistribution peak;
+  peak.peak_position = static_cast<double>(event->x()) / canvas_width;
+  peak.amplitude = 1.0 - static_cast<double>(event->y()) / canvas_height;
+  peak.width = 0.1;
+  peaks_.push_back(peak);
+  update();
 }
 
 }  // namespace hsi_data_generator
