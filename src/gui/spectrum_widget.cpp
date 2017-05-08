@@ -1,5 +1,6 @@
 #include "gui/spectrum_widget.h"
 
+#include <QColor>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPen>
@@ -14,6 +15,11 @@ namespace hsi_data_generator {
 namespace {
 
 static const QString kQtSpectrumStyle = "qt_stylesheets/spectrum_widget.qss";
+
+// Rendering constants for edit mode:
+static const QColor kEditPeakColor = Qt::black;
+constexpr int kEditPeakPointWidth = 10;
+constexpr int kEditPeakLineWidth = 1;
 
 // Draws the spectrum in render mode, displaying the final spectrum from the
 // given spectrum values. It is expected that all spectrum_values are
@@ -46,13 +52,13 @@ void PaintSpectrumEditMode(
     const std::vector<PeakDistribution>& peaks,
     QPainter* painter) {
 
-  // TODO: Use consts for the pen parameters.
-  QPen point_pen(Qt::black);
+  // The pen used for rendering the points:
+  QPen point_pen(kEditPeakColor);
   point_pen.setCapStyle(Qt::RoundCap);
-  point_pen.setWidth(10);
-
-  QPen line_pen(Qt::black);
-  line_pen.setWidth(1);
+  point_pen.setWidth(kEditPeakPointWidth);
+  // The pen used for rendering the lines:
+  QPen line_pen(kEditPeakColor);
+  line_pen.setWidth(kEditPeakLineWidth);
 
   painter->setRenderHint(QPainter::Antialiasing, true);
   for (const PeakDistribution& peak : peaks) {
@@ -85,6 +91,7 @@ SpectrumWidget::SpectrumWidget() : display_mode_(SPECTRUM_RENDER_MODE) {
 
 void SpectrumWidget::SetDisplayMode(const SpectrumWidgetDisplayMode mode) {
   display_mode_ = mode;
+  // TODO: Use the SpectrumGenerator to get an updated spectrum!
   update();
 }
 
@@ -106,12 +113,13 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
   if (display_mode_ != SPECTRUM_EDIT_MODE) {
     return;
   }
+  // TODO: If an existing peak is clicked, allow moving and editing it.
   const double canvas_width = static_cast<double>(width());
   const double canvas_height = static_cast<double>(height());
   PeakDistribution peak;
   peak.peak_position = static_cast<double>(event->x()) / canvas_width;
   peak.amplitude = 1.0 - static_cast<double>(event->y()) / canvas_height;
-  peak.width = 0.1;
+  peak.width = 0.1;  // TODO: Enable setting the width manually.
   peaks_.push_back(peak);
   update();
 }
