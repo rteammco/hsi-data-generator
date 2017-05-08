@@ -41,17 +41,21 @@ class SpectrumWidget : public QWidget {
   // inside the widget.
   void paintEvent(QPaintEvent* event) override;
 
+  // If the widget is in edit mode, the user can interact with the it to add or
+  // modify the peak distribution which are used ot generate the spectrum.
   void mousePressEvent(QMouseEvent* event) override;
 
  private:
   // The spectrum values that will be displayed when the widget is in render
-  // mode.
+  // mode. These values are subject to change based on how the spectrum is
+  // changed in edit mode.
   std::vector<double> spectrum_values_;
 
-  // The edit peak locations.
+  // The user-specified peak locations (set in edit mode).
   std::vector<PeakDistribution> peaks_;
 
-  // This is the current.
+  // This is the current display mode: render mode displays the spectrum, edit
+  // mode allows the user to adjust the spectrum.
   SpectrumWidgetDisplayMode display_mode_;
 };
 

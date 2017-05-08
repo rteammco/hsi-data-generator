@@ -50,12 +50,23 @@ void PaintSpectrumEditMode(
   QPen point_pen(Qt::black);
   point_pen.setCapStyle(Qt::RoundCap);
   point_pen.setWidth(10);
+
+  QPen line_pen(Qt::black);
+  line_pen.setWidth(1);
+
   painter->setRenderHint(QPainter::Antialiasing, true);
-  painter->setPen(point_pen);
   for (const PeakDistribution& peak : peaks) {
     const double peak_x = canvas_width * peak.peak_position;
     const double peak_y = canvas_height - (canvas_height * peak.amplitude);
+    // Draw the peak point:
+    painter->setPen(point_pen);
     painter->drawPoint(QPoint(peak_x, peak_y));
+    // Draw the vertical (height) line:
+    painter->setPen(line_pen);
+    painter->drawLine(peak_x, peak_y, peak_x, canvas_height);
+    // Draw the horizontal (width) line:
+    const double half_width = (canvas_width * peak.width) / 2.0;
+    painter->drawLine(peak_x - half_width, peak_y, peak_x + half_width, peak_y);
   }
 }
 
