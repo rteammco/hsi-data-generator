@@ -24,11 +24,11 @@ class ClassSpectrumRow : public QWidget {
  private:
   // This is the spectrum widget, which displays the spectrum itself, or allows
   // the user to edit it.
-  SpectrumWidget* spectrum_widget_;
+  SpectrumWidget* spectrum_widget_ = nullptr;
 
   // The "Edit" button (changes to the "Save" button in edit mode) toggles the
   // spectrum widget between editing and rendering mode.
-  QPushButton* spectrum_edit_button_;
+  QPushButton* spectrum_edit_button_ = nullptr;
 };
 
 }  // namespace hsi_data_generator

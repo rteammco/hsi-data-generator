@@ -5,12 +5,19 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QString>
-
-#include <iostream>  // TODO: REMOVE when done testing.
+#include <QtDebug>
 
 #include "gui/spectrum_widget.h"
 
 namespace hsi_data_generator {
+namespace {
+
+// The text displayed on the edit button during its two modes as it gets
+// toggled between them.
+static const QString kEditButtonEditString = "Edit";
+static const QString kEditButtonDoneString = "Done";
+
+}  // namespace
 
 ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
   QHBoxLayout* layout = new QHBoxLayout();
@@ -23,7 +30,7 @@ ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
   spectrum_widget_ = new SpectrumWidget();
   layout->addWidget(spectrum_widget_);
 
-  spectrum_edit_button_ = new QPushButton("Edit");
+  spectrum_edit_button_ = new QPushButton(kEditButtonEditString);
   layout->addWidget(spectrum_edit_button_);
   connect(
       spectrum_edit_button_,
@@ -37,7 +44,22 @@ ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
 }
 
 void ClassSpectrumRow::EditButtonPressed() {
-  std::cout << "EDIT BUTTON PRESSED" << std::endl;
+  // TODO: Better error checks?
+  if (spectrum_widget_ == nullptr) {
+    qCritical() << "Spectrum widget is not defined. Cannot edit.";
+    return;
+  }
+  if (spectrum_edit_button_ == nullptr) {
+    qCritical() << "Edit button is not defined. Cannot edit.";
+    return;
+  }
+  if (spectrum_widget_->GetDisplayMode() == SPECTRUM_RENDER_MODE) {
+    spectrum_widget_->SetDisplayMode(SPECTRUM_EDIT_MODE);
+    spectrum_edit_button_->setText(kEditButtonDoneString);
+  } else {
+    spectrum_widget_->SetDisplayMode(SPECTRUM_RENDER_MODE);
+    spectrum_edit_button_->setText(kEditButtonEditString);
+  }
 }
 
 }  // namespace hsi_data_generator

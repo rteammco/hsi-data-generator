@@ -46,7 +46,9 @@ void PaintSpectrumEditMode(
     const double canvas_height,
     QPainter* painter) {
 
-  // TODO: Implement this render mode.
+  // TODO: Implement this rendering. For now just draws a line to show
+  // something changed.
+  painter->drawLine(0, 100, 400, 0);
 }
 
 }  // namespace
@@ -60,6 +62,11 @@ SpectrumWidget::SpectrumWidget() : paint_mode_(SPECTRUM_RENDER_MODE) {
   // TODO: This is temporary, fix!
   SpectrumGenerator spectrum_generator(200);
   spectrum_values_ = spectrum_generator.GetNormalizedSpectrum();
+}
+
+void SpectrumWidget::SetDisplayMode(const SpectrumWidgetPaintMode mode) {
+  paint_mode_ = mode;
+  update();
 }
 
 void SpectrumWidget::paintEvent(QPaintEvent* event) {
