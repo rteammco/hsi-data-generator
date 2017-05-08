@@ -6,8 +6,7 @@
 #include "util/util.h"
 
 static const QString kQtStyleSheetPath =
-    hsi_data_generator::util::GetAbsolutePath(
-        "qt_stylesheets/main_style.qss");
+    hsi_data_generator::util::GetAbsolutePath("qt_stylesheets/main_style.qss");
 
 int main(int argc, char** argv) {
   QApplication app(argc, argv);
