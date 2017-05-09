@@ -63,7 +63,9 @@ ClassSpectrumRow::ClassSpectrumRow(
   button_layout->addWidget(clear_button);
   connect(clear_button, SIGNAL(released()), this, SLOT(ClearButtonPressed()));
 
-  button_layout->addWidget(new QPushButton(kCloneButtonString));
+  QPushButton* clone_button = new QPushButton(kCloneButtonString);
+  clone_button->setEnabled(false);  // TODO: Implement.
+  button_layout->addWidget(clone_button);
 
   layout->addLayout(button_layout);
 }
