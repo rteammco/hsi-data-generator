@@ -9,9 +9,13 @@
 #include <algorithm>
 
 #include "gui/class_spectrum_row.h"
+#include "util/util.h"
 
 namespace hsi_data_generator {
 namespace {
+
+static const QString kQtClassSpectraViewStyle =
+    "qt_stylesheets/class_spectra_view.qss";
 
 // The default number of bands that is pre-set until the user changes it.
 constexpr int kDefaultNumberOfBands = 100;
@@ -23,6 +27,8 @@ static const QString kNewSpectrumButtonString = "Add Spectrum";
 
 ClassSpectraView::ClassSpectraView()
     : num_bands_(kDefaultNumberOfBands), next_spectrum_number_(1) {
+
+  setStyleSheet(util::GetStylesheetRelativePath(kQtClassSpectraViewStyle));
 
   layout_ = new QVBoxLayout();
   layout_->setAlignment(Qt::AlignTop);
@@ -42,6 +48,7 @@ ClassSpectraView::ClassSpectraView()
   // blank spectrum to the list.
   QPushButton* new_spectrum_button = new QPushButton(kNewSpectrumButtonString);
   layout_->addWidget(new_spectrum_button);
+  layout_->setAlignment(new_spectrum_button, Qt::AlignCenter);
   connect(
       new_spectrum_button,
       SIGNAL(released()),
