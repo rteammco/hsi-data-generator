@@ -93,6 +93,7 @@ SpectrumWidget::SpectrumWidget(const int num_bands)
 
 void SpectrumWidget::SetNumberOfBands(const int num_bands) {
   num_bands_ = num_bands;
+  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands_);
   update();
 }
 
