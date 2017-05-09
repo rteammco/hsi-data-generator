@@ -80,20 +80,25 @@ void PaintSpectrumEditMode(
 
 }  // namespace
 
-SpectrumWidget::SpectrumWidget() : display_mode_(SPECTRUM_RENDER_MODE) {
+SpectrumWidget::SpectrumWidget(const int num_bands)
+    : display_mode_(SPECTRUM_RENDER_MODE), num_bands_(num_bands) {
+
   // Set the stylesheet of this widget.
   const QString stylesheet_string =
       util::GetStylesheetRelativePath(kQtSpectrumStyle);
   setStyleSheet(stylesheet_string);
 
-  const int num_bands = 200;  // TODO: This needs to be a changeable parameter.
-  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands);
+  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands_);
+}
+
+void SpectrumWidget::SetNumberOfBands(const int num_bands) {
+  num_bands_ = num_bands;
+  update();
 }
 
 void SpectrumWidget::SetDisplayMode(const SpectrumWidgetDisplayMode mode) {
   display_mode_ = mode;
-  const int num_bands = 200;  // TODO: This needs to be a changeable parameter.
-  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands);
+  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands_);
   update();
 }
 

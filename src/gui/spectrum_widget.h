@@ -24,7 +24,12 @@ enum SpectrumWidgetDisplayMode {
 
 class SpectrumWidget : public QWidget {
  public:
-  SpectrumWidget();
+  explicit SpectrumWidget(const int num_bands);
+
+  // Adjust the number of bands in the spectrum. This will not change the
+  // spectral distribution, since all values are normalized, but it will change
+  // the spectral resolution and re-render the current spectrum.
+  void SetNumberOfBands(const int num_bands);
 
   // Switches the rendering and user interaction between render mode (just
   // displaying the spectrum as is) and edit mode (allowing the user to create
@@ -46,6 +51,15 @@ class SpectrumWidget : public QWidget {
   void mousePressEvent(QMouseEvent* event) override;
 
  private:
+  // The number of bands that will be generated and displayed. All values are
+  // normalized, so this can be adjusted at will to fit whatever spectral
+  // resolution the user wants.
+  int num_bands_;
+
+  // This is the current display mode: render mode displays the spectrum, edit
+  // mode allows the user to adjust the spectrum.
+  SpectrumWidgetDisplayMode display_mode_;
+
   // The spectrum values that will be displayed when the widget is in render
   // mode. These values are subject to change based on how the spectrum is
   // changed in edit mode.
@@ -53,10 +67,6 @@ class SpectrumWidget : public QWidget {
 
   // The user-specified peak locations (set in edit mode).
   std::vector<spectrum_generator::PeakDistribution> peaks_;
-
-  // This is the current display mode: render mode displays the spectrum, edit
-  // mode allows the user to adjust the spectrum.
-  SpectrumWidgetDisplayMode display_mode_;
 };
 
 }  // namespace hsi_data_generator

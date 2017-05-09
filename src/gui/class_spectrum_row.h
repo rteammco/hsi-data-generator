@@ -16,7 +16,10 @@ class ClassSpectrumRow : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ClassSpectrumRow(const QString& class_name);  // TODO: More params.
+  ClassSpectrumRow(const QString& class_name, const int num_bands);
+
+  // Updates the number of bands displayed by the SpectrumWidget.
+  void SetNumberOfBands(const int num_bands);
 
  private slots:  // NOLINT
   void EditButtonPressed();

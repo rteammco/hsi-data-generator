@@ -19,7 +19,9 @@ static const QString kEditButtonDoneString = "Done";
 
 }  // namespace
 
-ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
+ClassSpectrumRow::ClassSpectrumRow(
+    const QString& class_name, const int num_bands) {
+
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setAlignment(Qt::AlignLeft);
 
@@ -27,7 +29,7 @@ ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
   layout->addWidget(new QLabel(class_name));
   // TODO: Color coding label and color picker.
 
-  spectrum_widget_ = new SpectrumWidget();
+  spectrum_widget_ = new SpectrumWidget(num_bands);
   layout->addWidget(spectrum_widget_);
 
   spectrum_edit_button_ = new QPushButton(kEditButtonEditString);
@@ -41,6 +43,14 @@ ClassSpectrumRow::ClassSpectrumRow(const QString& class_name) {
   layout->addWidget(new QPushButton("Clone"));
 
   setLayout(layout);
+}
+
+void ClassSpectrumRow::SetNumberOfBands(const int num_bands) {
+  if (spectrum_widget_ == nullptr) {
+    qCritical() << "Spectrum widget not defined. Cannot set number of bands.";
+    return;
+  }
+  spectrum_widget_->SetNumberOfBands(num_bands);
 }
 
 void ClassSpectrumRow::EditButtonPressed() {

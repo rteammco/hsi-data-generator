@@ -11,9 +11,10 @@ ClassSpectraWidget::ClassSpectraWidget() {
   QVBoxLayout* layout = new QVBoxLayout();
   layout->setAlignment(Qt::AlignTop);
 
-  layout->addWidget(new QLineEdit("100"));  // TODO: the number of spectra.
-  layout->addWidget(new ClassSpectrumRow("Background"));
-  layout->addWidget(new ClassSpectrumRow("Test Class 1"));
+  const int num_bands = 200;  // TODO: Do not hard-code.
+  layout->addWidget(new QLineEdit("200"));  // TODO: the number of spectra.
+  layout->addWidget(new ClassSpectrumRow("Background", num_bands));
+  layout->addWidget(new ClassSpectrumRow("Test Class 1", num_bands));
 
   setLayout(layout);
 }
