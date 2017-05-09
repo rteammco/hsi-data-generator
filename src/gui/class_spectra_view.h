@@ -6,8 +6,8 @@
 // unique color, and the image would be constructed by combining these colors
 // in a particular spatial layout across the image.
 
-#ifndef SRC_GUI_CLASS_SPECTRA_WIDGET_H_
-#define SRC_GUI_CLASS_SPECTRA_WIDGET_H_
+#ifndef SRC_GUI_CLASS_SPECTRA_VIEW_H_
+#define SRC_GUI_CLASS_SPECTRA_VIEW_H_
 
 #include <QBoxLayout>
 #include <QLineEdit>
@@ -20,11 +20,11 @@
 
 namespace hsi_data_generator {
 
-class ClassSpectraWidget : public QWidget {
+class ClassSpectraView : public QWidget {
   Q_OBJECT
 
  public:
-  ClassSpectraWidget();
+  ClassSpectraView();
 
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
@@ -58,4 +58,4 @@ class ClassSpectraWidget : public QWidget {
 
 }  // namespace hsi_data_generator
 
-#endif  // SRC_GUI_CLASS_SPECTRA_WIDGET_H_
+#endif  // SRC_GUI_CLASS_SPECTRA_VIEW_H_

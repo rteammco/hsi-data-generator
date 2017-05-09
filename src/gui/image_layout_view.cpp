@@ -1,4 +1,4 @@
-#include "gui/image_layout_widget.h"
+#include "gui/image_layout_view.h"
 
 namespace hsi_data_generator {
 

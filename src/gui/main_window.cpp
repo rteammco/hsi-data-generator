@@ -6,16 +6,16 @@
 #include <QString>
 #include <QTabWidget>
 
-#include "gui/class_spectra_widget.h"
-#include "gui/image_degradation_widget.h"
-#include "gui/image_layout_widget.h"
+#include "gui/class_spectra_view.h"
+#include "gui/image_degradation_view.h"
+#include "gui/image_layout_view.h"
 
 namespace hsi_data_generator {
 namespace {
 
-static const QString kClassSpectraWidgetString = "Class Spectra";
-static const QString kImageLayoutWidgetString = "Image Layout";
-static const QString kImageDegradationWidgetString = "Image Degradation";
+static const QString kClassSpectraViewString = "Class Spectra";
+static const QString kImageLayoutViewString = "Image Layout";
+static const QString kImageDegradationViewString = "Image Degradation";
 
 }  // namespace
 
@@ -33,9 +33,9 @@ MainWindow::MainWindow() {
   // Set the tabs:
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
-  tabs->addTab(new ClassSpectraWidget(), kClassSpectraWidgetString);
-  tabs->addTab(new ImageLayoutWidget(), kImageLayoutWidgetString);
-  tabs->addTab(new ImageDegradationWidget(), kImageDegradationWidgetString);
+  tabs->addTab(new ClassSpectraView(), kClassSpectraViewString);
+  tabs->addTab(new ImageLayoutView(), kImageLayoutViewString);
+  tabs->addTab(new ImageDegradationView(), kImageDegradationViewString);
   setCentralWidget(tabs);
 }
 

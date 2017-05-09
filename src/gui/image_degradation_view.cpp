@@ -1,4 +1,4 @@
-#include "gui/image_degradation_widget.h"
+#include "gui/image_degradation_view.h"
 
 namespace hsi_data_generator {
 

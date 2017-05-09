@@ -1,4 +1,4 @@
-#include "gui/class_spectra_widget.h"
+#include "gui/class_spectra_view.h"
 
 #include <QLineEdit>
 #include <QPushButton>
@@ -21,7 +21,7 @@ static const QString kNewSpectrumButtonString = "Add Spectrum";
 
 }  // namespace
 
-ClassSpectraWidget::ClassSpectraWidget()
+ClassSpectraView::ClassSpectraView()
     : num_bands_(kDefaultNumberOfBands), next_spectrum_number_(1) {
 
   layout_ = new QVBoxLayout();
@@ -52,7 +52,7 @@ ClassSpectraWidget::ClassSpectraWidget()
   AddClassSpectrumRow(kDefaultSpectrumName, num_bands_);
 }
 
-void ClassSpectraWidget::NumberOfBandsInputChanged() {
+void ClassSpectraView::NumberOfBandsInputChanged() {
   if (number_of_bands_input_ == nullptr) {
     qCritical() << "Number of bands input is not defined. Cannot change.";
     return;
@@ -64,14 +64,14 @@ void ClassSpectraWidget::NumberOfBandsInputChanged() {
   }
 }
 
-void ClassSpectraWidget::NewSpectrumButtonPressed() {
+void ClassSpectraView::NewSpectrumButtonPressed() {
   QString new_spectrum_name =
       "New Spectrum " + QString::number(next_spectrum_number_);
   next_spectrum_number_++;
   AddClassSpectrumRow(new_spectrum_name, num_bands_);
 }
 
-void ClassSpectraWidget::AddClassSpectrumRow(
+void ClassSpectraView::AddClassSpectrumRow(
     const QString& name, const int num_bands) {
 
   ClassSpectrumRow* row = new ClassSpectrumRow(name, num_bands);
