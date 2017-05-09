@@ -11,7 +11,10 @@
 namespace hsi_data_generator {
 
 class ImageLayoutView : public QWidget {
-  // TODO: Implement this widget.
+  Q_OBJECT
+
+ public:
+  ImageLayoutView();
 };
 
 }  // namespace hsi_data_generator
