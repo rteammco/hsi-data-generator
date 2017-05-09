@@ -27,7 +27,7 @@ static const QString kCloneButtonString = "Clone";
 }  // namespace
 
 ClassSpectrumRow::ClassSpectrumRow(
-    const QString& class_name, const int num_bands) {
+    const QString& class_name, const int num_bands) : class_name_(class_name) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowStyle));
 
@@ -35,7 +35,14 @@ ClassSpectrumRow::ClassSpectrumRow(
   layout->setAlignment(Qt::AlignLeft);
   setLayout(layout);
 
-  layout->addWidget(new QLineEdit(class_name));
+  QLineEdit* class_name_field = new QLineEdit(class_name_);
+  layout->addWidget(class_name_field);
+  connect(
+      class_name_field,
+      SIGNAL(textChanged(const QString&)),
+      this,
+      SLOT(ClassNameFieldChanged(const QString&)));
+
   // TODO: Color coding label and color picker.
 
   spectrum_widget_ = new SpectrumWidget(num_bands);
@@ -67,6 +74,12 @@ void ClassSpectrumRow::SetNumberOfBands(const int num_bands) {
     return;
   }
   spectrum_widget_->SetNumberOfBands(num_bands);
+}
+
+void ClassSpectrumRow::ClassNameFieldChanged(const QString& class_name) {
+  if (!class_name.isEmpty()) {
+    class_name_ = class_name;
+  }
 }
 
 void ClassSpectrumRow::EditButtonPressed() {

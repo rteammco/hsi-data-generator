@@ -21,11 +21,20 @@ class ClassSpectrumRow : public QWidget {
   // Updates the number of bands displayed by the SpectrumWidget.
   void SetNumberOfBands(const int num_bands);
 
+  QString GetClassName() const {
+    return class_name_;
+  }
+
  private slots:  // NOLINT
+  void ClassNameFieldChanged(const QString& text);
   void EditButtonPressed();
   void ClearButtonPressed();
 
  private:
+  // The name of this class. This can be changed at any time but should be
+  // unique.
+  QString class_name_;
+
   // This is the spectrum widget, which displays the spectrum itself, or allows
   // the user to edit it.
   SpectrumWidget* spectrum_widget_ = nullptr;
