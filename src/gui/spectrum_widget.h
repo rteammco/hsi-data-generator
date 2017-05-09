@@ -52,7 +52,7 @@ class SpectrumWidget : public QWidget {
   std::vector<double> spectrum_values_;
 
   // The user-specified peak locations (set in edit mode).
-  std::vector<PeakDistribution> peaks_;
+  std::vector<spectrum_generator::PeakDistribution> peaks_;
 
   // This is the current display mode: render mode displays the spectrum, edit
   // mode allows the user to adjust the spectrum.

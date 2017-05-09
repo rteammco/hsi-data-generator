@@ -10,6 +10,7 @@
 #include <vector>
 
 namespace hsi_data_generator {
+namespace spectrum_generator {
 
 // The distribution variables for a single spectrum peak. These values encode a
 // Gaussian distribution that represents a single peak in the spectrum. All
@@ -34,21 +35,16 @@ struct PeakDistribution {
   double width;
 };
 
-class SpectrumGenerator {
- public:
-  explicit SpectrumGenerator(const int num_bands) : num_bands_(num_bands) {}
+// Generates the spectrum given a set of PeakDistributions. This is done by
+// sampling each band from the summed up mixture of Guassians in the given
+// list.
+//
+// The returned spectrum is automatically scaled between 0 and 1. It is
+// possible that the maximum value is less than 1.
+std::vector<double> GenerateSpectrum(
+    const std::vector<PeakDistribution>& peaks, const int num_bands);
 
-  void AddPeak(const PeakDistribution& peak);
-
-  std::vector<double> GetNormalizedSpectrum() const;
-
- private:
-  // The number of bands that this spectrum will span.
-  const int num_bands_;
-
-  std::vector<PeakDistribution> peaks_;
-};
-
+}  // namespace spectrum_generator
 }  // namespace hsi_data_generator
 
 #endif  // SRC_SPECTRUM_SPECTRUM_GENERATOR_H_

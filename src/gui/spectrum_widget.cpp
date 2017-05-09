@@ -11,6 +11,8 @@
 #include "spectrum/spectrum_generator.h"
 #include "util/util.h"
 
+using hsi_data_generator::spectrum_generator::PeakDistribution;
+
 namespace hsi_data_generator {
 namespace {
 
@@ -84,14 +86,14 @@ SpectrumWidget::SpectrumWidget() : display_mode_(SPECTRUM_RENDER_MODE) {
       util::GetStylesheetRelativePath(kQtSpectrumStyle);
   setStyleSheet(stylesheet_string);
 
-  // TODO: This is temporary, fix!
-  SpectrumGenerator spectrum_generator(200);
-  spectrum_values_ = spectrum_generator.GetNormalizedSpectrum();
+  const int num_bands = 200;  // TODO: This needs to be a changeable parameter.
+  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands);
 }
 
 void SpectrumWidget::SetDisplayMode(const SpectrumWidgetDisplayMode mode) {
   display_mode_ = mode;
-  // TODO: Use the SpectrumGenerator to get an updated spectrum!
+  const int num_bands = 200;  // TODO: This needs to be a changeable parameter.
+  spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands);
   update();
 }
 
@@ -119,7 +121,7 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
   PeakDistribution peak;
   peak.peak_position = static_cast<double>(event->x()) / canvas_width;
   peak.amplitude = 1.0 - static_cast<double>(event->y()) / canvas_height;
-  peak.width = 0.1;  // TODO: Enable setting the width manually.
+  peak.width = 0.001;  // TODO: Enable setting the width manually.
   peaks_.push_back(peak);
   update();
 }
