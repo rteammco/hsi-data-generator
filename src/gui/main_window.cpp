@@ -1,9 +1,9 @@
 #include "gui/main_window.h"
 
-#include <QAction>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QWidget>
+//  #include <QAction>
+//  #include <QMenuBar>
+//  #include <QToolBar>
+#include <QString>
 #include <QTabWidget>
 
 #include "gui/class_spectra_widget.h"
@@ -11,6 +11,13 @@
 #include "gui/image_layout_widget.h"
 
 namespace hsi_data_generator {
+namespace {
+
+static const QString kClassSpectraWidgetString = "Class Spectra";
+static const QString kImageLayoutWidgetString = "Image Layout";
+static const QString kImageDegradationWidgetString = "Image Degradation";
+
+}  // namespace
 
 MainWindow::MainWindow() {
 //  QMenu* file_menu = menuBar()->addMenu(tr("&File"));
@@ -24,14 +31,12 @@ MainWindow::MainWindow() {
 //  file_tool_bar->addAction(new_action);
 
   // Set the tabs:
-  QWidget* central_widget = new QWidget(this);
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
-//  tabs->setFixedSize(330, 220);
-  tabs->addTab(new ClassSpectraWidget(), "Class Spectra");
-  tabs->addTab(new ImageLayoutWidget(), "Image Layout");
-  tabs->addTab(new ImageDegradationWidget(), "Image Degradation");
-  setCentralWidget(central_widget);
+  tabs->addTab(new ClassSpectraWidget(), kClassSpectraWidgetString);
+  tabs->addTab(new ImageLayoutWidget(), kImageLayoutWidgetString);
+  tabs->addTab(new ImageDegradationWidget(), kImageDegradationWidgetString);
+  setCentralWidget(tabs);
 }
 
 }  // namespace hsi_data_generator
