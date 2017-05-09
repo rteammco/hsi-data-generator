@@ -9,7 +9,7 @@
 #ifndef SRC_GUI_CLASS_SPECTRA_WIDGET_H_
 #define SRC_GUI_CLASS_SPECTRA_WIDGET_H_
 
-#include <QLayout>
+#include <QBoxLayout>
 #include <QLineEdit>
 #include <QString>
 #include <QWidget>
@@ -28,13 +28,24 @@ class ClassSpectraWidget : public QWidget {
 
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
+  void NewSpectrumButtonPressed();
 
  private:
   // The layout used by this widget.
-  QLayout* layout_;
+  QBoxLayout* layout_;
 
   // The input field where the user can set the number of bands.
   QLineEdit* number_of_bands_input_;
+
+  // The current number of bands. This will be the number of bands set to all
+  // newly added spectra, and can be updated by the user using the
+  // number_of_bands_input_ filed.
+  int num_bands_;
+
+  // This number just keeps track of the newly added spectra, and increments
+  // every time a new spectrum is added. This ensures unique names of each
+  // spectrum.
+  int next_spectrum_number_;
 
   // A list of all added ClassSpectrumRow widgets. These are referenced to
   // modify the number of bands or to get the spectra.
