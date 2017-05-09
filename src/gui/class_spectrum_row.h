@@ -23,6 +23,7 @@ class ClassSpectrumRow : public QWidget {
 
  private slots:  // NOLINT
   void EditButtonPressed();
+  void ClearButtonPressed();
 
  private:
   // This is the spectrum widget, which displays the spectrum itself, or allows

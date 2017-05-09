@@ -6,6 +6,7 @@
 #include <QPen>
 #include <QPoint>
 
+#include <algorithm>
 #include <vector>
 
 #include "spectrum/spectrum_generator.h"
@@ -94,6 +95,12 @@ SpectrumWidget::SpectrumWidget(const int num_bands)
 void SpectrumWidget::SetNumberOfBands(const int num_bands) {
   num_bands_ = num_bands;
   spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands_);
+  update();
+}
+
+void SpectrumWidget::Clear() {
+  peaks_.clear();
+  std::fill(spectrum_values_.begin(), spectrum_values_.end(), 0);
   update();
 }
 

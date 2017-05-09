@@ -31,6 +31,10 @@ class SpectrumWidget : public QWidget {
   // the spectral resolution and re-render the current spectrum.
   void SetNumberOfBands(const int num_bands);
 
+  // Clears out all edits, and resets the widget to the default spectrum (every
+  // band value is 0).
+  void Clear();
+
   // Switches the rendering and user interaction between render mode (just
   // displaying the spectrum as is) and edit mode (allowing the user to create
   // or modify the spectrum).
