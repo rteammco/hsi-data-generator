@@ -18,7 +18,7 @@ namespace hsi_data_generator {
 namespace {
 
 // Stylesheet file path and object reference names.
-static const QString kQtSpectrumRowStyle =
+static const QString kQtSpectrumRowViewStyle =
     "qt_stylesheets/class_spectrum_row.qss";
 static const QString kQtClassColorBoxName = "class_color_box";
 
@@ -34,7 +34,7 @@ static const QString kCloneButtonString = "Clone";
 ClassSpectrumRow::ClassSpectrumRow(
     const QString& class_name, const int num_bands) : class_name_(class_name) {
 
-  setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowStyle));
+  setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowViewStyle));
 
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setAlignment(Qt::AlignLeft);
