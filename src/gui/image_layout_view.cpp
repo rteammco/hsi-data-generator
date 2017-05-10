@@ -1,10 +1,11 @@
 #include "gui/image_layout_view.h"
 
+#include <QColor>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLayoutItem>
+#include <QString>
 #include <QWidget>
-#include <QtDebug>
 
 #include <vector>
 
@@ -48,17 +49,22 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
   const int total_num_classes = class_spectrum_rows_->size();
   // TODO: We should do deleting first and then re-inserting instead of
   // replacing, but that's buggy for some reason.
-  // Replace or update the existing displayed spectrum classes:
-  for (int i = 0; i < num_displayed_classes; ++i) {
+  for (int i = 0; i < total_num_classes; ++i) {
+    // Create the class label and set its color.
     const QString class_name = class_spectrum_rows_->at(i)->GetClassName();
-    QWidget* original_widget = class_names_layout_->itemAt(i)->widget();
-    class_names_layout_->replaceWidget(original_widget, new QLabel(class_name));
-    delete original_widget;
-  }
-  // Add in any new spectrum classes:
-  for (int i = num_displayed_classes; i < total_num_classes; ++i) {
-    const QString class_name = class_spectrum_rows_->at(i)->GetClassName();
-    class_names_layout_->addWidget(new QLabel(class_name));
+    const QColor class_color = class_spectrum_rows_->at(i)->GetClassColor();
+    QLabel* new_label = new QLabel(class_name);
+    QPalette label_palette;
+    label_palette.setColor(new_label->foregroundRole(), class_color);
+    new_label->setPalette(label_palette);
+    // Update (replace) or add the spectrum classes:
+    if (i < num_displayed_classes) {
+      QWidget* original_label = class_names_layout_->itemAt(i)->widget();
+      class_names_layout_->replaceWidget(original_label, new_label);
+      delete original_label;
+    } else {
+      class_names_layout_->addWidget(new_label);
+    }
   }
 }
 
