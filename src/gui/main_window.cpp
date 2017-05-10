@@ -43,7 +43,8 @@ MainWindow::MainWindow() {
   ClassSpectraView* spectra_view = new ClassSpectraView(class_spectrum_rows);
   tabs->addTab(spectra_view, kClassSpectraViewString);
 
-  tabs->addTab(new ImageLayoutView(), kImageLayoutViewString);
+  ImageLayoutView* image_layout_view = new ImageLayoutView(class_spectrum_rows);
+  tabs->addTab(image_layout_view, kImageLayoutViewString);
 
   tabs->addTab(new ImageDegradationView(), kImageDegradationViewString);
 

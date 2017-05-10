@@ -6,7 +6,14 @@
 #ifndef SRC_GUI_IMAGE_LAYOUT_VIEW_H_
 #define SRC_GUI_IMAGE_LAYOUT_VIEW_H_
 
+#include <QLayout>
+#include <QShowEvent>
 #include <QWidget>
+
+#include <memory>
+#include <vector>
+
+#include "gui/class_spectrum_row.h"
 
 namespace hsi_data_generator {
 
@@ -14,7 +21,18 @@ class ImageLayoutView : public QWidget {
   Q_OBJECT
 
  public:
-  ImageLayoutView();
+  ImageLayoutView(
+      std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows);
+
+ protected:
+  void showEvent(QShowEvent* event) override;
+
+ private:
+  // This list of spectra is maintained by ClassSpectraView. We track a local
+  // reference to display all of the classes appropriately.
+  std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows_;
+
+  QLayout* class_names_layout_;
 };
 
 }  // namespace hsi_data_generator
