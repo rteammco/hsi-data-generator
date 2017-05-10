@@ -85,9 +85,7 @@ SpectrumWidget::SpectrumWidget(const int num_bands)
     : display_mode_(SPECTRUM_RENDER_MODE), num_bands_(num_bands) {
 
   // Set the stylesheet of this widget.
-  const QString stylesheet_string =
-      util::GetStylesheetRelativePath(kQtSpectrumStyle);
-  setStyleSheet(stylesheet_string);
+  setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumStyle));
 
   spectrum_values_ = spectrum_generator::GenerateSpectrum(peaks_, num_bands_);
 }

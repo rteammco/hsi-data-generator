@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
+#include "gui/image_layout_widget.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -38,11 +39,9 @@ ImageLayoutView::ImageLayoutView(
   layout->addLayout(class_names_layout_);
 
   // Center column is the image display widget.
-  // TODO: This should be a stand-alone widget.
-  QWidget* image_display = new QWidget();
-  image_display->setStyleSheet(
-      "min-width: 500px; min-height: 500px; background-color: white");
-  layout->addWidget(image_display);
+  // TODO: Make this a private variable.
+  QWidget* image_layout_widget = new ImageLayoutWidget();
+  layout->addWidget(image_layout_widget);
 
   // Right-hand column is the set of patterns to generate over the image.
   // TODO: Make this interactive, with preview images, etc.
