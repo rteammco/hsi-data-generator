@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
+#include "gui/image_layout_widget.h"
 
 namespace hsi_data_generator {
 
@@ -32,7 +33,9 @@ class ImageLayoutView : public QWidget {
   // reference to display all of the classes appropriately.
   std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows_;
 
-  QLayout* class_names_layout_;
+  ImageLayoutWidget* image_layout_widget_ = nullptr;
+
+  QLayout* class_names_layout_ = nullptr;
 };
 
 }  // namespace hsi_data_generator

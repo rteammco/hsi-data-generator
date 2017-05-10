@@ -39,9 +39,9 @@ ImageLayoutView::ImageLayoutView(
   layout->addLayout(class_names_layout_);
 
   // Center column is the image display widget.
-  // TODO: Make this a private variable.
-  QWidget* image_layout_widget = new ImageLayoutWidget();
-  layout->addWidget(image_layout_widget);
+  // TODO: Set the size dimensions appropriately.
+  image_layout_widget_ = new ImageLayoutWidget(500, 500);
+  layout->addWidget(image_layout_widget_);
 
   // Right-hand column is the set of patterns to generate over the image.
   // TODO: Make this interactive, with preview images, etc.
@@ -69,10 +69,12 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
   const int total_num_classes = class_spectrum_rows_->size();
   // TODO: We should do deleting first and then re-inserting instead of
   // replacing, but that's buggy for some reason.
+  std::vector<QColor> colors;
   for (int i = 0; i < total_num_classes; ++i) {
     // Create the class label and set its color.
     const QString class_name = class_spectrum_rows_->at(i)->GetClassName();
     const QColor class_color = class_spectrum_rows_->at(i)->GetClassColor();
+    colors.push_back(class_color);
     QLabel* new_label = new QLabel(class_name);
     QPalette label_palette;
     label_palette.setColor(new_label->foregroundRole(), class_color);
@@ -86,6 +88,10 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
       class_names_layout_->addWidget(new_label);
     }
   }
+
+  // TODO: Move somewhere else, when the pattern button is clicked.
+  image_layout_widget_->GenerateHorizontalStripesLayout(total_num_classes);
+  image_layout_widget_->Render(colors);
 }
 
 }  // namespace hsi_data_generator
