@@ -33,9 +33,14 @@ MainWindow::MainWindow() {
   // Set the tabs:
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
-  tabs->addTab(new ClassSpectraView(), kClassSpectraViewString);
+
+  ClassSpectraView* spectra_view = new ClassSpectraView();
+  tabs->addTab(spectra_view, kClassSpectraViewString);
+
   tabs->addTab(new ImageLayoutView(), kImageLayoutViewString);
+
   tabs->addTab(new ImageDegradationView(), kImageDegradationViewString);
+
   setCentralWidget(tabs);
 }
 

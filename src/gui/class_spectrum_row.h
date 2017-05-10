@@ -8,6 +8,7 @@
 #include <QString>
 #include <QWidget>
 
+#include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
 
 namespace hsi_data_generator {
@@ -34,6 +35,10 @@ class ClassSpectrumRow : public QWidget {
   // The name of this class. This can be changed at any time but should be
   // unique.
   QString class_name_;
+
+  // This is a small box that just displays the color of the spectrum class.
+  // The color is adjustable by the user by clicking on it.
+  ColorBoxWidget* class_color_box_;
 
   // This is the spectrum widget, which displays the spectrum itself, or allows
   // the user to edit it.

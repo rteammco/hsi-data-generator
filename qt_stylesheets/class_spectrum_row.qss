@@ -7,3 +7,10 @@ QLineEdit {
   max-width: 100px;
   min-width: 100px;
 }
+
+#class_color_box {
+  max-height: 25px;
+  max-width: 25px;
+  min-height: 25px;
+  min-width: 25px;
+}

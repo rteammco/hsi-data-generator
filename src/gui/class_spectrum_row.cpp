@@ -7,15 +7,19 @@
 #include <QString>
 #include <QtDebug>
 #include <QVBoxLayout>
+#include <QWidget>
 
+#include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
 namespace {
 
+// Stylesheet file path and object reference names.
 static const QString kQtSpectrumRowStyle =
     "qt_stylesheets/class_spectrum_row.qss";
+static const QString kQtClassColorBoxName = "class_color_box";
 
 // The text displayed on the edit button during its two modes as it gets
 // toggled between them.
@@ -43,7 +47,9 @@ ClassSpectrumRow::ClassSpectrumRow(
       this,
       SLOT(ClassNameFieldChanged(const QString&)));
 
-  // TODO: Color coding label and color picker.
+  class_color_box_ = new ColorBoxWidget();
+  class_color_box_->setObjectName(kQtClassColorBoxName);
+  layout->addWidget(class_color_box_);
 
   spectrum_widget_ = new SpectrumWidget(num_bands);
   layout->addWidget(spectrum_widget_);
