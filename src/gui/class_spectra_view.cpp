@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <vector>
 
 #include "gui/class_spectrum_row.h"
 #include "util/util.h"
@@ -25,8 +26,11 @@ static const QString kNewSpectrumButtonString = "Add Spectrum";
 
 }  // namespace
 
-ClassSpectraView::ClassSpectraView()
-    : num_bands_(kDefaultNumberOfBands), next_spectrum_number_(1) {
+ClassSpectraView::ClassSpectraView(
+    std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows)
+    : num_bands_(kDefaultNumberOfBands),
+      next_spectrum_number_(1),
+      class_spectrum_rows_(class_spectrum_rows) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtClassSpectraViewStyle));
 
@@ -66,7 +70,7 @@ void ClassSpectraView::NumberOfBandsInputChanged() {
   }
   const QString num_bands_string = number_of_bands_input_->text();
   num_bands_ = num_bands_string.toInt();
-  for (ClassSpectrumRow* row : class_spectrum_rows_) {
+  for (ClassSpectrumRow* row : *class_spectrum_rows_) {
     row->SetNumberOfBands(num_bands_);
   }
 }
@@ -86,7 +90,7 @@ void ClassSpectraView::AddClassSpectrumRow(
   // the new spectrum button.
   int new_row_index = std::max(layout_->count() - 1, 0);
   layout_->insertWidget(new_row_index, row);
-  class_spectrum_rows_.push_back(row);
+  class_spectrum_rows_->push_back(row);
 }
 
 }  // namespace hsi_data_generator

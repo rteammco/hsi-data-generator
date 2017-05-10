@@ -25,6 +25,8 @@ class ColorBoxWidget : public QWidget {
   }
 
  protected:
+  // If the user clicks on this widget, a color picker will appear, allowing
+  // the user to change the color.
   void mousePressEvent(QMouseEvent* event) override;
 
  private:

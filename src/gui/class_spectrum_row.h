@@ -4,6 +4,7 @@
 #ifndef SRC_GUI_CLASS_SPECTRUM_ROW_H_
 #define SRC_GUI_CLASS_SPECTRUM_ROW_H_
 
+#include <QColor>
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
@@ -26,6 +27,9 @@ class ClassSpectrumRow : public QWidget {
     return class_name_;
   }
 
+  // Returns the class color currently set in the color box.
+  QColor GetClassColor() const;
+
  private slots:  // NOLINT
   void ClassNameFieldChanged(const QString& text);
   void EditButtonPressed();
@@ -38,7 +42,7 @@ class ClassSpectrumRow : public QWidget {
 
   // This is a small box that just displays the color of the spectrum class.
   // The color is adjustable by the user by clicking on it.
-  ColorBoxWidget* class_color_box_;
+  ColorBoxWidget* class_color_box_ = nullptr;
 
   // This is the spectrum widget, which displays the spectrum itself, or allows
   // the user to edit it.

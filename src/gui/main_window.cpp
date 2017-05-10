@@ -6,7 +6,11 @@
 #include <QString>
 #include <QTabWidget>
 
+#include <memory>
+#include <vector>
+
 #include "gui/class_spectra_view.h"
+#include "gui/class_spectrum_row.h"
 #include "gui/image_degradation_view.h"
 #include "gui/image_layout_view.h"
 
@@ -34,7 +38,9 @@ MainWindow::MainWindow() {
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 
-  ClassSpectraView* spectra_view = new ClassSpectraView();
+  std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows(
+      new std::vector<ClassSpectrumRow*>());
+  ClassSpectraView* spectra_view = new ClassSpectraView(class_spectrum_rows);
   tabs->addTab(spectra_view, kClassSpectraViewString);
 
   tabs->addTab(new ImageLayoutView(), kImageLayoutViewString);

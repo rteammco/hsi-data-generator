@@ -1,5 +1,6 @@
 #include "gui/class_spectrum_row.h"
 
+#include <QColor>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -82,6 +83,14 @@ void ClassSpectrumRow::SetNumberOfBands(const int num_bands) {
     return;
   }
   spectrum_widget_->SetNumberOfBands(num_bands);
+}
+
+QColor ClassSpectrumRow::GetClassColor() const {
+  if (class_color_box_ == nullptr) {
+    qCritical() << "Color box widget not defined. Cannot return valid color.";
+    return Qt::black;
+  }
+  return class_color_box_->GetColor();
 }
 
 void ClassSpectrumRow::ClassNameFieldChanged(const QString& class_name) {

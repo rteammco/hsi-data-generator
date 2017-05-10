@@ -14,6 +14,7 @@
 #include <QString>
 #include <QWidget>
 
+#include <memory>
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
@@ -24,7 +25,8 @@ class ClassSpectraView : public QWidget {
   Q_OBJECT
 
  public:
-  ClassSpectraView();
+  explicit ClassSpectraView(
+      std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows);
 
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
@@ -49,7 +51,7 @@ class ClassSpectraView : public QWidget {
 
   // A list of all added ClassSpectrumRow widgets. These are referenced to
   // modify the number of bands or to get the spectra.
-  std::vector<ClassSpectrumRow*> class_spectrum_rows_;
+  std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows_;
 
   // Adds a new ClassSpectrumRow to the widget. It will be displayed and
   // tracked in the class_spectrum_rows_ list.
