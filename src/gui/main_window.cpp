@@ -11,7 +11,7 @@
 
 #include "gui/class_spectra_view.h"
 #include "gui/class_spectrum_row.h"
-#include "gui/image_degradation_view.h"
+#include "gui/export_view.h"
 #include "gui/image_layout_view.h"
 
 namespace hsi_data_generator {
@@ -19,7 +19,7 @@ namespace {
 
 static const QString kClassSpectraViewString = "Class Spectra";
 static const QString kImageLayoutViewString = "Image Layout";
-static const QString kImageDegradationViewString = "Image Degradation";
+static const QString kExportViewString = "Export";
 
 }  // namespace
 
@@ -46,7 +46,7 @@ MainWindow::MainWindow() {
   ImageLayoutView* image_layout_view = new ImageLayoutView(class_spectrum_rows);
   tabs->addTab(image_layout_view, kImageLayoutViewString);
 
-  tabs->addTab(new ImageDegradationView(), kImageDegradationViewString);
+  tabs->addTab(new ExportView(), kExportViewString);
 
   setCentralWidget(tabs);
 }

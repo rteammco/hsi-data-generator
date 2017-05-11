@@ -3,17 +3,17 @@
 // noise, and do other distortions to the data to make it a more challenging
 // evaluation data set.
 
-#ifndef SRC_GUI_IMAGE_DEGRADATION_VIEW_H_
-#define SRC_GUI_IMAGE_DEGRADATION_VIEW_H_
+#ifndef SRC_GUI_EXPORT_VIEW_H_
+#define SRC_GUI_EXPORT_VIEW_H_
 
 #include <QWidget>
 
 namespace hsi_data_generator {
 
-class ImageDegradationView : public QWidget {
+class ExportView : public QWidget {
   // TODO: Implement this widget.
 };
 
 }  // namespace hsi_data_generator
 
-#endif  // SRC_GUI_IMAGE_DEGRADATION_VIEW_H_
+#endif  // SRC_GUI_EXPORT_VIEW_H_
