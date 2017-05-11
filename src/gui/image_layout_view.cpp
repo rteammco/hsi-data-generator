@@ -21,6 +21,43 @@ namespace {
 static const QString kQtImageLayoutViewStyle =
     "qt_stylesheets/image_layout_view.qss";
 
+// The layout options for the image controlled by the buttons.
+enum ImageLayoutType {
+  IMAGE_HORIZONTAL_STRIPES_LAYOUT,
+  IMAGE_VERTICAL_STRIPES_LAYOUT,
+  IMAGE_GRID_LAYOUT,
+  IMAGE_RANDOM_LAYOUT
+};
+
+void GenerateLayout(
+    const ImageLayoutType layout_type,
+    const std::vector<ClassSpectrumRow*>& class_spectrum_rows,
+    ImageLayoutWidget* image_layout_widget) {
+
+  std::vector<QColor> class_colors;
+  for (const ClassSpectrumRow* row : class_spectrum_rows) {
+    class_colors.push_back(row->GetClassColor());
+  }
+  const int num_classes = class_spectrum_rows.size();
+  switch (layout_type) {
+  case IMAGE_HORIZONTAL_STRIPES_LAYOUT:
+    image_layout_widget->GenerateHorizontalStripesLayout(num_classes);
+    break;
+  case IMAGE_VERTICAL_STRIPES_LAYOUT:
+    image_layout_widget->GenerateVerticalStripesLayout(num_classes);
+    break;
+  case IMAGE_GRID_LAYOUT:
+    image_layout_widget->GenerateGridLayout(num_classes);
+    break;
+  case IMAGE_RANDOM_LAYOUT:
+    image_layout_widget->GenerateRandomLayout(class_colors.size());
+    break;
+  default:
+    break;
+  }
+  image_layout_widget->Render(class_colors);
+}
+
 }  // namespace
 
 ImageLayoutView::ImageLayoutView(
@@ -112,39 +149,27 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
 }
 
 void ImageLayoutView::HorizontalStripesButtonPressed() {
-  std::vector<QColor> class_colors;
-  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
-    class_colors.push_back(row->GetClassColor());
-  }
-  image_layout_widget_->GenerateHorizontalStripesLayout(class_colors.size());
-  image_layout_widget_->Render(class_colors);
+  GenerateLayout(
+      IMAGE_HORIZONTAL_STRIPES_LAYOUT,
+      *class_spectrum_rows_,
+      image_layout_widget_);
 }
 
 void ImageLayoutView::VerticalStripesButtonPressed() {
-  std::vector<QColor> class_colors;
-  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
-    class_colors.push_back(row->GetClassColor());
-  }
-  image_layout_widget_->GenerateVerticalStripesLayout(class_colors.size());
-  image_layout_widget_->Render(class_colors);
+  GenerateLayout(
+      IMAGE_VERTICAL_STRIPES_LAYOUT,
+      *class_spectrum_rows_,
+      image_layout_widget_);
 }
 
 void ImageLayoutView::GridButtonPressed() {
-  std::vector<QColor> class_colors;
-  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
-    class_colors.push_back(row->GetClassColor());
-  }
-  image_layout_widget_->GenerateGridLayout(class_colors.size());
-  image_layout_widget_->Render(class_colors);
+  GenerateLayout(
+      IMAGE_GRID_LAYOUT, *class_spectrum_rows_, image_layout_widget_);
 }
 
 void ImageLayoutView::RandomButtonPressed() {
-  std::vector<QColor> class_colors;
-  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
-    class_colors.push_back(row->GetClassColor());
-  }
-  image_layout_widget_->GenerateRandomLayout(class_colors.size());
-  image_layout_widget_->Render(class_colors);
+  GenerateLayout(
+      IMAGE_RANDOM_LAYOUT, *class_spectrum_rows_, image_layout_widget_);
 }
 
 }  // namespace hsi_data_generator
