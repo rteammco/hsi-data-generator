@@ -11,7 +11,13 @@
 namespace hsi_data_generator {
 
 class ExportView : public QWidget {
-  // TODO: Implement this widget.
+  Q_OBJECT
+
+ public:
+  ExportView();
+
+ private slots:  // NOLINT
+  void ExportButtonPressed();
 };
 
 }  // namespace hsi_data_generator
