@@ -52,6 +52,20 @@ void ImageLayoutWidget::GenerateHorizontalStripesLayout(const int num_classes) {
   }
 }
 
+void ImageLayoutWidget::GenerateVerticalStripesLayout(const int num_classes) {
+  const int stripe_width =
+      std::min(image_width_ / num_classes, kMaxStripeWidth);
+  image_class_map_.clear();
+  image_class_map_.resize(image_width_ * image_height_);
+  for (int col = 0; col < image_width_; ++col) {
+    const int class_index = (col / stripe_width) % num_classes;
+    for (int row = 0; row < image_height_; ++row) {
+      const int index = row * image_width_ + col;
+      image_class_map_[index] = class_index;
+    }
+  }
+}
+
 void ImageLayoutWidget::Render(const std::vector<QColor>& class_colors) {
   // TODO: This may not be the best solution, by temporarily setting the
   // private class variable to the given color set.

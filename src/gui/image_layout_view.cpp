@@ -47,6 +47,15 @@ ImageLayoutView::ImageLayoutView(
   // TODO: Make this interactive, with preview images, etc.
   QVBoxLayout* pattern_list_layout = new QVBoxLayout();
 
+  QPushButton* horizontal_stripes_button =
+      new QPushButton("Horizontal Stripes");
+  pattern_list_layout->addWidget(horizontal_stripes_button);
+  connect(
+      horizontal_stripes_button,
+      SIGNAL(released()),
+      this,
+      SLOT(HorizontalStripesButtonPressed()));
+
   QPushButton* vertical_stripes_button = new QPushButton("Vertical Stripes");
   pattern_list_layout->addWidget(vertical_stripes_button);
   connect(
@@ -54,10 +63,6 @@ ImageLayoutView::ImageLayoutView(
       SIGNAL(released()),
       this,
       SLOT(VerticalStripesButtonPressed()));
-
-  QPushButton* horizontal_stripes_button =
-      new QPushButton("Horizontal Stripes");
-  pattern_list_layout->addWidget(horizontal_stripes_button);
 
   QPushButton* grid_button = new QPushButton("Grid");
   pattern_list_layout->addWidget(grid_button);
@@ -93,7 +98,7 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
   }
 }
 
-void ImageLayoutView::VerticalStripesButtonPressed() {
+void ImageLayoutView::HorizontalStripesButtonPressed() {
   std::vector<QColor> class_colors;
   for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
     class_colors.push_back(row->GetClassColor());
@@ -102,8 +107,13 @@ void ImageLayoutView::VerticalStripesButtonPressed() {
   image_layout_widget_->Render(class_colors);
 }
 
-void ImageLayoutView::HorizontalStripesButtonPressed() {
-  // TODO: Implement.
+void ImageLayoutView::VerticalStripesButtonPressed() {
+  std::vector<QColor> class_colors;
+  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
+    class_colors.push_back(row->GetClassColor());
+  }
+  image_layout_widget_->GenerateVerticalStripesLayout(class_colors.size());
+  image_layout_widget_->Render(class_colors);
 }
 
 }  // namespace hsi_data_generator

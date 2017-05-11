@@ -1,6 +1,6 @@
 QMainWindow {
-  min-height: 500px;
-  min-width: 750px;
+  min-height: 750px;
+  min-width: 1000px;
 }
 
 QTabWidget::tab-bar {

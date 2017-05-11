@@ -29,8 +29,8 @@ class ImageLayoutView : public QWidget {
   void showEvent(QShowEvent* event) override;
 
  private slots:  // NOLINT
-  void VerticalStripesButtonPressed();
   void HorizontalStripesButtonPressed();
+  void VerticalStripesButtonPressed();
 
  private:
   // This list of spectra is maintained by ClassSpectraView. We track a local
