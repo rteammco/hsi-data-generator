@@ -5,6 +5,7 @@
 #include <QPen>
 #include <QString>
 #include <QtDebug>
+#include <QtGlobal>
 
 #include <algorithm>
 #include <vector>
@@ -62,6 +63,19 @@ void ImageLayoutWidget::GenerateVerticalStripesLayout(const int num_classes) {
     for (int row = 0; row < image_height_; ++row) {
       const int index = row * image_width_ + col;
       image_class_map_[index] = class_index;
+    }
+  }
+}
+
+void ImageLayoutWidget::GenerateGridLayout(const int num_classes) {
+  // TODO: This is harder!
+}
+
+void ImageLayoutWidget::GenerateRandomLayout(const int num_classes) {
+  for (int row = 0; row < image_height_; ++row) {
+    for (int col = 0; col < image_width_; ++col) {
+      const int index = row * image_width_ + col;
+      image_class_map_[index] = qrand() % num_classes;
     }
   }
 }

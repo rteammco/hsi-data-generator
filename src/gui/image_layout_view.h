@@ -31,6 +31,8 @@ class ImageLayoutView : public QWidget {
  private slots:  // NOLINT
   void HorizontalStripesButtonPressed();
   void VerticalStripesButtonPressed();
+  void GridButtonPressed();
+  void RandomButtonPressed();
 
  private:
   // This list of spectra is maintained by ClassSpectraView. We track a local

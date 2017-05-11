@@ -66,6 +66,19 @@ ImageLayoutView::ImageLayoutView(
 
   QPushButton* grid_button = new QPushButton("Grid");
   pattern_list_layout->addWidget(grid_button);
+  connect(
+      grid_button,
+      SIGNAL(released()),
+      this,
+      SLOT(GridButtonPressed()));
+
+  QPushButton* random_button = new QPushButton("Random");
+  pattern_list_layout->addWidget(random_button);
+  connect(
+      random_button,
+      SIGNAL(released()),
+      this,
+      SLOT(RandomButtonPressed()));
 
   // TODO: Add these more advanced options.
 //  pattern_list_layout->addWidget(new QLabel("Markov"));
@@ -113,6 +126,24 @@ void ImageLayoutView::VerticalStripesButtonPressed() {
     class_colors.push_back(row->GetClassColor());
   }
   image_layout_widget_->GenerateVerticalStripesLayout(class_colors.size());
+  image_layout_widget_->Render(class_colors);
+}
+
+void ImageLayoutView::GridButtonPressed() {
+  std::vector<QColor> class_colors;
+  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
+    class_colors.push_back(row->GetClassColor());
+  }
+  image_layout_widget_->GenerateGridLayout(class_colors.size());
+  image_layout_widget_->Render(class_colors);
+}
+
+void ImageLayoutView::RandomButtonPressed() {
+  std::vector<QColor> class_colors;
+  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
+    class_colors.push_back(row->GetClassColor());
+  }
+  image_layout_widget_->GenerateRandomLayout(class_colors.size());
   image_layout_widget_->Render(class_colors);
 }
 

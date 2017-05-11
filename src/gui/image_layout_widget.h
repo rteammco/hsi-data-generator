@@ -26,11 +26,22 @@ class ImageLayoutWidget : public QWidget {
 
   // Generates an internal representation of a stripe pattern for the given
   // number of spectral classes.
+  //
+  // This generates a pattern of horizontal stripes, alternating by class, from
+  // the top to the bottom of the image.
   void GenerateHorizontalStripesLayout(const int num_classes);
 
-  // Generates an internal representation of a stripe pattern for the given
-  // number of spectral classes.
+  // This generates a pattern of vertical stripes, alternating by class, from
+  // the left to the right of the image.
   void GenerateVerticalStripesLayout(const int num_classes);
+
+  // This generates a grid pattern, where the classes alternate in both the
+  // horizontal and vertical directions.
+  void GenerateGridLayout(const int num_classes);
+
+  // This generates a random layout, where each pixel is assigned a class label
+  // with a uniformly random probability.
+  void GenerateRandomLayout(const int num_classes);
 
   // Renders the image and updates the display, using the given colors for the
   // different spectral classes. The number of colors must match the number of
