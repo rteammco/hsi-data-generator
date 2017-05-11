@@ -68,7 +68,16 @@ void ImageLayoutWidget::GenerateVerticalStripesLayout(const int num_classes) {
 }
 
 void ImageLayoutWidget::GenerateGridLayout(const int num_classes) {
-  // TODO: This is harder!
+  const int stripe_width =
+      std::min(image_width_ / num_classes, kMaxStripeWidth);
+  for (int row = 0; row < image_height_; ++row) {
+    for (int col = 0; col < image_width_; ++col) {
+      const int index = row * image_width_ + col;
+      const int class_index =
+          ((row / stripe_width) + (col / stripe_width)) % num_classes;
+      image_class_map_[index] = class_index;
+    }
+  }
 }
 
 void ImageLayoutWidget::GenerateRandomLayout(const int num_classes) {

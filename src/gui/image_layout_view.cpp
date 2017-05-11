@@ -39,6 +39,8 @@ void GenerateLayout(
     class_colors.push_back(row->GetClassColor());
   }
   const int num_classes = class_spectrum_rows.size();
+  // TODO: Present a dialog for each to allow setting values (e.g. the width of
+  // each stripe/grid, or the number of pixels per random blob).
   switch (layout_type) {
   case IMAGE_HORIZONTAL_STRIPES_LAYOUT:
     image_layout_widget->GenerateHorizontalStripesLayout(num_classes);
