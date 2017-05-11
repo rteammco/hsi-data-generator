@@ -49,6 +49,11 @@ ImageLayoutView::ImageLayoutView(
 
   QPushButton* vertical_stripes_button = new QPushButton("Vertical Stripes");
   pattern_list_layout->addWidget(vertical_stripes_button);
+  connect(
+      vertical_stripes_button,
+      SIGNAL(released()),
+      this,
+      SLOT(VerticalStripesButtonPressed()));
 
   QPushButton* horizontal_stripes_button =
       new QPushButton("Horizontal Stripes");
@@ -69,12 +74,10 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
   const int total_num_classes = class_spectrum_rows_->size();
   // TODO: We should do deleting first and then re-inserting instead of
   // replacing, but that's buggy for some reason.
-  std::vector<QColor> colors;
   for (int i = 0; i < total_num_classes; ++i) {
     // Create the class label and set its color.
     const QString class_name = class_spectrum_rows_->at(i)->GetClassName();
     const QColor class_color = class_spectrum_rows_->at(i)->GetClassColor();
-    colors.push_back(class_color);
     QLabel* new_label = new QLabel(class_name);
     QPalette label_palette;
     label_palette.setColor(new_label->foregroundRole(), class_color);
@@ -88,10 +91,19 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
       class_names_layout_->addWidget(new_label);
     }
   }
+}
 
-  // TODO: Move somewhere else, when the pattern button is clicked.
-  image_layout_widget_->GenerateHorizontalStripesLayout(total_num_classes);
-  image_layout_widget_->Render(colors);
+void ImageLayoutView::VerticalStripesButtonPressed() {
+  std::vector<QColor> class_colors;
+  for (const ClassSpectrumRow* row : *class_spectrum_rows_) {
+    class_colors.push_back(row->GetClassColor());
+  }
+  image_layout_widget_->GenerateHorizontalStripesLayout(class_colors.size());
+  image_layout_widget_->Render(class_colors);
+}
+
+void ImageLayoutView::HorizontalStripesButtonPressed() {
+  // TODO: Implement.
 }
 
 }  // namespace hsi_data_generator

@@ -17,6 +17,8 @@ namespace {
 static const QString kQtImageLayoutStyle =
     "qt_stylesheets/image_layout_widget.qss";
 
+static const QColor kDefaultBackgroundColor = Qt::white;
+
 // The maximum allowed width (in image pixels) of a single layout stripe.
 constexpr int kMaxStripeWidth = 25;
 
@@ -26,6 +28,14 @@ ImageLayoutWidget::ImageLayoutWidget(const int width, const int height)
     : image_width_(width), image_height_(height) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutStyle));
+
+  // Initialize default view where all pixels are a single class, represented
+  // by a the default background color.
+  const int num_pixels = image_width_ * image_height_;
+  image_class_map_.resize(num_pixels);
+  std::fill(image_class_map_.begin(), image_class_map_.end(), 0);
+  image_class_colors_.resize(1);
+  image_class_colors_[0] = kDefaultBackgroundColor;
 }
 
 void ImageLayoutWidget::GenerateHorizontalStripesLayout(const int num_classes) {
@@ -43,11 +53,6 @@ void ImageLayoutWidget::GenerateHorizontalStripesLayout(const int num_classes) {
 }
 
 void ImageLayoutWidget::Render(const std::vector<QColor>& class_colors) {
-  const int num_pixels = image_width_ * image_height_;
-  if (num_pixels > image_class_map_.size()) {
-    qWarning() << "Please generate a layout before attempting to render.";
-    return;
-  }
   // TODO: This may not be the best solution, by temporarily setting the
   // private class variable to the given color set.
   image_class_colors_ = class_colors;
