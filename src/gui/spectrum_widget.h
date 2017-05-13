@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "spectrum/spectrum_generator.h"
+#include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
 
@@ -64,13 +64,9 @@ class SpectrumWidget : public QWidget {
   // mode allows the user to adjust the spectrum.
   SpectrumWidgetDisplayMode display_mode_;
 
-  // The spectrum values that will be displayed when the widget is in render
-  // mode. These values are subject to change based on how the spectrum is
-  // changed in edit mode.
-  std::vector<double> spectrum_values_;
-
-  // The user-specified peak locations (set in edit mode).
-  std::vector<spectrum_generator::PeakDistribution> peaks_;
+  // The Spectrum object contains the spectral peaks and can generate the
+  // spectrum when it needs to be displayed or returned.
+  Spectrum spectrum_;
 };
 
 }  // namespace hsi_data_generator

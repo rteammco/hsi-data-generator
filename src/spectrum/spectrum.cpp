@@ -1,4 +1,4 @@
-#include "spectrum/spectrum_generator.h"
+#include "spectrum/spectrum.h"
 
 #include <math.h>
 
@@ -7,7 +7,6 @@
 #include <vector>
 
 namespace hsi_data_generator {
-namespace spectrum_generator {
 namespace {
 
 // Returns the value at the given point in the Gaussian distribution defined by
@@ -28,18 +27,36 @@ double GetNormalDistributionValue(
 
 }  // namespace
 
-std::vector<double> GenerateSpectrum(
-    const std::vector<PeakDistribution>& peaks, const int num_bands) {
+// TODO: Do not hard code the name and color settings.
+Spectrum::Spectrum()
+    : spectrum_class_name_("name"), spectrum_class_color_(Qt::black) {}
 
+void Spectrum::AddPeak(
+    const double position, const double amplitude, const double width) {
+
+  // TODO: Check validity of the given values (make sure they're in range).
+
+  PeakDistribution peak;
+  peak.position = position;
+  peak.amplitude = amplitude;
+  peak.width = width;
+  spectral_peaks_.push_back(peak);
+}
+
+void Spectrum::Reset() {
+  spectral_peaks_.clear();
+}
+
+std::vector<double> Spectrum::GenerateSpectrum(const int num_bands) const {
   std::vector<double> spectrum(num_bands);
   double max_value = 0.0;
   for (int band = 0; band < num_bands; ++band) {
     const double normalized_x =
         static_cast<double>(band) / static_cast<double>(num_bands);;
     spectrum[band] = 0.0;
-    for (const PeakDistribution& peak : peaks) {
+    for (const PeakDistribution& peak : spectral_peaks_) {
       spectrum[band] += peak.amplitude * GetNormalDistributionValue(
-          normalized_x, peak.peak_position, peak.width);
+          normalized_x, peak.position, peak.width);
     }
     max_value = std::max(spectrum[band], max_value);
   }
@@ -52,5 +69,4 @@ std::vector<double> GenerateSpectrum(
   return spectrum;
 }
 
-}  // namespace spectrum_generator
 }  // namespace hsi_data_generator
