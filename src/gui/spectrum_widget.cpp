@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "spectrum/spectrum_generator.h"
+#include "spectrum/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -79,8 +79,10 @@ void PaintSpectrumEditMode(
 
 }  // namespace
 
-SpectrumWidget::SpectrumWidget(const int num_bands)
-    : display_mode_(SPECTRUM_RENDER_MODE), num_bands_(num_bands) {
+SpectrumWidget::SpectrumWidget(const int num_bands, Spectrum* spectrum)
+    : display_mode_(SPECTRUM_RENDER_MODE),
+      num_bands_(num_bands),
+      spectrum_(spectrum) {
 
   // Set the stylesheet of this widget.
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumStyle));
@@ -92,7 +94,7 @@ void SpectrumWidget::SetNumberOfBands(const int num_bands) {
 }
 
 void SpectrumWidget::Clear() {
-  spectrum_.Reset();
+  spectrum_->Reset();
   update();
 }
 
@@ -107,11 +109,11 @@ void SpectrumWidget::paintEvent(QPaintEvent* event) {
   const double canvas_height = static_cast<double>(height());
   if (display_mode_ == SPECTRUM_RENDER_MODE) {
     const std::vector<double> spectrum_values =
-        spectrum_.GenerateSpectrum(num_bands_);
+        spectrum_->GenerateSpectrum(num_bands_);
     PaintSpectrumRenderMode(
         canvas_width, canvas_height, spectrum_values, &painter);
   } else {
-    const std::vector<PeakDistribution>& peaks = spectrum_.GetPeaks();
+    const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
     PaintSpectrumEditMode(canvas_width, canvas_height, peaks, &painter);
   }
   // TODO: Draw the x-axis step indicator bars (ruler).
@@ -129,7 +131,7 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
   const double amplitude =
       1.0 - static_cast<double>(event->y()) / canvas_height;
   const double width = 0.001;  // TODO: Enable setting the width manually.
-  spectrum_.AddPeak(position, amplitude, width);
+  spectrum_->AddPeak(position, amplitude, width);
   update();
 }
 

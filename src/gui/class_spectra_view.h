@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
+#include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
 
@@ -25,8 +26,7 @@ class ClassSpectraView : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ClassSpectraView(
-      std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows);
+  explicit ClassSpectraView(std::shared_ptr<std::vector<Spectrum*>> spectra);
 
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
@@ -49,9 +49,13 @@ class ClassSpectraView : public QWidget {
   // spectrum.
   int next_spectrum_number_;
 
+  // The actual spectra are passed down and shared between the different view.
+  // This view allows for editing the spectra directly.
+  std::shared_ptr<std::vector<Spectrum*>> spectra_;
+
   // A list of all added ClassSpectrumRow widgets. These are referenced to
   // modify the number of bands or to get the spectra.
-  std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows_;
+  std::vector<ClassSpectrumRow*> class_spectrum_rows_;
 
   // Adds a new ClassSpectrumRow to the widget. It will be displayed and
   // tracked in the class_spectrum_rows_ list.

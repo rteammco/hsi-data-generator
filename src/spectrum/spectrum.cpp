@@ -27,15 +27,10 @@ double GetNormalDistributionValue(
 
 }  // namespace
 
-// TODO: Do not hard code the name and color settings.
-Spectrum::Spectrum()
-    : spectrum_class_name_("name"), spectrum_class_color_(Qt::black) {}
-
 void Spectrum::AddPeak(
     const double position, const double amplitude, const double width) {
 
   // TODO: Check validity of the given values (make sure they're in range).
-
   PeakDistribution peak;
   peak.position = position;
   peak.amplitude = amplitude;

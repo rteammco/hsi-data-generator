@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
+#include "spectrum/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -27,10 +28,10 @@ static const QString kNewSpectrumButtonString = "Add Spectrum";
 }  // namespace
 
 ClassSpectraView::ClassSpectraView(
-    std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows)
+    std::shared_ptr<std::vector<Spectrum*>> spectra)
     : num_bands_(kDefaultNumberOfBands),
       next_spectrum_number_(1),
-      class_spectrum_rows_(class_spectrum_rows) {
+      spectra_(spectra) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtClassSpectraViewStyle));
 
@@ -70,8 +71,8 @@ void ClassSpectraView::NumberOfBandsInputChanged() {
   }
   const QString num_bands_string = number_of_bands_input_->text();
   num_bands_ = num_bands_string.toInt();
-  for (ClassSpectrumRow* row : *class_spectrum_rows_) {
-    row->SetNumberOfBands(num_bands_);
+  for (int i = 0; i < class_spectrum_rows_.size(); ++i) {
+    class_spectrum_rows_[i]->SetNumberOfBands(num_bands_);
   }
 }
 
@@ -85,12 +86,16 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
 void ClassSpectraView::AddClassSpectrumRow(
     const QString& name, const int num_bands) {
 
-  ClassSpectrumRow* row = new ClassSpectrumRow(name, num_bands);
+  // TODO: Do these have to be stored as pointers?
+  Spectrum* spectrum = new Spectrum(name, Qt::black);  // TODO: Color!
+  spectra_->push_back(spectrum);
+
+  ClassSpectrumRow* row = new ClassSpectrumRow(num_bands, spectrum);
+  class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be
   // the new spectrum button.
   int new_row_index = std::max(layout_->count() - 1, 0);
   layout_->insertWidget(new_row_index, row);
-  class_spectrum_rows_->push_back(row);
 }
 
 }  // namespace hsi_data_generator

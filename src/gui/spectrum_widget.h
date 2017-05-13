@@ -24,7 +24,9 @@ enum SpectrumWidgetDisplayMode {
 
 class SpectrumWidget : public QWidget {
  public:
-  explicit SpectrumWidget(const int num_bands);
+  // Set the default number of bands. The given Spectrum will be edited by this
+  // widget through user interaction.
+  SpectrumWidget(const int num_bands, Spectrum* spectrum);
 
   // Adjust the number of bands in the spectrum. This will not change the
   // spectral distribution, since all values are normalized, but it will change
@@ -66,7 +68,7 @@ class SpectrumWidget : public QWidget {
 
   // The Spectrum object contains the spectral peaks and can generate the
   // spectrum when it needs to be displayed or returned.
-  Spectrum spectrum_;
+  Spectrum* spectrum_;
 };
 
 }  // namespace hsi_data_generator

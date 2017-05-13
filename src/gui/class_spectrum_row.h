@@ -18,17 +18,14 @@ class ClassSpectrumRow : public QWidget {
   Q_OBJECT
 
  public:
-  ClassSpectrumRow(const QString& class_name, const int num_bands);
+  ClassSpectrumRow(const int num_bands, Spectrum* spectrum);
 
   // Updates the number of bands displayed by the SpectrumWidget.
   void SetNumberOfBands(const int num_bands);
 
-  QString GetClassName() const {
-    return class_name_;
-  }
-
-  // Returns the class color currently set in the color box.
-  QColor GetClassColor() const;
+  // TODO: Temporary!
+  QColor GetClassColor() const { return Qt::black; }
+  QString GetClassName() const { return "TEMPORARY"; }
 
  private slots:  // NOLINT
   void ClassNameFieldChanged(const QString& text);
@@ -36,9 +33,9 @@ class ClassSpectrumRow : public QWidget {
   void ClearButtonPressed();
 
  private:
-  // The name of this class. This can be changed at any time but should be
-  // unique.
-  QString class_name_;
+  // The Spectrum itself is passed in and edited by the SpectrumWidget
+  // contained in this ClassSpectrumRow widget.
+  Spectrum* spectrum_;
 
   // This is a small box that just displays the color of the spectrum class.
   // The color is adjustable by the user by clicking on it.

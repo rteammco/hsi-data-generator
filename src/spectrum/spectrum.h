@@ -1,3 +1,7 @@
+// This class defines a Spectrum as a series of peaks. The spectrum can be
+// returned at any desired resolution, and is used to display and export the
+// spectral classes and their metadata across all of the GUI components.
+
 #ifndef SRC_SPECTRUM_SPECTRUM_H_
 #define SRC_SPECTRUM_SPECTRUM_H_
 
@@ -33,7 +37,13 @@ struct PeakDistribution {
 
 class Spectrum {
  public:
-  Spectrum();
+  // Set the spectrum's name and representative color. This can be modified
+  // later.
+  Spectrum(
+      const QString& spectrum_class_name,
+      const QColor& spectrum_class_color)
+    : spectrum_class_name_(spectrum_class_name),
+      spectrum_class_color_(spectrum_class_color) {}
 
   // Adds a peak to the spectrum. The definitions of each of the required
   // values are described in the PeakDistribution struct above.
@@ -43,11 +53,33 @@ class Spectrum {
   // Resets the spectrum. All peaks will be removed.
   void Reset();
 
+  // Change the spectrum's class name. This will be the name identifying this
+  // spectrum in the GUI.
+  void SetName(const QString& spectrum_class_name) {
+    spectrum_class_name_ = spectrum_class_name;
+  }
+
+  // Change the spectrum's class color. This is the color that represents this
+  // spectrum in the GUI.
+  void SetColor(const QColor& spectrum_class_color) {
+    spectrum_class_color_ = spectrum_class_color;
+  }
+
   // Generates the spectrum from the spectral_peaks_ (distributions). The
   // spectral resolution is determined by the given number of bands.
   //
   // All values of the returned spectrum will be normalized between 0 and 1.
   std::vector<double> GenerateSpectrum(const int num_bands) const;
+
+  // Returns the name of this spectrum.
+  QString GetName() const {
+    return spectrum_class_name_;
+  }
+
+  // Returns the color of this spectrum.
+  QColor GetColor() const {
+    return spectrum_class_color_;
+  }
 
   // Returns the peaks (for reference only).
   const std::vector<PeakDistribution>& GetPeaks() const {

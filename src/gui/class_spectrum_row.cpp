@@ -31,8 +31,8 @@ static const QString kCloneButtonString = "Clone";
 
 }  // namespace
 
-ClassSpectrumRow::ClassSpectrumRow(
-    const QString& class_name, const int num_bands) : class_name_(class_name) {
+ClassSpectrumRow::ClassSpectrumRow(const int num_bands, Spectrum* spectrum)
+    : spectrum_(spectrum) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowViewStyle));
 
@@ -40,7 +40,7 @@ ClassSpectrumRow::ClassSpectrumRow(
   layout->setAlignment(Qt::AlignLeft);
   setLayout(layout);
 
-  QLineEdit* class_name_field = new QLineEdit(class_name_);
+  QLineEdit* class_name_field = new QLineEdit(spectrum_->GetName());
   layout->addWidget(class_name_field);
   connect(
       class_name_field,
@@ -48,11 +48,12 @@ ClassSpectrumRow::ClassSpectrumRow(
       this,
       SLOT(ClassNameFieldChanged(const QString&)));
 
-  class_color_box_ = new ColorBoxWidget();
+  class_color_box_ = new ColorBoxWidget(spectrum_->GetColor());
   class_color_box_->setObjectName(kQtClassColorBoxName);
   layout->addWidget(class_color_box_);
 
-  spectrum_widget_ = new SpectrumWidget(num_bands);
+  // TODO: The Spectrum should be passed in.
+  spectrum_widget_ = new SpectrumWidget(num_bands, spectrum_);
   layout->addWidget(spectrum_widget_);
 
   // Add the buttons. Stack these vertically at the end of the row.
@@ -85,17 +86,9 @@ void ClassSpectrumRow::SetNumberOfBands(const int num_bands) {
   spectrum_widget_->SetNumberOfBands(num_bands);
 }
 
-QColor ClassSpectrumRow::GetClassColor() const {
-  if (class_color_box_ == nullptr) {
-    qCritical() << "Color box widget not defined. Cannot return valid color.";
-    return Qt::black;
-  }
-  return class_color_box_->GetColor();
-}
-
 void ClassSpectrumRow::ClassNameFieldChanged(const QString& class_name) {
   if (!class_name.isEmpty()) {
-    class_name_ = class_name;
+    spectrum_->SetName(class_name);
   }
 }
 

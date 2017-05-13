@@ -13,6 +13,7 @@
 #include "gui/class_spectrum_row.h"
 #include "gui/export_view.h"
 #include "gui/image_layout_view.h"
+#include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
 namespace {
@@ -38,13 +39,17 @@ MainWindow::MainWindow() {
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 
-  std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows(
-      new std::vector<ClassSpectrumRow*>());
-  ClassSpectraView* spectra_view = new ClassSpectraView(class_spectrum_rows);
+  // The spectral classes shared by all of the views.
+  std::shared_ptr<std::vector<Spectrum*>> spectra(
+      new std::vector<Spectrum*>());
+
+  ClassSpectraView* spectra_view = new ClassSpectraView(spectra);
   tabs->addTab(spectra_view, kClassSpectraViewString);
 
-  ImageLayoutView* image_layout_view = new ImageLayoutView(class_spectrum_rows);
-  tabs->addTab(image_layout_view, kImageLayoutViewString);
+  //std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows(
+  //    new std::vector<ClassSpectrumRow*>());
+  //ImageLayoutView* image_layout_view = new ImageLayoutView(class_spectrum_rows);
+  //tabs->addTab(image_layout_view, kImageLayoutViewString);
 
   tabs->addTab(new ExportView(), kExportViewString);
 
