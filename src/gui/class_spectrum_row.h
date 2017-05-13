@@ -9,8 +9,11 @@
 #include <QString>
 #include <QWidget>
 
+#include <memory>
+
 #include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
+#include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
 
@@ -18,7 +21,7 @@ class ClassSpectrumRow : public QWidget {
   Q_OBJECT
 
  public:
-  ClassSpectrumRow(const int num_bands, Spectrum* spectrum);
+  ClassSpectrumRow(const int num_bands, std::shared_ptr<Spectrum> spectrum);
 
   // Updates the number of bands displayed by the SpectrumWidget.
   void SetNumberOfBands(const int num_bands);
@@ -31,7 +34,7 @@ class ClassSpectrumRow : public QWidget {
  private:
   // The Spectrum itself is passed in and edited by the SpectrumWidget
   // contained in this ClassSpectrumRow widget.
-  Spectrum* spectrum_;
+  std::shared_ptr<Spectrum> spectrum_;
 
   // This is the spectrum widget, which displays the spectrum itself, or allows
   // the user to edit it.

@@ -10,8 +10,11 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <memory>
+
 #include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
+#include "spectrum/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -31,7 +34,8 @@ static const QString kCloneButtonString = "Clone";
 
 }  // namespace
 
-ClassSpectrumRow::ClassSpectrumRow(const int num_bands, Spectrum* spectrum)
+ClassSpectrumRow::ClassSpectrumRow(
+    const int num_bands, std::shared_ptr<Spectrum> spectrum)
     : spectrum_(spectrum) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowViewStyle));

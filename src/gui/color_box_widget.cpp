@@ -6,6 +6,8 @@
 #include <QPalette>
 #include <QtGlobal>
 
+#include <memory>
+
 #include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
@@ -15,7 +17,9 @@ constexpr int kNumColorValues = 255;
 
 }  // namespace
 
-ColorBoxWidget::ColorBoxWidget(Spectrum* spectrum) : spectrum_(spectrum) {
+ColorBoxWidget::ColorBoxWidget(std::shared_ptr<Spectrum> spectrum)
+    : spectrum_(spectrum) {
+
   // Generate random RGB color:
   const int rand_red = qrand() % kNumColorValues;
   const int rand_green = qrand() % kNumColorValues;
@@ -23,7 +27,8 @@ ColorBoxWidget::ColorBoxWidget(Spectrum* spectrum) : spectrum_(spectrum) {
   SetColor(QColor(rand_red, rand_green, rand_blue));
 }
 
-ColorBoxWidget::ColorBoxWidget(const QColor& color, Spectrum* spectrum)
+ColorBoxWidget::ColorBoxWidget(
+    const QColor& color, std::shared_ptr<Spectrum> spectrum)
     : spectrum_(spectrum) {
 
   SetColor(color);

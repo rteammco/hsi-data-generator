@@ -79,7 +79,8 @@ void PaintSpectrumEditMode(
 
 }  // namespace
 
-SpectrumWidget::SpectrumWidget(const int num_bands, Spectrum* spectrum)
+SpectrumWidget::SpectrumWidget(
+    const int num_bands, std::shared_ptr<Spectrum> spectrum)
     : display_mode_(SPECTRUM_RENDER_MODE),
       num_bands_(num_bands),
       spectrum_(spectrum) {

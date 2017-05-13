@@ -31,11 +31,11 @@ enum ImageLayoutType {
 
 void GenerateLayout(
     const ImageLayoutType layout_type,
-    const std::vector<Spectrum*>& spectra,
+    const std::vector<std::shared_ptr<Spectrum>>& spectra,
     ImageLayoutWidget* image_layout_widget) {
 
   std::vector<QColor> class_colors;
-  for (const Spectrum* spectrum : spectra) {
+  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
     class_colors.push_back(spectrum->GetColor());
   }
   const int num_classes = spectra.size();
@@ -63,7 +63,8 @@ void GenerateLayout(
 }  // namespace
 
 ImageLayoutView::ImageLayoutView(
-    std::shared_ptr<std::vector<Spectrum*>> spectra) : spectra_(spectra) {
+    std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra)
+    : spectra_(spectra) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutViewStyle));
 

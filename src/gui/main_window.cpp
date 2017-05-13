@@ -40,9 +40,8 @@ MainWindow::MainWindow() {
   tabs->setParent(this);
 
   // The spectral classes shared by all of the views.
-  // TODO: Should be Spectrum objects inside be pointers? Make them shared_ptr!
-  std::shared_ptr<std::vector<Spectrum*>> spectra(
-      new std::vector<Spectrum*>());
+  std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra(
+      new std::vector<std::shared_ptr<Spectrum>>());
 
   ClassSpectraView* spectra_view = new ClassSpectraView(spectra);
   tabs->addTab(spectra_view, kClassSpectraViewString);

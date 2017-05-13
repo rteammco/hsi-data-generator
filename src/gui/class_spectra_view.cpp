@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <memory>
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
@@ -30,7 +31,7 @@ static const QString kNewSpectrumButtonString = "Add Spectrum";
 }  // namespace
 
 ClassSpectraView::ClassSpectraView(
-    std::shared_ptr<std::vector<Spectrum*>> spectra)
+    std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra)
     : num_bands_(kDefaultNumberOfBands),
       next_spectrum_number_(1),
       spectra_(spectra) {
@@ -88,7 +89,7 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
 void ClassSpectraView::AddClassSpectrumRow(
     const QString& name, const int num_bands) {
 
-  Spectrum* spectrum = new Spectrum(name, kDefaultSpectrumColor);
+  std::shared_ptr<Spectrum> spectrum(new Spectrum(name, kDefaultSpectrumColor));
   spectra_->push_back(spectrum);
   ClassSpectrumRow* row = new ClassSpectrumRow(num_bands, spectrum);
   class_spectrum_rows_.push_back(row);

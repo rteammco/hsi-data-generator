@@ -26,7 +26,8 @@ class ClassSpectraView : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ClassSpectraView(std::shared_ptr<std::vector<Spectrum*>> spectra);
+  explicit ClassSpectraView(
+      std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra);
 
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
@@ -51,7 +52,7 @@ class ClassSpectraView : public QWidget {
 
   // The actual spectra are passed down and shared between the different view.
   // This view allows for editing the spectra directly.
-  std::shared_ptr<std::vector<Spectrum*>> spectra_;
+  std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
 
   // A list of all added ClassSpectrumRow widgets. These are referenced to
   // modify the number of bands for rendering purposes.
