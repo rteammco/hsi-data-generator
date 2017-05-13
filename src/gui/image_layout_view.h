@@ -13,8 +13,8 @@
 #include <memory>
 #include <vector>
 
-#include "gui/class_spectrum_row.h"
 #include "gui/image_layout_widget.h"
+#include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
 
@@ -22,8 +22,7 @@ class ImageLayoutView : public QWidget {
   Q_OBJECT
 
  public:
-  ImageLayoutView(
-      std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows);
+  ImageLayoutView(std::shared_ptr<std::vector<Spectrum*>> spectra);
 
  protected:
   void showEvent(QShowEvent* event) override;
@@ -35,9 +34,8 @@ class ImageLayoutView : public QWidget {
   void RandomButtonPressed();
 
  private:
-  // This list of spectra is maintained by ClassSpectraView. We track a local
-  // reference to display all of the classes appropriately.
-  std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows_;
+  // The Spectrum objects generated in the ClassSpectrumView.
+  std::shared_ptr<std::vector<Spectrum*>> spectra_;
 
   ImageLayoutWidget* image_layout_widget_ = nullptr;
 

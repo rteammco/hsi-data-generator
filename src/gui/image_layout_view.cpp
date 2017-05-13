@@ -11,8 +11,8 @@
 
 #include <vector>
 
-#include "gui/class_spectrum_row.h"
 #include "gui/image_layout_widget.h"
+#include "spectrum/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -31,14 +31,14 @@ enum ImageLayoutType {
 
 void GenerateLayout(
     const ImageLayoutType layout_type,
-    const std::vector<ClassSpectrumRow*>& class_spectrum_rows,
+    const std::vector<Spectrum*>& spectra,
     ImageLayoutWidget* image_layout_widget) {
 
   std::vector<QColor> class_colors;
-  for (const ClassSpectrumRow* row : class_spectrum_rows) {
-    class_colors.push_back(row->GetClassColor());
+  for (const Spectrum* spectrum : spectra) {
+    class_colors.push_back(spectrum->GetColor());
   }
-  const int num_classes = class_spectrum_rows.size();
+  const int num_classes = spectra.size();
   // TODO: Present a dialog for each to allow setting values (e.g. the width of
   // each stripe/grid, or the number of pixels per random blob).
   switch (layout_type) {
@@ -63,8 +63,7 @@ void GenerateLayout(
 }  // namespace
 
 ImageLayoutView::ImageLayoutView(
-    std::shared_ptr<std::vector<ClassSpectrumRow*>> class_spectrum_rows)
-    : class_spectrum_rows_(class_spectrum_rows) {
+    std::shared_ptr<std::vector<Spectrum*>> spectra) : spectra_(spectra) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutViewStyle));
 
@@ -128,13 +127,13 @@ ImageLayoutView::ImageLayoutView(
 
 void ImageLayoutView::showEvent(QShowEvent* event) {
   const int num_displayed_classes = class_names_layout_->count();
-  const int total_num_classes = class_spectrum_rows_->size();
+  const int total_num_classes = spectra_->size();
   // TODO: We should do deleting first and then re-inserting instead of
   // replacing, but that's buggy for some reason.
   for (int i = 0; i < total_num_classes; ++i) {
     // Create the class label and set its color.
-    const QString class_name = class_spectrum_rows_->at(i)->GetClassName();
-    const QColor class_color = class_spectrum_rows_->at(i)->GetClassColor();
+    const QString class_name = spectra_->at(i)->GetName();
+    const QColor class_color = spectra_->at(i)->GetColor();
     QLabel* new_label = new QLabel(class_name);
     QPalette label_palette;
     label_palette.setColor(new_label->foregroundRole(), class_color);
@@ -152,26 +151,20 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
 
 void ImageLayoutView::HorizontalStripesButtonPressed() {
   GenerateLayout(
-      IMAGE_HORIZONTAL_STRIPES_LAYOUT,
-      *class_spectrum_rows_,
-      image_layout_widget_);
+      IMAGE_HORIZONTAL_STRIPES_LAYOUT, *spectra_, image_layout_widget_);
 }
 
 void ImageLayoutView::VerticalStripesButtonPressed() {
   GenerateLayout(
-      IMAGE_VERTICAL_STRIPES_LAYOUT,
-      *class_spectrum_rows_,
-      image_layout_widget_);
+      IMAGE_VERTICAL_STRIPES_LAYOUT, *spectra_, image_layout_widget_);
 }
 
 void ImageLayoutView::GridButtonPressed() {
-  GenerateLayout(
-      IMAGE_GRID_LAYOUT, *class_spectrum_rows_, image_layout_widget_);
+  GenerateLayout(IMAGE_GRID_LAYOUT, *spectra_, image_layout_widget_);
 }
 
 void ImageLayoutView::RandomButtonPressed() {
-  GenerateLayout(
-      IMAGE_RANDOM_LAYOUT, *class_spectrum_rows_, image_layout_widget_);
+  GenerateLayout(IMAGE_RANDOM_LAYOUT, *spectra_, image_layout_widget_);
 }
 
 }  // namespace hsi_data_generator
