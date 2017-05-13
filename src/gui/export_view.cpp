@@ -5,6 +5,9 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include <memory>
+#include <vector>
+
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -17,7 +20,11 @@ static const QString kSaveFileDialogName = "Save HSI File";
 
 }  // namespace
 
-ExportView::ExportView() {
+ExportView::ExportView(
+    std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
+    std::shared_ptr<ImageLayoutWidget> image_layout_widget)
+    : spectra_(spectra), image_layout_widget_(image_layout_widget) {
+
   setStyleSheet(util::GetStylesheetRelativePath(kQtExportViewStyle));
 
   QVBoxLayout* layout = new QVBoxLayout();
@@ -36,6 +43,9 @@ void ExportView::ExportButtonPressed() {
       kSaveFileDialogName,           // Dialog save caption.
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
+
+  // TODO: Use the spectra_ and image_layout_widget_ variables to generate and
+  // save an HSI file at the user-specified save location.
 }
 
 }  // namespace hsi_data_generator

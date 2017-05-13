@@ -9,6 +9,7 @@
 #include <QString>
 #include <QWidget>
 
+#include <memory>
 #include <vector>
 
 #include "gui/image_layout_widget.h"
@@ -32,7 +33,7 @@ enum ImageLayoutType {
 void GenerateLayout(
     const ImageLayoutType layout_type,
     const std::vector<std::shared_ptr<Spectrum>>& spectra,
-    ImageLayoutWidget* image_layout_widget) {
+    std::shared_ptr<ImageLayoutWidget> image_layout_widget) {
 
   std::vector<QColor> class_colors;
   for (const std::shared_ptr<Spectrum> spectrum : spectra) {
@@ -63,8 +64,9 @@ void GenerateLayout(
 }  // namespace
 
 ImageLayoutView::ImageLayoutView(
-    std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra)
-    : spectra_(spectra) {
+    std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
+    std::shared_ptr<ImageLayoutWidget> image_layout_widget)
+    : spectra_(spectra), image_layout_widget_(image_layout_widget) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutViewStyle));
 
@@ -78,9 +80,7 @@ ImageLayoutView::ImageLayoutView(
   layout->addLayout(class_names_layout_);
 
   // Center column is the image display widget.
-  // TODO: Set the size dimensions appropriately.
-  image_layout_widget_ = new ImageLayoutWidget(500, 500);
-  layout->addWidget(image_layout_widget_);
+  layout->addWidget(image_layout_widget_.get());
 
   // Right-hand column is the set of patterns to generate over the image.
   // TODO: Make this interactive, with preview images, etc.

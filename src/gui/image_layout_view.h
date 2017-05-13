@@ -23,7 +23,8 @@ class ImageLayoutView : public QWidget {
 
  public:
   explicit ImageLayoutView(
-      std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra);
+      std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
+      std::shared_ptr<ImageLayoutWidget> image_layout_widget);
 
  protected:
   void showEvent(QShowEvent* event) override;
@@ -38,7 +39,7 @@ class ImageLayoutView : public QWidget {
   // The Spectrum objects generated in the ClassSpectrumView.
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
 
-  ImageLayoutWidget* image_layout_widget_ = nullptr;
+  std::shared_ptr<ImageLayoutWidget> image_layout_widget_;
 
   QLayout* class_names_layout_ = nullptr;
 };
