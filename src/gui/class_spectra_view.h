@@ -54,7 +54,7 @@ class ClassSpectraView : public QWidget {
   std::shared_ptr<std::vector<Spectrum*>> spectra_;
 
   // A list of all added ClassSpectrumRow widgets. These are referenced to
-  // modify the number of bands or to get the spectra.
+  // modify the number of bands for rendering purposes.
   std::vector<ClassSpectrumRow*> class_spectrum_rows_;
 
   // Adds a new ClassSpectrumRow to the widget. It will be displayed and

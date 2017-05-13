@@ -22,7 +22,7 @@ class ImageLayoutView : public QWidget {
   Q_OBJECT
 
  public:
-  ImageLayoutView(std::shared_ptr<std::vector<Spectrum*>> spectra);
+  explicit ImageLayoutView(std::shared_ptr<std::vector<Spectrum*>> spectra);
 
  protected:
   void showEvent(QShowEvent* event) override;

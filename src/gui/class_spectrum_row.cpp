@@ -48,9 +48,8 @@ ClassSpectrumRow::ClassSpectrumRow(const int num_bands, Spectrum* spectrum)
       this,
       SLOT(ClassNameFieldChanged(const QString&)));
 
-  // TODO: Color doesn't set to the Spectrum anymore...
-  ColorBoxWidget* class_color_box = new ColorBoxWidget(spectrum_->GetColor());
-  class_color_box->setObjectName(kQtClassColorBoxName);  // TODO: Why?
+  ColorBoxWidget* class_color_box = new ColorBoxWidget(spectrum_);
+  class_color_box->setObjectName(kQtClassColorBoxName);  // Name for stylesheet.
   layout->addWidget(class_color_box);
 
   spectrum_widget_ = new SpectrumWidget(num_bands, spectrum_);

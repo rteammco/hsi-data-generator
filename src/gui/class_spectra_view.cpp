@@ -23,6 +23,8 @@ static const QString kQtClassSpectraViewStyle =
 constexpr int kDefaultNumberOfBands = 100;
 
 static const QString kDefaultSpectrumName = "Background";
+static const QColor kDefaultSpectrumColor = Qt::black;
+
 static const QString kNewSpectrumButtonString = "Add Spectrum";
 
 }  // namespace
@@ -86,10 +88,8 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
 void ClassSpectraView::AddClassSpectrumRow(
     const QString& name, const int num_bands) {
 
-  // TODO: Do these have to be stored as pointers?
-  Spectrum* spectrum = new Spectrum(name, Qt::black);  // TODO: Color!
+  Spectrum* spectrum = new Spectrum(name, kDefaultSpectrumColor);
   spectra_->push_back(spectrum);
-
   ClassSpectrumRow* row = new ClassSpectrumRow(num_bands, spectrum);
   class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be
