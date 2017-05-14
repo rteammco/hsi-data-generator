@@ -59,9 +59,12 @@ class ClassSpectraView : public QWidget {
   // modify the number of bands for rendering purposes.
   std::vector<ClassSpectrumRow*> class_spectrum_rows_;
 
+  // Creates a new spectrum and adds it to the row set.
+  void InsertNewSpectrum(const QString& name);
+
   // Adds a new ClassSpectrumRow to the widget. It will be displayed and
   // tracked in the class_spectrum_rows_ list.
-  void AddClassSpectrumRow(const QString& name, const int num_bands);
+  void AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum);
 };
 
 }  // namespace hsi_data_generator

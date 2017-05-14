@@ -45,6 +45,12 @@ class Spectrum {
     : spectrum_class_name_(spectrum_class_name),
       spectrum_class_color_(spectrum_class_color) {}
 
+  // Copy constructor. Use this to clone existing spectra.
+  Spectrum(const Spectrum& other)
+      : spectrum_class_name_(other.spectrum_class_name_),
+        spectrum_class_color_(other.spectrum_class_color_),
+        spectral_peaks_(other.spectral_peaks_) {}
+
   // Adds a peak to the spectrum. The definitions of each of the required
   // values are described in the PeakDistribution struct above.
   void AddPeak(
