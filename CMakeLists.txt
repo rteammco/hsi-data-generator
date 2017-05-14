@@ -36,6 +36,7 @@ file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/*")
 
 # Other source files:
 file(GLOB   gui_SRC        "src/gui/*.cpp")
+file(GLOB   image_SRC      "src/image/*.cpp")
 file(GLOB   spectrum_SRC   "src/spectrum/*.cpp")
 file(GLOB   util_SRC       "src/util/*.cpp")
 
@@ -47,6 +48,7 @@ add_executable(
   HSIDataGenerator
   src/hsi_data_generator.cpp
   ${gui_SRC}
+  ${image_SRC}
   ${spectrum_SRC}
   ${util_SRC}
 )

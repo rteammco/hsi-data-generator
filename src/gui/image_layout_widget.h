@@ -12,6 +12,8 @@
 
 #include <vector>
 
+#include "image/image_layout.h"
+
 namespace hsi_data_generator {
 
 class ImageLayoutWidget : public QWidget {
@@ -52,11 +54,13 @@ class ImageLayoutWidget : public QWidget {
   void paintEvent(QPaintEvent* event) override;
 
  private:
+  // The internal layout.
+  ImageLayout* image_layout_;
+
   // The size of the image over which the pattern will be generated. This size
   // does not have to match the size of the displayed widget on the screen.
   int image_width_;
   int image_height_;
-
   // A pixel map which maps indices to a 2D image grid.
   std::vector<int> image_class_map_;
 

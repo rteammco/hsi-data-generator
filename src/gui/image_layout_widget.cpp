@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "image/image_layout.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
