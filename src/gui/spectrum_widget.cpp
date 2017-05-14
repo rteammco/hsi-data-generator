@@ -21,6 +21,8 @@ static const QString kQtSpectrumStyle = "qt_stylesheets/spectrum_widget.qss";
 static const QColor kEditPeakColor = Qt::black;
 constexpr int kEditPeakPointWidth = 10;
 constexpr int kEditPeakLineWidth = 1;
+static const QColor kEditRectangleColor(255, 0, 0, 128);
+constexpr int kEditRectangleLineWidth = 5;
 
 // Draws the spectrum in render mode, displaying the final spectrum from the
 // given spectrum values. It is expected that all spectrum_values are
@@ -75,6 +77,13 @@ void PaintSpectrumEditMode(
     const double half_width = (canvas_width * peak.width) / 2.0;
     painter->drawLine(peak_x - half_width, peak_y, peak_x + half_width, peak_y);
   }
+
+  // Outline the whole area to indicate edit mode:
+  QPen rectangle_pen(kEditRectangleColor);
+  rectangle_pen.setWidth(kEditRectangleLineWidth);
+  painter->setPen(rectangle_pen);
+  const QRectF canvas_rectangle(0, 0, canvas_width, canvas_height);
+  painter->drawRect(canvas_rectangle);
 }
 
 }  // namespace
