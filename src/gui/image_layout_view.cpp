@@ -2,6 +2,7 @@
 
 #include <QColor>
 #include <QHBoxLayout>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLayoutItem>
 #include <QPushButton>
@@ -23,6 +24,18 @@ namespace {
 static const QString kQtImageLayoutViewStyle =
     "qt_stylesheets/image_layout_view.qss";
 
+// Popup dialog notification text.
+static const QString kStripeWidthDialogTitle = "Select Stripe Width";
+static const QString kStripeWidthDialogSelectionLabel =
+    "Stripe width (0 for automatic size):";
+
+static const QString kSquareSizeDialogTitle = "Select Grid Square Size";
+static const QString kSquareSizeDialogSelectionLabel =
+    "Square size (0 for automatic size):";
+
+static const QString kRandomBlobSizeDialogTitle = "Select Random Blob Size";
+static const QString kRandomBlobSizeDialogSelectionLabel = "Blob size:";
+
 // The layout options for the image controlled by the buttons.
 enum ImageLayoutType {
   IMAGE_HORIZONTAL_STRIPES_LAYOUT,
@@ -35,25 +48,56 @@ void GenerateLayout(
     const ImageLayoutType layout_type,
     const std::vector<std::shared_ptr<Spectrum>>& spectra,
     std::shared_ptr<ImageLayout> image_layout,
-    ImageLayoutWidget* image_layout_widget) {
+    ImageLayoutWidget* image_layout_widget,
+    QWidget* dialog_parent) {
 
   // Generate the appropriate layout using the ImageLayout object.
   const int num_classes = spectra.size();
-  // TODO: Present a dialog for each to allow setting values (e.g. the width of
-  // each stripe/grid, or the number of pixels per random blob).
   switch (layout_type) {
-  case IMAGE_HORIZONTAL_STRIPES_LAYOUT:
-    image_layout->GenerateHorizontalStripesLayout(num_classes);
+  case IMAGE_HORIZONTAL_STRIPES_LAYOUT: {
+    const int stripe_width = QInputDialog::getInt(
+        dialog_parent,
+        kStripeWidthDialogTitle,
+        kStripeWidthDialogSelectionLabel,
+        0,  // default value
+        0,  // min value
+        image_layout->GetWidth());  // max value
+    image_layout->GenerateHorizontalStripesLayout(num_classes, stripe_width);
     break;
-  case IMAGE_VERTICAL_STRIPES_LAYOUT:
-    image_layout->GenerateVerticalStripesLayout(num_classes);
+  }
+  case IMAGE_VERTICAL_STRIPES_LAYOUT: {
+    const int stripe_width = QInputDialog::getInt(
+        dialog_parent,
+        kStripeWidthDialogTitle,
+        kStripeWidthDialogSelectionLabel,
+        0,  // default value
+        0,  // min value
+        image_layout->GetHeight());  // max value
+    image_layout->GenerateVerticalStripesLayout(num_classes, stripe_width);
     break;
-  case IMAGE_GRID_LAYOUT:
-    image_layout->GenerateGridLayout(num_classes);
+  }
+  case IMAGE_GRID_LAYOUT: {
+    const int square_size = QInputDialog::getInt(
+        dialog_parent,
+        kSquareSizeDialogTitle,
+        kSquareSizeDialogSelectionLabel,
+        0,  // default value
+        0,  // min value
+        image_layout->GetWidth());  // max value; TODO: should be max(w, h).
+    image_layout->GenerateGridLayout(num_classes, square_size);
     break;
-  case IMAGE_RANDOM_LAYOUT:
+  }
+  case IMAGE_RANDOM_LAYOUT: {
+    const int square_size = QInputDialog::getInt(
+        dialog_parent,
+        kRandomBlobSizeDialogTitle,
+        kRandomBlobSizeDialogSelectionLabel,
+        1,  // default value
+        1,  // min value
+        image_layout->GetWidth());  // max value; TODO: should be min(w, h).
     image_layout->GenerateRandomLayout(num_classes);
     break;
+  }
   default:
     break;
   }
@@ -160,7 +204,8 @@ void ImageLayoutView::HorizontalStripesButtonPressed() {
       IMAGE_HORIZONTAL_STRIPES_LAYOUT,
       *spectra_,
       image_layout_,
-      image_layout_widget_);
+      image_layout_widget_,
+      this);
 }
 
 void ImageLayoutView::VerticalStripesButtonPressed() {
@@ -168,17 +213,22 @@ void ImageLayoutView::VerticalStripesButtonPressed() {
       IMAGE_VERTICAL_STRIPES_LAYOUT,
       *spectra_,
       image_layout_,
-      image_layout_widget_);
+      image_layout_widget_,
+      this);
 }
 
 void ImageLayoutView::GridButtonPressed() {
   GenerateLayout(
-      IMAGE_GRID_LAYOUT, *spectra_, image_layout_, image_layout_widget_);
+      IMAGE_GRID_LAYOUT, *spectra_, image_layout_, image_layout_widget_, this);
 }
 
 void ImageLayoutView::RandomButtonPressed() {
   GenerateLayout(
-      IMAGE_RANDOM_LAYOUT, *spectra_, image_layout_, image_layout_widget_);
+      IMAGE_RANDOM_LAYOUT,
+      *spectra_,
+      image_layout_,
+      image_layout_widget_,
+      this);
 }
 
 }  // namespace hsi_data_generator
