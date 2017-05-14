@@ -197,6 +197,12 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
       class_names_layout_->addWidget(new_label);
     }
   }
+  // If any other were removed, delete the widgets.
+  for (int i = total_num_classes; i < num_displayed_classes; ++i) {
+    QWidget* old_label = class_names_layout_->itemAt(i)->widget();
+    class_names_layout_->removeWidget(old_label);
+    delete old_label;
+  }
 }
 
 void ImageLayoutView::HorizontalStripesButtonPressed() {

@@ -64,13 +64,20 @@ ClassSpectraView::ClassSpectraView(
       SLOT(NewSpectrumButtonPressed()));
 
   // Add a default spectrum to begin with (typically the background spectrum).
-  InsertNewSpectrum(kDefaultSpectrumName);
+  if (spectra_->empty()) {
+    InsertNewSpectrum(kDefaultSpectrumName);
+  } else {
+    for (std::shared_ptr<Spectrum> spectrum : *spectra_) {
+      AddClassSpectrumRow(spectrum);
+    }
+  }
 }
 
 void ClassSpectraView::DeleteClassSpectrumRow(ClassSpectrumRow* row) {
   for (int i = 0; i < class_spectrum_rows_.size(); ++i) {
     if (class_spectrum_rows_[i] == row) {
       class_spectrum_rows_.erase(class_spectrum_rows_.begin() + i);
+      spectra_->erase(spectra_->begin() + i);
       layout_->removeWidget(row);
       delete row;
       break;
