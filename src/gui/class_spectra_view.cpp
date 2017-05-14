@@ -86,6 +86,10 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
   InsertNewSpectrum(new_spectrum_name);
 }
 
+void ClassSpectraView::RowDeleteButtonPressed(QWidget* caller) {
+  qInfo() << "Worked!";
+}
+
 void ClassSpectraView::RowCloneButtonPressed(QWidget* caller) {
   const ClassSpectrumRow* spectrum_row =
       dynamic_cast<ClassSpectrumRow*>(caller);

@@ -4,6 +4,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QString>
@@ -32,6 +33,12 @@ static const QString kEditButtonEditString = "Edit";
 static const QString kEditButtonDoneString = "Done";
 static const QString kClearButtonString = "Clear";
 static const QString kCloneButtonString = "Clone";
+
+// Prompt dialog strings:
+static const QString kSubstitutePlaceholder = "%";
+static const QString kDeleteSpectrumName = "Delete Spectrum";
+static const QString kDeleteSpectrumQuestionString =
+    "Delete spectrum \"" + kSubstitutePlaceholder + "\"?";
 
 }  // namespace
 
@@ -143,7 +150,22 @@ void ClassSpectrumRow::ClearButtonPressed() {
     qCritical() << "Spectrum widget is not defined. Cannot clear it.";
     return;
   }
-  spectrum_widget_->Clear();
+  // If the clear button is pressed and the spectrum is currently clear, prompt
+  // the user to delete the row. Otherwise, just clear the spectrum.
+  if (spectrum_->IsEmpty()) {
+    QString prompt_question = kDeleteSpectrumQuestionString;
+    prompt_question.replace(kSubstitutePlaceholder, spectrum_->GetName());
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this,
+        kDeleteSpectrumName,
+        prompt_question,
+        QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+      qInfo() << "DELETE!!";  // TODO: Call the appropriate parent method.
+    }
+  } else {
+    spectrum_widget_->Clear();
+  }
 }
 
 }  // namespace hsi_data_generator

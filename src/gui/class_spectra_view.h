@@ -32,6 +32,7 @@ class ClassSpectraView : public QWidget {
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
   void NewSpectrumButtonPressed();
+  void RowDeleteButtonPressed(QWidget* caller);
   void RowCloneButtonPressed(QWidget* caller);
 
  private:

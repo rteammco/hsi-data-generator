@@ -92,6 +92,11 @@ class Spectrum {
     return spectral_peaks_;
   }
 
+  // Returns true if the spectrum is empty (i.e. it currently has no peaks).
+  bool IsEmpty() const {
+    return spectral_peaks_.empty();
+  }
+
  private:
   // The name and color associated with this spectrum. The "class" refers to
   // the element (endmember) that this spectrum represents, which is
