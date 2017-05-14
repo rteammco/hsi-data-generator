@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-#include "gui/image_layout_widget.h"
+#include "image/image_layout.h"
 #include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
@@ -22,14 +22,14 @@ class ExportView : public QWidget {
  public:
   ExportView(
       std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
-      std::shared_ptr<ImageLayoutWidget> image_layout_widget);
+      std::shared_ptr<ImageLayout> image_layout);
 
  private slots:  // NOLINT
   void ExportButtonPressed();
 
  private:
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
-  std::shared_ptr<ImageLayoutWidget> image_layout_widget_;
+  std::shared_ptr<ImageLayout> image_layout_;
 };
 
 }  // namespace hsi_data_generator

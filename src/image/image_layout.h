@@ -56,6 +56,23 @@ class ImageLayout {
   void GenerateRandomLayout(
       const int num_classes, const int random_blob_size = 1);
 
+  int GetWidth() const {
+    return image_width_;
+  }
+
+  int GetHeight() const {
+    return image_height_;
+  }
+
+  // Used for referencing the layout externally.
+  const std::vector<int>& GetClassMap() const {
+    return spectral_class_map_;
+  }
+
+  // Returns the 1D index (into the vector returned by GetClassMap() from a
+  // given (X = col, Y = row) 2D image coordinate.
+  int GetMapIndex(const int x_col, const int y_row) const;
+
  private:
   // The spatial dimensions of the hyperspectral image.
   int image_width_;

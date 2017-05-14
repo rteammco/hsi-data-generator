@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "gui/image_layout_widget.h"
+#include "image/image_layout.h"
 #include "spectrum/spectrum.h"
 #include "util/util.h"
 
@@ -33,30 +34,33 @@ enum ImageLayoutType {
 void GenerateLayout(
     const ImageLayoutType layout_type,
     const std::vector<std::shared_ptr<Spectrum>>& spectra,
-    std::shared_ptr<ImageLayoutWidget> image_layout_widget) {
+    std::shared_ptr<ImageLayout> image_layout,
+    ImageLayoutWidget* image_layout_widget) {
 
-  std::vector<QColor> class_colors;
-  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
-    class_colors.push_back(spectrum->GetColor());
-  }
+  // Generate the appropriate layout using the ImageLayout object.
   const int num_classes = spectra.size();
   // TODO: Present a dialog for each to allow setting values (e.g. the width of
   // each stripe/grid, or the number of pixels per random blob).
   switch (layout_type) {
   case IMAGE_HORIZONTAL_STRIPES_LAYOUT:
-    image_layout_widget->GenerateHorizontalStripesLayout(num_classes);
+    image_layout->GenerateHorizontalStripesLayout(num_classes);
     break;
   case IMAGE_VERTICAL_STRIPES_LAYOUT:
-    image_layout_widget->GenerateVerticalStripesLayout(num_classes);
+    image_layout->GenerateVerticalStripesLayout(num_classes);
     break;
   case IMAGE_GRID_LAYOUT:
-    image_layout_widget->GenerateGridLayout(num_classes);
+    image_layout->GenerateGridLayout(num_classes);
     break;
   case IMAGE_RANDOM_LAYOUT:
-    image_layout_widget->GenerateRandomLayout(class_colors.size());
+    image_layout->GenerateRandomLayout(num_classes);
     break;
   default:
     break;
+  }
+  // Render the results using the ImageLayoutWidget.
+  std::vector<QColor> class_colors;
+  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
+    class_colors.push_back(spectrum->GetColor());
   }
   image_layout_widget->Render(class_colors);
 }
@@ -65,8 +69,8 @@ void GenerateLayout(
 
 ImageLayoutView::ImageLayoutView(
     std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
-    std::shared_ptr<ImageLayoutWidget> image_layout_widget)
-    : spectra_(spectra), image_layout_widget_(image_layout_widget) {
+    std::shared_ptr<ImageLayout> image_layout)
+    : spectra_(spectra), image_layout_(image_layout) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutViewStyle));
 
@@ -80,7 +84,8 @@ ImageLayoutView::ImageLayoutView(
   layout->addLayout(class_names_layout_);
 
   // Center column is the image display widget.
-  layout->addWidget(image_layout_widget_.get());
+  image_layout_widget_ = new ImageLayoutWidget(image_layout_);
+  layout->addWidget(image_layout_widget_);
 
   // Right-hand column is the set of patterns to generate over the image.
   // TODO: Make this interactive, with preview images, etc.
@@ -152,20 +157,28 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
 
 void ImageLayoutView::HorizontalStripesButtonPressed() {
   GenerateLayout(
-      IMAGE_HORIZONTAL_STRIPES_LAYOUT, *spectra_, image_layout_widget_);
+      IMAGE_HORIZONTAL_STRIPES_LAYOUT,
+      *spectra_,
+      image_layout_,
+      image_layout_widget_);
 }
 
 void ImageLayoutView::VerticalStripesButtonPressed() {
   GenerateLayout(
-      IMAGE_VERTICAL_STRIPES_LAYOUT, *spectra_, image_layout_widget_);
+      IMAGE_VERTICAL_STRIPES_LAYOUT,
+      *spectra_,
+      image_layout_,
+      image_layout_widget_);
 }
 
 void ImageLayoutView::GridButtonPressed() {
-  GenerateLayout(IMAGE_GRID_LAYOUT, *spectra_, image_layout_widget_);
+  GenerateLayout(
+      IMAGE_GRID_LAYOUT, *spectra_, image_layout_, image_layout_widget_);
 }
 
 void ImageLayoutView::RandomButtonPressed() {
-  GenerateLayout(IMAGE_RANDOM_LAYOUT, *spectra_, image_layout_widget_);
+  GenerateLayout(
+      IMAGE_RANDOM_LAYOUT, *spectra_, image_layout_, image_layout_widget_);
 }
 
 }  // namespace hsi_data_generator

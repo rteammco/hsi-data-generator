@@ -88,4 +88,8 @@ void ImageLayout::GenerateRandomLayout(
   }
 }
 
+int ImageLayout::GetMapIndex(const int x_col, const int y_row) const {
+  return y_row * image_width_ + x_col;
+}
+
 }  // namespace hsi_data_generator

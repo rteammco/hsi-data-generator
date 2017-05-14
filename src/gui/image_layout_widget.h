@@ -10,6 +10,7 @@
 #include <QPaintEvent>
 #include <QWidget>
 
+#include <memory>
 #include <vector>
 
 #include "image/image_layout.h"
@@ -22,28 +23,7 @@ class ImageLayoutWidget : public QWidget {
  public:
   // Initialize the image with the given width and height. This size can be
   // modified later to reside the image.
-  ImageLayoutWidget(const int width, const int height);
-
-  // TODO: Add option to change the image size.
-
-  // Generates an internal representation of a stripe pattern for the given
-  // number of spectral classes.
-  //
-  // This generates a pattern of horizontal stripes, alternating by class, from
-  // the top to the bottom of the image.
-  void GenerateHorizontalStripesLayout(const int num_classes);
-
-  // This generates a pattern of vertical stripes, alternating by class, from
-  // the left to the right of the image.
-  void GenerateVerticalStripesLayout(const int num_classes);
-
-  // This generates a grid pattern, where the classes alternate in both the
-  // horizontal and vertical directions.
-  void GenerateGridLayout(const int num_classes);
-
-  // This generates a random layout, where each pixel is assigned a class label
-  // with a uniformly random probability.
-  void GenerateRandomLayout(const int num_classes);
+  explicit ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout);
 
   // Renders the image and updates the display, using the given colors for the
   // different spectral classes. The number of colors must match the number of
@@ -55,14 +35,7 @@ class ImageLayoutWidget : public QWidget {
 
  private:
   // The internal layout.
-  ImageLayout* image_layout_;
-
-  // The size of the image over which the pattern will be generated. This size
-  // does not have to match the size of the displayed widget on the screen.
-  int image_width_;
-  int image_height_;
-  // A pixel map which maps indices to a 2D image grid.
-  std::vector<int> image_class_map_;
+  std::shared_ptr<ImageLayout> image_layout_;
 
   // A color map that's set when Render() is called and used to render the
   // image layout.

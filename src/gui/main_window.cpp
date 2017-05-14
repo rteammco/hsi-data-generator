@@ -13,7 +13,7 @@
 #include "gui/class_spectrum_row.h"
 #include "gui/export_view.h"
 #include "gui/image_layout_view.h"
-#include "gui/image_layout_widget.h"
+#include "image/image_layout.h"
 #include "spectrum/spectrum.h"
 
 namespace hsi_data_generator {
@@ -44,19 +44,17 @@ MainWindow::MainWindow() {
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra(
       new std::vector<std::shared_ptr<Spectrum>>());
 
-  // TODO: Make the display widget disjoint from the image layout object.
   // TODO: Set the size dimensions appropriately.
-  std::shared_ptr<ImageLayoutWidget> image_layout_widget(
-      new ImageLayoutWidget(500, 500));
+  std::shared_ptr<ImageLayout> image_layout(new ImageLayout(500, 500));
 
   ClassSpectraView* spectra_view = new ClassSpectraView(spectra);
   tabs->addTab(spectra_view, kClassSpectraViewString);
 
   ImageLayoutView* image_layout_view =
-      new ImageLayoutView(spectra, image_layout_widget);
+      new ImageLayoutView(spectra, image_layout);
   tabs->addTab(image_layout_view, kImageLayoutViewString);
 
-  ExportView* export_view = new ExportView(spectra, image_layout_widget);
+  ExportView* export_view = new ExportView(spectra, image_layout);
   tabs->addTab(export_view, kExportViewString);
 
   setCentralWidget(tabs);
