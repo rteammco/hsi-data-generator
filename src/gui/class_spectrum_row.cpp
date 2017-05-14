@@ -108,7 +108,6 @@ void ClassSpectrumRow::SetNumberOfBands(const int num_bands) {
 }
 
 std::shared_ptr<Spectrum> ClassSpectrumRow::GetSpectrumCopy() const {
-  // TODO: Implement copy for real.
   std::shared_ptr<Spectrum> spectrum_copy(new Spectrum(*spectrum_));
   spectrum_copy->SetName("Copy of " + spectrum_->GetName());
   return spectrum_copy;

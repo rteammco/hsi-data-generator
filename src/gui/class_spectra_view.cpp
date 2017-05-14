@@ -87,7 +87,8 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
 }
 
 void ClassSpectraView::RowCloneButtonPressed(QWidget* caller) {
-  const ClassSpectrumRow* spectrum_row = static_cast<ClassSpectrumRow*>(caller);
+  const ClassSpectrumRow* spectrum_row =
+      dynamic_cast<ClassSpectrumRow*>(caller);
   std::shared_ptr<Spectrum> spectrum_copy = spectrum_row->GetSpectrumCopy();
   AddClassSpectrumRow(spectrum_copy);
 }
