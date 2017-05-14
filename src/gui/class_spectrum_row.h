@@ -21,10 +21,18 @@ class ClassSpectrumRow : public QWidget {
   Q_OBJECT
 
  public:
-  ClassSpectrumRow(const int num_bands, std::shared_ptr<Spectrum> spectrum);
+  ClassSpectrumRow(
+      const int num_bands,
+      std::shared_ptr<Spectrum> spectrum,
+      QWidget* parent_view);
 
   // Updates the number of bands displayed by the SpectrumWidget.
   void SetNumberOfBands(const int num_bands);
+
+  // Returns a clone of the class Spectrum in this ClassSpectrumRow. This does
+  // not modify the original spectrum in any way. It is used for cloning the
+  // spectra.
+  std::shared_ptr<Spectrum> GetSpectrumCopy() const;
 
  private slots:  // NOLINT
   void ClassNameFieldChanged(const QString& text);

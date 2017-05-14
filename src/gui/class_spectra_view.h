@@ -32,6 +32,7 @@ class ClassSpectraView : public QWidget {
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
   void NewSpectrumButtonPressed();
+  void RowCloneButtonPressed(QWidget* caller);
 
  private:
   // The layout used by this widget.

@@ -86,12 +86,23 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
   AddClassSpectrumRow(new_spectrum_name, num_bands_);
 }
 
+void ClassSpectraView::RowCloneButtonPressed(QWidget* caller) {
+  const ClassSpectrumRow* spectrum_row = static_cast<ClassSpectrumRow*>(caller);
+  std::shared_ptr<Spectrum> spectrum_copy = spectrum_row->GetSpectrumCopy();
+  // TODO: Repeating code. Move elsewhere.
+  spectra_->push_back(spectrum_copy);
+  ClassSpectrumRow* row = new ClassSpectrumRow(num_bands_, spectrum_copy, this);
+  class_spectrum_rows_.push_back(row);
+  int new_row_index = std::max(layout_->count() - 1, 0);
+  layout_->insertWidget(new_row_index, row);
+}
+
 void ClassSpectraView::AddClassSpectrumRow(
     const QString& name, const int num_bands) {
 
   std::shared_ptr<Spectrum> spectrum(new Spectrum(name, kDefaultSpectrumColor));
   spectra_->push_back(spectrum);
-  ClassSpectrumRow* row = new ClassSpectrumRow(num_bands, spectrum);
+  ClassSpectrumRow* row = new ClassSpectrumRow(num_bands, spectrum, this);
   class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be
   // the new spectrum button.

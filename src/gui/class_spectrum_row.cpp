@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSignalMapper>
 #include <QString>
 #include <QtDebug>
 #include <QVBoxLayout>
@@ -35,7 +36,9 @@ static const QString kCloneButtonString = "Clone";
 }  // namespace
 
 ClassSpectrumRow::ClassSpectrumRow(
-    const int num_bands, std::shared_ptr<Spectrum> spectrum)
+    const int num_bands,
+    std::shared_ptr<Spectrum> spectrum,
+    QWidget* parent_view)
     : spectrum_(spectrum) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowViewStyle));
@@ -75,8 +78,23 @@ ClassSpectrumRow::ClassSpectrumRow(
   connect(clear_button, SIGNAL(released()), this, SLOT(ClearButtonPressed()));
 
   QPushButton* clone_button = new QPushButton(kCloneButtonString);
-  clone_button->setEnabled(false);  // TODO: Implement.
   button_layout->addWidget(clone_button);
+
+  // Map the clone button to the parent ClassSpectraView's slot method. The
+  // signal mapper allows this ClassSpectrumRow to be passed down as a
+  // parameter to the slot method.
+  QSignalMapper* signal_mapper = new QSignalMapper(parent_view);
+  connect(
+      clone_button,
+      SIGNAL(released()),
+      signal_mapper,
+      SLOT(map()));
+  signal_mapper->setMapping(clone_button, this);
+  connect(
+      signal_mapper,
+      SIGNAL(mapped(QWidget*)),
+      parent_view,
+      SLOT(RowCloneButtonPressed(QWidget*)));
 
   layout->addLayout(button_layout);
 }
@@ -87,6 +105,12 @@ void ClassSpectrumRow::SetNumberOfBands(const int num_bands) {
     return;
   }
   spectrum_widget_->SetNumberOfBands(num_bands);
+}
+
+std::shared_ptr<Spectrum> ClassSpectrumRow::GetSpectrumCopy() const {
+  // TODO: Implement copy for real.
+  std::shared_ptr<Spectrum> spectrum_copy(new Spectrum("COPY", Qt::red));
+  return spectrum_copy;
 }
 
 void ClassSpectrumRow::ClassNameFieldChanged(const QString& class_name) {
