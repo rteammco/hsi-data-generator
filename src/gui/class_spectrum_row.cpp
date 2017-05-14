@@ -14,6 +14,7 @@
 
 #include <memory>
 
+#include "gui/class_spectra_view.h"
 #include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
 #include "spectrum/spectrum.h"
@@ -46,7 +47,7 @@ ClassSpectrumRow::ClassSpectrumRow(
     const int num_bands,
     std::shared_ptr<Spectrum> spectrum,
     QWidget* parent_view)
-    : spectrum_(spectrum) {
+    : parent_view_(parent_view), spectrum_(spectrum) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumRowViewStyle));
 
@@ -161,7 +162,9 @@ void ClassSpectrumRow::ClearButtonPressed() {
         prompt_question,
         QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-      qInfo() << "DELETE!!";  // TODO: Call the appropriate parent method.
+      ClassSpectraView* parent_view =
+          dynamic_cast<ClassSpectraView*>(parent_view_);
+      parent_view->DeleteClassSpectrumRow(this);
     }
   } else {
     spectrum_widget_->Clear();

@@ -67,6 +67,17 @@ ClassSpectraView::ClassSpectraView(
   InsertNewSpectrum(kDefaultSpectrumName);
 }
 
+void ClassSpectraView::DeleteClassSpectrumRow(ClassSpectrumRow* row) {
+  for (int i = 0; i < class_spectrum_rows_.size(); ++i) {
+    if (class_spectrum_rows_[i] == row) {
+      class_spectrum_rows_.erase(class_spectrum_rows_.begin() + i);
+      layout_->removeWidget(row);
+      delete row;
+      break;
+    }
+  }
+}
+
 void ClassSpectraView::NumberOfBandsInputChanged() {
   if (number_of_bands_input_ == nullptr) {
     qCritical() << "Number of bands input is not defined. Cannot change.";
@@ -84,10 +95,6 @@ void ClassSpectraView::NewSpectrumButtonPressed() {
       "New Spectrum " + QString::number(next_spectrum_number_);
   next_spectrum_number_++;
   InsertNewSpectrum(new_spectrum_name);
-}
-
-void ClassSpectraView::RowDeleteButtonPressed(QWidget* caller) {
-  qInfo() << "Worked!";
 }
 
 void ClassSpectraView::RowCloneButtonPressed(QWidget* caller) {

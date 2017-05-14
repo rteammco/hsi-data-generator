@@ -40,6 +40,10 @@ class ClassSpectrumRow : public QWidget {
   void ClearButtonPressed();
 
  private:
+  // A pointer to the parent view of this row, since some of the buttons need
+  // to call methods in the ClassSpectraView.
+  QWidget* parent_view_;
+
   // The Spectrum itself is passed in and edited by the SpectrumWidget
   // contained in this ClassSpectrumRow widget.
   std::shared_ptr<Spectrum> spectrum_;

@@ -29,10 +29,11 @@ class ClassSpectraView : public QWidget {
   explicit ClassSpectraView(
       std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra);
 
+  void DeleteClassSpectrumRow(ClassSpectrumRow* row);
+
  private slots:  // NOLINT
   void NumberOfBandsInputChanged();
   void NewSpectrumButtonPressed();
-  void RowDeleteButtonPressed(QWidget* caller);
   void RowCloneButtonPressed(QWidget* caller);
 
  private:
