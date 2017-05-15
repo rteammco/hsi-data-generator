@@ -11,8 +11,8 @@
 #include <memory>
 #include <vector>
 
-#include "image/image_layout.h"
-#include "spectrum/spectrum.h"
+#include "hsi/image_layout.h"
+#include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
 

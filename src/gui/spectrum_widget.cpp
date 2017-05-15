@@ -13,7 +13,7 @@
 #include <cmath>
 #include <vector>
 
-#include "spectrum/spectrum.h"
+#include "hsi/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {

@@ -3,8 +3,8 @@
 // is completed and all the spectra are edited, the 2D ImageLayout can be
 // combined with each spectrum to generate the full 3D hyperspectral data cube.
 
-#ifndef SRC_IMAGE_IMAGE_LAYOUT_H_
-#define SRC_IMAGE_IMAGE_LAYOUT_H_
+#ifndef SRC_HSI_IMAGE_LAYOUT_H_
+#define SRC_HSI_IMAGE_LAYOUT_H_
 
 #include <vector>
 
@@ -86,4 +86,4 @@ class ImageLayout {
 
 }  // namespace hsi_data_generator
 
-#endif  // SRC_IMAGE_IMAGE_LAYOUT_H_
+#endif  // SRC_HSI_IMAGE_LAYOUT_H_

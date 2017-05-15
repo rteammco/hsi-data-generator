@@ -13,8 +13,8 @@
 #include "gui/class_spectrum_row.h"
 #include "gui/export_view.h"
 #include "gui/image_layout_view.h"
-#include "image/image_layout.h"
-#include "spectrum/spectrum.h"
+#include "hsi/image_layout.h"
+#include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
 namespace {

@@ -1,4 +1,4 @@
-#include "spectrum/spectrum.h"
+#include "hsi/spectrum.h"
 
 #include <QtDebug>
 

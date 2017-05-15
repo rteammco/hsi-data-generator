@@ -14,8 +14,8 @@
 #include <vector>
 
 #include "gui/image_layout_widget.h"
-#include "image/image_layout.h"
-#include "spectrum/spectrum.h"
+#include "hsi/image_layout.h"
+#include "hsi/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {

@@ -17,7 +17,7 @@
 #include "gui/class_spectra_view.h"
 #include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
-#include "spectrum/spectrum.h"
+#include "hsi/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {

@@ -2,8 +2,8 @@
 // returned at any desired resolution, and is used to display and export the
 // spectral classes and their metadata across all of the GUI components.
 
-#ifndef SRC_SPECTRUM_SPECTRUM_H_
-#define SRC_SPECTRUM_SPECTRUM_H_
+#ifndef SRC_HSI_SPECTRUM_H_
+#define SRC_HSI_SPECTRUM_H_
 
 #include <QColor>
 #include <QString>
@@ -135,4 +135,4 @@ class Spectrum {
 
 }  // namespace hsi_data_generator
 
-#endif  // SRC_SPECTRUM_SPECTRUM_H_
+#endif  // SRC_HSI_SPECTRUM_H_

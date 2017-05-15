@@ -1,4 +1,4 @@
-#include "image/image_layout.h"
+#include "hsi/image_layout.h"
 
 #include <QtGlobal>  // qRand()
 

@@ -13,7 +13,7 @@
 
 #include "gui/color_box_widget.h"
 #include "gui/spectrum_widget.h"
-#include "spectrum/spectrum.h"
+#include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
 

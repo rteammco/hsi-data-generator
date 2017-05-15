@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-#include "image/image_layout.h"
+#include "hsi/image_layout.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {

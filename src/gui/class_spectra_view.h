@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "gui/class_spectrum_row.h"
-#include "spectrum/spectrum.h"
+#include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
 

@@ -12,7 +12,7 @@
 
 #include <memory>
 
-#include "spectrum/spectrum.h"
+#include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
 

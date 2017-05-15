@@ -13,7 +13,7 @@
 #include <memory>
 #include <vector>
 
-#include "image/image_layout.h"
+#include "hsi/image_layout.h"
 
 namespace hsi_data_generator {
 
