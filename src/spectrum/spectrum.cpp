@@ -56,6 +56,15 @@ void Spectrum::UpdatePeak(
   spectral_peaks_[peak_index].width = new_width;
 }
 
+void Spectrum::DeletePeak(const int peak_index) {
+  if (peak_index < 0 || peak_index >= spectral_peaks_.size()) {
+    qWarning() << "Peak index " << peak_index << " is out of range: "
+               << "must be between 0 and " << (spectral_peaks_.size() - 1);
+    return;
+  }
+  spectral_peaks_.erase(spectral_peaks_.begin() + peak_index);
+}
+
 void Spectrum::Reset() {
   spectral_peaks_.clear();
 }

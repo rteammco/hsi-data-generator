@@ -64,6 +64,10 @@ class Spectrum {
       const double new_amplitude,
       const double new_width);
 
+  // Deletes the peak at the given index. If the given index is not valid,
+  // nothing will happen (but a warning will be displayed).
+  void DeletePeak(const int peak_index);
+
   // Resets the spectrum. All peaks will be removed.
   void Reset();
 

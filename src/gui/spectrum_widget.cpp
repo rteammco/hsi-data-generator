@@ -19,6 +19,9 @@ namespace {
 
 static const QString kQtSpectrumStyle = "qt_stylesheets/spectrum_widget.qss";
 
+// The index assigned to peak_selection_index_ when no peak is selected.
+constexpr int kNoPeakSelectedIndex = -1;
+
 // Rendering constants for edit mode:
 static const QColor kEditPeakColor = Qt::black;
 static const QColor kEditPeakColorSelected(255, 165, 0);  // Orange.
@@ -173,7 +176,7 @@ SpectrumWidget::SpectrumWidget(
     : display_mode_(SPECTRUM_RENDER_MODE),
       num_bands_(num_bands),
       spectrum_(spectrum),
-      peak_selection_index_(-1) {
+      peak_selection_index_(kNoPeakSelectedIndex) {
 
   // Set the stylesheet of this widget.
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumStyle));
@@ -231,7 +234,7 @@ void SpectrumWidget::mouseMoveEvent(QMouseEvent* event) {
     update();
   } else {
     const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
-    int new_selection_index = -1;  // -1 by default means no selection.
+    int new_selection_index = kNoPeakSelectedIndex;
     for (int i = 0; i < peaks.size(); ++i) {
       const bool peak_moused_over = IsPeakNearCoordinate(
           peaks.at(i), mouse_x, mouse_y, canvas_width, canvas_height);
@@ -253,9 +256,17 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
   }
   // If a peak was previously selected, flag selection for dragging. Otherwise,
   // add a new peak at the click location.
+  const Qt::MouseButton button_pressed = event->button();
   if (peak_selection_index_ >= 0) {
-    selection_dragging_ = true;
-  } else {
+    // Left button = start dragging, right button = delete peak.
+    if (button_pressed == Qt::LeftButton) {
+      selection_dragging_ = true;
+    } else if (button_pressed == Qt::RightButton) {
+      spectrum_->DeletePeak(peak_selection_index_);
+      peak_selection_index_ = kNoPeakSelectedIndex;
+      update();
+    }
+  } else if (button_pressed == Qt::LeftButton) {
     NormalizedPoint normalized_pos =
         GetNormalizedPosition(event->x(), event->y(), width(), height());
     const double position = normalized_pos.x;
