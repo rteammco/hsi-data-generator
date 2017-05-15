@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 
+#include "hsi/hsi_exporter.h"
 #include "hsi/image_layout.h"
 #include "hsi/spectrum.h"
 #include "util/util.h"
@@ -46,8 +47,8 @@ void ExportView::ExportButtonPressed() {
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
 
-  // TODO: Use the spectra_ and image_layout_ variables to generate and save an
-  // HSI file at the user-specified save location.
+  HSIDataExporter exporter(spectra_, image_layout_);
+  exporter.SaveFile(file_name);
 }
 
 }  // namespace hsi_data_generator
