@@ -4,7 +4,6 @@
 #ifndef SRC_GUI_SPECTRUM_WIDGET_H_
 #define SRC_GUI_SPECTRUM_WIDGET_H_
 
-#include <QEvent>
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
@@ -54,11 +53,18 @@ class SpectrumWidget : public QWidget {
   // inside the widget.
   void paintEvent(QPaintEvent* event) override;
 
+  // Whenever the mouse moves over the canvas (widget display area), determines
+  // if an existing peak is under the mouse pointer to track that peak for
+  // editing. If the mouse is being dragged, this will handle updating any
+  // selected peak's position.
   void mouseMoveEvent(QMouseEvent* event) override;
 
   // If the widget is in edit mode, the user can interact with the it to add or
   // modify the peak distribution which are used ot generate the spectrum.
   void mousePressEvent(QMouseEvent* event) override;
+
+  // This just unflags any existing dragging events.
+  void mouseReleaseEvent(QMouseEvent* event) override;
 
  private:
   // The number of bands that will be generated and displayed. All values are
@@ -78,7 +84,7 @@ class SpectrumWidget : public QWidget {
   // events), that peak index will be saved here and tracked for peak editing.
   // peak_selection_index_ should be -1 if no peak is selected.
   int peak_selection_index_;
-  QEvent::Type peak_selection_type_;  // TODO: Is this even needed?
+  bool selection_dragging_;
 };
 
 }  // namespace hsi_data_generator

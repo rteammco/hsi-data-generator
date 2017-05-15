@@ -1,5 +1,7 @@
 #include "spectrum/spectrum.h"
 
+#include <QtDebug>
+
 #include <math.h>
 
 #include <algorithm>
@@ -36,6 +38,22 @@ void Spectrum::AddPeak(
   peak.amplitude = amplitude;
   peak.width = width;
   spectral_peaks_.push_back(peak);
+}
+
+void Spectrum::UpdatePeak(
+    const int peak_index,
+    const double new_position,
+    const double new_amplitude,
+    const double new_width) {
+
+  if (peak_index < 0 || peak_index >= spectral_peaks_.size()) {
+    qWarning() << "Peak index " << peak_index << " is out of range: "
+               << "must be between 0 and " << (spectral_peaks_.size() - 1);
+    return;
+  }
+  spectral_peaks_[peak_index].position = new_position;
+  spectral_peaks_[peak_index].amplitude = new_amplitude;
+  spectral_peaks_[peak_index].width = new_width;
 }
 
 void Spectrum::Reset() {

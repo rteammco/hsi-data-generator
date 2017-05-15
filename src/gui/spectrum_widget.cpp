@@ -1,7 +1,7 @@
 #include "gui/spectrum_widget.h"
 
 #include <QColor>
-#include <QEvent>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPen>
@@ -220,20 +220,30 @@ void SpectrumWidget::mouseMoveEvent(QMouseEvent* event) {
   const int mouse_y = event->y();
   const int canvas_width = width();
   const int canvas_height = height();
-  const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
-  int new_selection_index = -1;  // -1 by default means no selection.
-  for (int i = 0; i < peaks.size(); ++i) {
-    const bool peak_moused_over = IsPeakNearCoordinate(
-        peaks.at(i), mouse_x, mouse_y, canvas_width, canvas_height);
-    if (peak_moused_over) {
-      new_selection_index = i;
-      break;
-    }
-  }
-  if (new_selection_index != peak_selection_index_) {
-    peak_selection_index_ = new_selection_index;
-    peak_selection_type_ = QEvent::MouseMove;
+  // If an already-selected peak is being dragged, update it.
+  if (peak_selection_index_ >= 0 && selection_dragging_) {
+    NormalizedPoint normalized_pos =
+        GetNormalizedPosition(mouse_x, mouse_y, canvas_width, canvas_height);
+    const double position = normalized_pos.x;
+    const double amplitude = normalized_pos.y;
+    const double width = 0.001;  // TODO: Enable setting the width manually.
+    spectrum_->UpdatePeak(peak_selection_index_, position, amplitude, width);
     update();
+  } else {
+    const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
+    int new_selection_index = -1;  // -1 by default means no selection.
+    for (int i = 0; i < peaks.size(); ++i) {
+      const bool peak_moused_over = IsPeakNearCoordinate(
+          peaks.at(i), mouse_x, mouse_y, canvas_width, canvas_height);
+      if (peak_moused_over) {
+        new_selection_index = i;
+        break;
+      }
+    }
+    if (new_selection_index != peak_selection_index_) {
+      peak_selection_index_ = new_selection_index;
+      update();
+    }
   }
 }
 
@@ -241,14 +251,23 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
   if (display_mode_ != SPECTRUM_EDIT_MODE) {
     return;
   }
-  // TODO: If an existing peak is clicked, allow moving and editing it.
-  NormalizedPoint normalized_pos =
-      GetNormalizedPosition(event->x(), event->y(), width(), height());
-  const double position = normalized_pos.x;
-  const double amplitude = normalized_pos.y;
-  const double width = 0.001;  // TODO: Enable setting the width manually.
-  spectrum_->AddPeak(position, amplitude, width);
-  update();
+  // If a peak was previously selected, flag selection for dragging. Otherwise,
+  // add a new peak at the click location.
+  if (peak_selection_index_ >= 0) {
+    selection_dragging_ = true;
+  } else {
+    NormalizedPoint normalized_pos =
+        GetNormalizedPosition(event->x(), event->y(), width(), height());
+    const double position = normalized_pos.x;
+    const double amplitude = normalized_pos.y;
+    const double width = 0.001;  // TODO: Enable setting the width manually.
+    spectrum_->AddPeak(position, amplitude, width);
+    update();
+  }
+}
+
+void SpectrumWidget::mouseReleaseEvent(QMouseEvent* event) {
+  selection_dragging_ = false;
 }
 
 }  // namespace hsi_data_generator

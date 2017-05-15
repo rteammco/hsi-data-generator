@@ -56,6 +56,14 @@ class Spectrum {
   void AddPeak(
       const double position, const double amplitude, const double width);
 
+  // Updates an existing peak at the given index. If the given index is not
+  // valid, nothing will happen (but a warning will be displayed).
+  void UpdatePeak(
+      const int peak_index,
+      const double new_position,
+      const double new_amplitude,
+      const double new_width);
+
   // Resets the spectrum. All peaks will be removed.
   void Reset();
 
