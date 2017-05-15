@@ -7,6 +7,7 @@
 #include <QPoint>
 
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 #include "spectrum/spectrum.h"
@@ -19,27 +20,91 @@ static const QString kQtSpectrumStyle = "qt_stylesheets/spectrum_widget.qss";
 
 // Rendering constants for edit mode:
 static const QColor kEditPeakColor = Qt::black;
+static const QColor kEditPeakColorSelected(255, 165, 0);  // Orange.
 constexpr int kEditPeakPointWidth = 10;
 constexpr int kEditPeakLineWidth = 1;
-static const QColor kEditRectangleColor(255, 0, 0, 128);
+static const QColor kEditRectangleColor(255, 0, 0, 128);  // Transparent red.
 constexpr int kEditRectangleLineWidth = 5;
+
+// How far (in pixels) a point needs to be to detect a mouseover.
+constexpr int kMouseoverDetectionRadius = 10;
+
+// A simple struct that defines a 2D point on the widget canvas. We have two
+// for simplicity: one for absolute (int) coordinates, and one for normalized
+// (double) coordinates.
+struct AbsolutePoint {
+  AbsolutePoint(const int x, const int y) : x(x), y(y) {}
+  int x;
+  int y;
+};
+struct NormalizedPoint {
+  NormalizedPoint(const double x, const double y) : x(x), y(y) {}
+  double x;
+  double y;
+};
+
+// Returns a normalized (x, y) position (both x and y are between 0 and 1) from
+// the given coordinates and canvas size. This function assumes that the canvas
+// defines y=0 at the top. This is inverted in the returned value, where y=0 is
+// at the bottom (and y=1 is the top).
+NormalizedPoint GetNormalizedPosition(
+    const int x, const int y, const int width, const int height) {
+
+  const double canvas_width = static_cast<double>(width);
+  const double canvas_height = static_cast<double>(height);
+  const double x_pos = static_cast<double>(x) / canvas_width;
+  const double y_pos = 1.0 - static_cast<double>(y) / canvas_height;
+  return NormalizedPoint(x_pos, y_pos);
+}
+
+// This takes a position normalized by GetNormalizedPosition() and returns back
+// the original absolute pixel position on the canvas (widget screen). The y
+// coordinate is again inverted back.
+AbsolutePoint GetAbsolutePosition(
+    const double x, const double y, const int width, const int height) {
+
+  const double inverted_y = 1.0 - y;
+  const int x_pos = static_cast<int>(x * width);
+  const int y_pos = static_cast<int>(inverted_y * height);
+  return AbsolutePoint(x_pos, y_pos);
+}
+
+// Returns true if the given peak is near the given (x, y) mouse coordinate
+// over the canvas. "near" is defined as within radius specified by
+// kMouseoverDetectionRadius.
+bool IsPeakNearCoordinate(
+    const PeakDistribution& peak,
+    const int mouse_x,
+    const int mouse_y,
+    const int canvas_width,
+    const int canvas_height) {
+
+  const AbsolutePoint peak_position = GetAbsolutePosition(
+      peak.position, peak.amplitude, canvas_width, canvas_height);
+  const int x_diff = abs(mouse_x - peak_position.x);
+  const int y_diff = abs(mouse_y - peak_position.y);
+  return (x_diff <= kMouseoverDetectionRadius &&
+          y_diff <= kMouseoverDetectionRadius);
+}
 
 // Draws the spectrum in render mode, displaying the final spectrum from the
 // given spectrum values. It is expected that all spectrum_values are
 // normalized between 0 and 1.
 void PaintSpectrumRenderMode(
-    const double canvas_width,
-    const double canvas_height,
+    const int canvas_width,
+    const int canvas_height,
     const std::vector<double>& spectrum_values,
     QPainter* painter) {
 
+  const double width = static_cast<double>(canvas_width);
+  const double height = static_cast<double>(canvas_height);
   const int num_values = spectrum_values.size();
-  const double x_stride = canvas_width / static_cast<double>(num_values);
+  const double x_stride = width / static_cast<double>(num_values);
   double previous_x = 0.0;
-  double previous_y = canvas_height;
+  double previous_y = height;
   for (int i = 0; i < num_values; ++i) {
     const double next_x = static_cast<double>(i) * x_stride;
-    const double next_y = canvas_height - (canvas_height * spectrum_values[i]);
+    const double next_y = height - (height * spectrum_values[i]);
     painter->drawLine(previous_x, previous_y, next_x, next_y);
     previous_x = next_x;
     previous_y = next_y;
@@ -50,32 +115,45 @@ void PaintSpectrumRenderMode(
 // that the user can click and drag to edit the spectrum, modifying existing
 // peaks or adding new ones.
 void PaintSpectrumEditMode(
-    const double canvas_width,
-    const double canvas_height,
+    const int canvas_width,
+    const int canvas_height,
+    const int last_mouse_x,
+    const int last_mouse_y,
     const std::vector<PeakDistribution>& peaks,
     QPainter* painter) {
 
-  // The pen used for rendering the points:
+  // The pen used for rendering the regular points:
   QPen point_pen(kEditPeakColor);
   point_pen.setCapStyle(Qt::RoundCap);
   point_pen.setWidth(kEditPeakPointWidth);
+  // The pen used for rendering selected (moused over) points:
+  QPen point_pen_selected = point_pen;
+  point_pen_selected.setColor(kEditPeakColorSelected);
   // The pen used for rendering the lines:
   QPen line_pen(kEditPeakColor);
   line_pen.setWidth(kEditPeakLineWidth);
 
+  const double width = static_cast<double>(canvas_width);
+  const double height = static_cast<double>(canvas_height);
   painter->setRenderHint(QPainter::Antialiasing, true);
   for (const PeakDistribution& peak : peaks) {
-    const double peak_x = canvas_width * peak.position;
-    const double peak_y = canvas_height - (canvas_height * peak.amplitude);
-    // Draw the peak point:
-    painter->setPen(point_pen);
-    painter->drawPoint(QPoint(peak_x, peak_y));
+    const double peak_x = width * peak.position;
+    const double peak_y = height - (height * peak.amplitude);
     // Draw the vertical (height) line:
     painter->setPen(line_pen);
-    painter->drawLine(peak_x, peak_y, peak_x, canvas_height);
+    painter->drawLine(peak_x, peak_y, peak_x, height);
     // Draw the horizontal (width) line:
-    const double half_width = (canvas_width * peak.width) / 2.0;
+    const double half_width = (width * peak.width) / 2.0;
     painter->drawLine(peak_x - half_width, peak_y, peak_x + half_width, peak_y);
+    // Draw the peak point:
+    const bool peak_moused_over = IsPeakNearCoordinate(
+        peak, last_mouse_x, last_mouse_y, canvas_width, canvas_height);
+    if (peak_moused_over) {
+      painter->setPen(point_pen_selected);
+    } else {
+      painter->setPen(point_pen);
+    }
+    painter->drawPoint(QPoint(peak_x, peak_y));
   }
 
   // Outline the whole area to indicate edit mode:
@@ -92,10 +170,15 @@ SpectrumWidget::SpectrumWidget(
     const int num_bands, std::shared_ptr<Spectrum> spectrum)
     : display_mode_(SPECTRUM_RENDER_MODE),
       num_bands_(num_bands),
-      spectrum_(spectrum) {
+      spectrum_(spectrum),
+      last_mouse_x_(0),
+      last_mouse_y_(0) {
 
   // Set the stylesheet of this widget.
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumStyle));
+
+  // Required for the mouseMoveEvent method to work.
+  setMouseTracking(true);
 }
 
 void SpectrumWidget::SetNumberOfBands(const int num_bands) {
@@ -115,19 +198,26 @@ void SpectrumWidget::SetDisplayMode(const SpectrumWidgetDisplayMode mode) {
 
 void SpectrumWidget::paintEvent(QPaintEvent* event) {
   QPainter painter(this);
-  const double canvas_width = static_cast<double>(width());
-  const double canvas_height = static_cast<double>(height());
   if (display_mode_ == SPECTRUM_RENDER_MODE) {
     const std::vector<double> spectrum_values =
         spectrum_->GenerateSpectrum(num_bands_);
-    PaintSpectrumRenderMode(
-        canvas_width, canvas_height, spectrum_values, &painter);
+    PaintSpectrumRenderMode(width(), height(), spectrum_values, &painter);
   } else {
     const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
-    PaintSpectrumEditMode(canvas_width, canvas_height, peaks, &painter);
+    PaintSpectrumEditMode(
+        width(), height(), last_mouse_x_, last_mouse_y_, peaks, &painter);
   }
   // TODO: Draw the x-axis step indicator bars (ruler).
   // TODO: Draw the x and y axis numbers.
+}
+
+void SpectrumWidget::mouseMoveEvent(QMouseEvent* event) {
+  if (display_mode_ != SPECTRUM_EDIT_MODE) {
+    return;
+  }
+  last_mouse_x_ = event->x();
+  last_mouse_y_ = event->y();
+  update();
 }
 
 void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
@@ -135,11 +225,10 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
     return;
   }
   // TODO: If an existing peak is clicked, allow moving and editing it.
-  const double canvas_width = static_cast<double>(width());
-  const double canvas_height = static_cast<double>(height());
-  const double position = static_cast<double>(event->x()) / canvas_width;
-  const double amplitude =
-      1.0 - static_cast<double>(event->y()) / canvas_height;
+  NormalizedPoint normalized_pos =
+      GetNormalizedPosition(event->x(), event->y(), width(), height());
+  const double position = normalized_pos.x;
+  const double amplitude = normalized_pos.y;
   const double width = 0.001;  // TODO: Enable setting the width manually.
   spectrum_->AddPeak(position, amplitude, width);
   update();

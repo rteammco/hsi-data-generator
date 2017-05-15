@@ -53,6 +53,8 @@ class SpectrumWidget : public QWidget {
   // inside the widget.
   void paintEvent(QPaintEvent* event) override;
 
+  void mouseMoveEvent(QMouseEvent* event) override;
+
   // If the widget is in edit mode, the user can interact with the it to add or
   // modify the peak distribution which are used ot generate the spectrum.
   void mousePressEvent(QMouseEvent* event) override;
@@ -70,6 +72,10 @@ class SpectrumWidget : public QWidget {
   // The Spectrum object contains the spectral peaks and can generate the
   // spectrum when it needs to be displayed or returned.
   std::shared_ptr<Spectrum> spectrum_;
+
+  // Mouse position tracking.
+  int last_mouse_x_;
+  int last_mouse_y_;
 };
 
 }  // namespace hsi_data_generator
