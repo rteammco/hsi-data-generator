@@ -104,6 +104,10 @@ class Spectrum {
     return spectral_peaks_;
   }
 
+  int GetNumPeaks() const {
+    return spectral_peaks_.size();
+  }
+
   // Returns true if the spectrum is empty (i.e. it currently has no peaks).
   bool IsEmpty() const {
     return spectral_peaks_.empty();

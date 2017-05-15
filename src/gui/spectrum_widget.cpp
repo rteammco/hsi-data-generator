@@ -274,6 +274,7 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
     const double amplitude = normalized_pos.y;
     const double width = 0.001;  // TODO: Enable setting the width manually.
     spectrum_->AddPeak(position, amplitude, width);
+    peak_selection_index_ = spectrum_->GetNumPeaks() - 1;
     update();
   }
 }
