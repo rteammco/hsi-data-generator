@@ -56,8 +56,18 @@ NormalizedPoint GetNormalizedPosition(
 
   const double canvas_width = static_cast<double>(width);
   const double canvas_height = static_cast<double>(height);
-  const double x_pos = static_cast<double>(x) / canvas_width;
-  const double y_pos = 1.0 - static_cast<double>(y) / canvas_height;
+  double x_pos = static_cast<double>(x) / canvas_width;
+  if (x_pos < 0.0) {
+    x_pos = 0.0;
+  } else if (x_pos > 1.0) {
+    x_pos = 1.0;
+  }
+  double y_pos = 1.0 - static_cast<double>(y) / canvas_height;
+  if (y_pos < 0.0) {
+    y_pos = 0.0;
+  } else if (y_pos > 1.0) {
+    y_pos = 1.0;
+  }
   return NormalizedPoint(x_pos, y_pos);
 }
 
@@ -68,8 +78,18 @@ AbsolutePoint GetAbsolutePosition(
     const double x, const double y, const int width, const int height) {
 
   const double inverted_y = 1.0 - y;
-  const int x_pos = static_cast<int>(x * width);
-  const int y_pos = static_cast<int>(inverted_y * height);
+  int x_pos = static_cast<int>(x * width);
+  if (x_pos < 0) {
+    x_pos = 0;
+  } else if (x_pos > width) {
+    x_pos = width;
+  }
+  int y_pos = static_cast<int>(inverted_y * height);
+  if (y_pos < 0) {
+    y_pos = 0;
+  } else if (y_pos > height) {
+    y_pos = height;
+  }
   return AbsolutePoint(x_pos, y_pos);
 }
 
