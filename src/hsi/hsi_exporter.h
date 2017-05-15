@@ -23,7 +23,16 @@ class HSIDataExporter {
       const std::shared_ptr<ImageLayout> image_layout)
       : spectra_(spectra), image_layout_(image_layout) {}
 
-  void SaveFile(const QString& file_name) const;
+  // Saves the file to the given file path. This will be a binary ENVI file.
+  // An additional header file will also be saved, which will have the same
+  // name but with a ".hdr" extension.
+  //
+  // Returns true on success.
+  bool SaveFile(const QString& file_name);
+
+  // Returns any error message caused by SaveFile(). If no errors were logged,
+  // returns a generic error string.
+  QString GetErrorMessage() const;
 
  private:
   const std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;

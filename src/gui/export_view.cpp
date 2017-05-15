@@ -1,6 +1,7 @@
 #include "gui/export_view.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QString>
 #include <QVBoxLayout>
@@ -20,6 +21,7 @@ static const QString kQtExportViewStyle = "qt_stylesheets/export_view.qss";
 
 static const QString kExportButtonString = "Export HSI";
 static const QString kSaveFileDialogName = "Save HSI File";
+static const QString kSaveFileErrorDialogName = "File Save Error";
 
 }  // namespace
 
@@ -46,9 +48,15 @@ void ExportView::ExportButtonPressed() {
       kSaveFileDialogName,           // Dialog save caption.
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
-
-  HSIDataExporter exporter(spectra_, image_layout_);
-  exporter.SaveFile(file_name);
+  if (!file_name.isEmpty()) {
+    HSIDataExporter exporter(spectra_, image_layout_);
+    if (!exporter.SaveFile(file_name)) {
+      QMessageBox::critical(
+          this,
+          kSaveFileErrorDialogName,
+          exporter.GetErrorMessage());
+    }
+  }
 }
 
 }  // namespace hsi_data_generator
