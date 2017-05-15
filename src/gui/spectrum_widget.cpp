@@ -102,7 +102,10 @@ void PaintSpectrumRenderMode(
   const double x_stride = width / static_cast<double>(num_values);
   double previous_x = 0.0;
   double previous_y = height;
-  for (int i = 0; i < num_values; ++i) {
+  if (num_values > 0) {
+    previous_y = height - (height * spectrum_values[0]);
+  }
+  for (int i = 1; i < num_values; ++i) {
     const double next_x = static_cast<double>(i) * x_stride;
     const double next_y = height - (height * spectrum_values[i]);
     painter->drawLine(previous_x, previous_y, next_x, next_y);
