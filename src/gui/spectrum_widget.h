@@ -6,6 +6,7 @@
 
 #include <QMouseEvent>
 #include <QPaintEvent>
+#include <QWheelEvent>
 #include <QWidget>
 
 #include <memory>
@@ -65,6 +66,11 @@ class SpectrumWidget : public QWidget {
 
   // This just unflags any existing dragging events.
   void mouseReleaseEvent(QMouseEvent* event) override;
+
+  // When the user scrolls over a selected (moused over) peak, the scroll
+  // action resizes the peak's width. Resizing will only occur on the selected
+  // peak if it is not currently being dragged.
+  void wheelEvent(QWheelEvent* event) override;
 
  private:
   // The number of bands that will be generated and displayed. All values are

@@ -6,6 +6,8 @@
 #include <QPaintEvent>
 #include <QPen>
 #include <QPoint>
+#include <QtDebug>
+#include <QWheelEvent>
 
 #include <algorithm>
 #include <cmath>
@@ -21,6 +23,14 @@ static const QString kQtSpectrumStyle = "qt_stylesheets/spectrum_widget.qss";
 
 // The index assigned to peak_selection_index_ when no peak is selected.
 constexpr int kNoPeakSelectedIndex = -1;
+
+// Peak value variables.
+constexpr double kDefaultPeakWidth = 0.001;
+constexpr double kPeakWidthResizeStep = 0.0001;
+// Pass kDoNotChangePeakValue as an argument to Spectrum::UpdateValue to update
+// the peak but not change that specific value.
+constexpr double kDoNotChangePeakValue = -1.0;
+constexpr double kPeakWidthRenderingScale = 50.0;
 
 // Rendering constants for edit mode:
 static const QColor kEditPeakColor = Qt::black;
@@ -170,7 +180,8 @@ void PaintSpectrumEditMode(
     painter->setPen(line_pen);
     painter->drawLine(peak_x, peak_y, peak_x, height);
     // Draw the horizontal (width) line:
-    const double half_width = (width * peak.width) / 2.0;
+    const double scaled_peak_width = peak.width * kPeakWidthRenderingScale;
+    const double half_width = (width * scaled_peak_width) / 2.0;
     painter->drawLine(peak_x - half_width, peak_y, peak_x + half_width, peak_y);
     // Draw the peak point:
     if (i == selected_peak_index) {
@@ -250,8 +261,8 @@ void SpectrumWidget::mouseMoveEvent(QMouseEvent* event) {
         GetNormalizedPosition(mouse_x, mouse_y, canvas_width, canvas_height);
     const double position = normalized_pos.x;
     const double amplitude = normalized_pos.y;
-    const double width = 0.001;  // TODO: Enable setting the width manually.
-    spectrum_->UpdatePeak(peak_selection_index_, position, amplitude, width);
+    spectrum_->UpdatePeak(
+        peak_selection_index_, position, amplitude, kDoNotChangePeakValue);
     update();
   } else {
     const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
@@ -292,8 +303,7 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
         GetNormalizedPosition(event->x(), event->y(), width(), height());
     const double position = normalized_pos.x;
     const double amplitude = normalized_pos.y;
-    const double width = 0.001;  // TODO: Enable setting the width manually.
-    spectrum_->AddPeak(position, amplitude, width);
+    spectrum_->AddPeak(position, amplitude, kDefaultPeakWidth);
     peak_selection_index_ = spectrum_->GetNumPeaks() - 1;
     update();
   }
@@ -301,6 +311,29 @@ void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
 
 void SpectrumWidget::mouseReleaseEvent(QMouseEvent* event) {
   selection_dragging_ = false;
+}
+
+void SpectrumWidget::wheelEvent(QWheelEvent* event) {
+  if (display_mode_ != SPECTRUM_EDIT_MODE) {
+    return;
+  }
+  if (peak_selection_index_ >= 0 && !selection_dragging_) {
+    const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
+    if (peak_selection_index_ >= peaks.size()) {
+      qWarning() << "Peak index out of range. Cannot access element.";
+      return;
+    }
+    const PeakDistribution& peak = peaks[peak_selection_index_];
+    double peak_width = peak.width;
+    if (event->delta() > 0) {
+      peak_width += kPeakWidthResizeStep;
+    } else {
+      peak_width -= kPeakWidthResizeStep;
+    }
+    spectrum_->UpdatePeak(
+        peak_selection_index_, peak.position, peak.amplitude, peak_width);
+    update();
+  }
 }
 
 }  // namespace hsi_data_generator

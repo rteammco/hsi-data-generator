@@ -32,12 +32,10 @@ double GetNormalDistributionValue(
 void Spectrum::AddPeak(
     const double position, const double amplitude, const double width) {
 
-  // TODO: Check validity of the given values (make sure they're in range).
-  PeakDistribution peak;
-  peak.position = position;
-  peak.amplitude = amplitude;
-  peak.width = width;
-  spectral_peaks_.push_back(peak);
+  // We use UpdatePeak, which will automatically ensure the peak's values are
+  // within valid ranges.
+  spectral_peaks_.push_back(PeakDistribution());
+  UpdatePeak(spectral_peaks_.size() - 1, position, amplitude, width);
 }
 
 void Spectrum::UpdatePeak(
@@ -51,9 +49,15 @@ void Spectrum::UpdatePeak(
                << "must be between 0 and " << (spectral_peaks_.size() - 1);
     return;
   }
-  spectral_peaks_[peak_index].position = new_position;
-  spectral_peaks_[peak_index].amplitude = new_amplitude;
-  spectral_peaks_[peak_index].width = new_width;
+  if (new_position >= 0.0 && new_position <= 1.0) {
+    spectral_peaks_[peak_index].position = new_position;
+  }
+  if (new_amplitude >= 0.0 && new_amplitude <= 1.0) {
+    spectral_peaks_[peak_index].amplitude = new_amplitude;
+  }
+  if (new_width >= 0.0 && new_width <= 1.0) {
+    spectral_peaks_[peak_index].width = new_width;
+  }
 }
 
 void Spectrum::DeletePeak(const int peak_index) {

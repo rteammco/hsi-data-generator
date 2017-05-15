@@ -16,6 +16,10 @@ namespace hsi_data_generator {
 // Gaussian distribution that represents a single peak in the spectrum. All
 // values should be normalized between 0 and 1.
 struct PeakDistribution {
+  // Default constructor initializes everything to 0. This is effectively a
+  // zero (null) distribution.
+  PeakDistribution() : position(0), amplitude(0), width(0) {}
+
   // The position is the x-position of the peak. The peak will be centered at
   // this position. It is the mean of the Guassian.
   //
@@ -58,6 +62,10 @@ class Spectrum {
 
   // Updates an existing peak at the given index. If the given index is not
   // valid, nothing will happen (but a warning will be displayed).
+  //
+  // Peak position, amplitude, and width will always be between 0 and 1. If
+  // invalid values are given, they will not be updated. Pass in -1 or any
+  // invalid value to keep that variable unchanged.
   void UpdatePeak(
       const int peak_index,
       const double new_position,
