@@ -81,8 +81,13 @@ std::vector<double> Spectrum::GenerateSpectrum(const int num_bands) const {
         static_cast<double>(band) / static_cast<double>(num_bands);;
     spectrum[band] = 0.0;
     for (const PeakDistribution& peak : spectral_peaks_) {
-      spectrum[band] += peak.amplitude * GetNormalDistributionValue(
-          normalized_x, peak.position, peak.width);
+      const double peak_value =
+          GetNormalDistributionValue(normalized_x, peak.position, peak.width);
+      const double peak_max_value =
+          GetNormalDistributionValue(peak.position, peak.position, peak.width);
+      const double relative_peak_value =
+          std::min(1.0, (peak_value / peak_max_value));
+      spectrum[band] += peak.amplitude * relative_peak_value;
     }
     max_value = std::max(spectrum[band], max_value);
   }
