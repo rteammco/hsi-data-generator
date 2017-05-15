@@ -4,6 +4,7 @@
 #ifndef SRC_GUI_SPECTRUM_WIDGET_H_
 #define SRC_GUI_SPECTRUM_WIDGET_H_
 
+#include <QEvent>
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
@@ -73,9 +74,11 @@ class SpectrumWidget : public QWidget {
   // spectrum when it needs to be displayed or returned.
   std::shared_ptr<Spectrum> spectrum_;
 
-  // Mouse position tracking.
-  int last_mouse_x_;
-  int last_mouse_y_;
+  // If a peak is selected during user interaction (mouse move/click/drag
+  // events), that peak index will be saved here and tracked for peak editing.
+  // peak_selection_index_ should be -1 if no peak is selected.
+  int peak_selection_index_;
+  QEvent::Type peak_selection_type_;  // TODO: Is this even needed?
 };
 
 }  // namespace hsi_data_generator

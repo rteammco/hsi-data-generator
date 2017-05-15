@@ -1,6 +1,7 @@
 #include "gui/spectrum_widget.h"
 
 #include <QColor>
+#include <QEvent>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPen>
@@ -120,9 +121,8 @@ void PaintSpectrumRenderMode(
 void PaintSpectrumEditMode(
     const int canvas_width,
     const int canvas_height,
-    const int last_mouse_x,
-    const int last_mouse_y,
     const std::vector<PeakDistribution>& peaks,
+    const int selected_peak_index,
     QPainter* painter) {
 
   // The pen used for rendering the regular points:
@@ -139,7 +139,8 @@ void PaintSpectrumEditMode(
   const double width = static_cast<double>(canvas_width);
   const double height = static_cast<double>(canvas_height);
   painter->setRenderHint(QPainter::Antialiasing, true);
-  for (const PeakDistribution& peak : peaks) {
+  for (int i = 0; i < peaks.size(); ++i) {
+    const PeakDistribution& peak = peaks.at(i);
     const double peak_x = width * peak.position;
     const double peak_y = height - (height * peak.amplitude);
     // Draw the vertical (height) line:
@@ -149,9 +150,7 @@ void PaintSpectrumEditMode(
     const double half_width = (width * peak.width) / 2.0;
     painter->drawLine(peak_x - half_width, peak_y, peak_x + half_width, peak_y);
     // Draw the peak point:
-    const bool peak_moused_over = IsPeakNearCoordinate(
-        peak, last_mouse_x, last_mouse_y, canvas_width, canvas_height);
-    if (peak_moused_over) {
+    if (i == selected_peak_index) {
       painter->setPen(point_pen_selected);
     } else {
       painter->setPen(point_pen);
@@ -174,8 +173,7 @@ SpectrumWidget::SpectrumWidget(
     : display_mode_(SPECTRUM_RENDER_MODE),
       num_bands_(num_bands),
       spectrum_(spectrum),
-      last_mouse_x_(0),
-      last_mouse_y_(0) {
+      peak_selection_index_(-1) {
 
   // Set the stylesheet of this widget.
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumStyle));
@@ -208,7 +206,7 @@ void SpectrumWidget::paintEvent(QPaintEvent* event) {
   } else {
     const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
     PaintSpectrumEditMode(
-        width(), height(), last_mouse_x_, last_mouse_y_, peaks, &painter);
+        width(), height(), peaks, peak_selection_index_, &painter);
   }
   // TODO: Draw the x-axis step indicator bars (ruler).
   // TODO: Draw the x and y axis numbers.
@@ -218,9 +216,25 @@ void SpectrumWidget::mouseMoveEvent(QMouseEvent* event) {
   if (display_mode_ != SPECTRUM_EDIT_MODE) {
     return;
   }
-  last_mouse_x_ = event->x();
-  last_mouse_y_ = event->y();
-  update();
+  const int mouse_x = event->x();
+  const int mouse_y = event->y();
+  const int canvas_width = width();
+  const int canvas_height = height();
+  const std::vector<PeakDistribution>& peaks = spectrum_->GetPeaks();
+  int new_selection_index = -1;  // -1 by default means no selection.
+  for (int i = 0; i < peaks.size(); ++i) {
+    const bool peak_moused_over = IsPeakNearCoordinate(
+        peaks.at(i), mouse_x, mouse_y, canvas_width, canvas_height);
+    if (peak_moused_over) {
+      new_selection_index = i;
+      break;
+    }
+  }
+  if (new_selection_index != peak_selection_index_) {
+    peak_selection_index_ = new_selection_index;
+    peak_selection_type_ = QEvent::MouseMove;
+    update();
+  }
 }
 
 void SpectrumWidget::mousePressEvent(QMouseEvent* event) {
