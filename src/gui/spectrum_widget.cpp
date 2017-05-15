@@ -176,7 +176,8 @@ SpectrumWidget::SpectrumWidget(
     : display_mode_(SPECTRUM_RENDER_MODE),
       num_bands_(num_bands),
       spectrum_(spectrum),
-      peak_selection_index_(kNoPeakSelectedIndex) {
+      peak_selection_index_(kNoPeakSelectedIndex),
+      selection_dragging_(false) {
 
   // Set the stylesheet of this widget.
   setStyleSheet(util::GetStylesheetRelativePath(kQtSpectrumStyle));
