@@ -235,6 +235,8 @@ void SpectrumWidget::SetDisplayMode(const SpectrumWidgetDisplayMode mode) {
 void SpectrumWidget::paintEvent(QPaintEvent* event) {
   QPainter painter(this);
   if (display_mode_ == SPECTRUM_RENDER_MODE) {
+    peak_selection_index_ = kNoPeakSelectedIndex;
+    selection_dragging_ = false;
     const std::vector<double> spectrum_values =
         spectrum_->GenerateSpectrum(num_bands_);
     PaintSpectrumRenderMode(width(), height(), spectrum_values, &painter);
