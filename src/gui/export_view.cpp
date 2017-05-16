@@ -56,7 +56,8 @@ void ExportView::ExportButtonPressed() {
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
   if (!file_name.isEmpty()) {
-    HSIDataExporter exporter(spectra_, image_layout_, 10);  // TODO: NUM BANDS!
+    // TODO: Number of bands! Don't hard code 10.
+    const HSIDataExporter exporter(spectra_, image_layout_, 10);
     if (!exporter.SaveFile(file_name)) {
       QMessageBox::critical(
           this,

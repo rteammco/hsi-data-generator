@@ -3,6 +3,7 @@
 #include <QString>
 
 #include <fstream>
+#include <vector>
 
 #include "util/util.h"
 
@@ -31,13 +32,22 @@ static const QString kInvalidImageSizeErrorMessage =
 static const QString kFileNotOpenErrorMessage =
     "Could not open file \"" + kSubstitutePlaceholder + "\" for writing.";
 
+static const QString kInvalidSpectrumClassErrorMessage =
+    "Invalid spectrum class: must be between 0 and " +
+    kSubstitutePlaceholder + ".";
+
 }  // namespace
 
 bool HSIDataExporter::SaveFile(const QString& file_name) const {
   // Determine variables and check for validity:
-  if (spectra_->size() < 1) {
+  const int num_spectra = spectra_->size();
+  if (num_spectra < 1) {
     error_message_ = kNotEnoughSpectraErrorMessage;
     return false;
+  }
+  std::vector<std::vector<double>> generated_spectra;
+  for (int i = 0; i < num_spectra; ++i) {
+    generated_spectra.push_back(spectra_->at(i)->GenerateSpectrum(num_bands_));
   }
   if (num_bands_ < util::kMinNumberOfBands ||
       num_bands_ > util::kMaxNumberOfBands) {
@@ -67,14 +77,29 @@ bool HSIDataExporter::SaveFile(const QString& file_name) const {
     error_message_.replace(kSubstitutePlaceholder, file_name);
     return false;
   }
+  // BSQ (band sequential) format:
   for (int band = 0; band < num_bands_; ++band) {
     for (int row = 0; row < num_rows; ++row) {
       for (int col = 0; col < num_cols; ++col) {
-        // TODO: Write the data value here.
+        const int class_index = image_layout_->GetMapIndex(row, col);
+        if (class_index < 0 || class_index >= num_spectra) {
+          error_message_ = kInvalidSpectrumClassErrorMessage;
+          error_message_.replace(
+              kSubstitutePlaceholder, QString::number(num_spectra - 1));
+          data_file.close();
+          return false;
+        }
+        const double data_value = generated_spectra[class_index][band];
+        const float export_value = static_cast<float>(data_value);
+        data_file.write(
+            reinterpret_cast<const char*>(&export_value), data_size);
       }
     }
   }
   data_file.close();
+
+  // TODO: Now write the header file:
+
   return true;
 }
 
