@@ -22,8 +22,6 @@ static const QString kQtClassSpectraViewStyle =
 
 // The default number of bands that is pre-set until the user changes it.
 constexpr int kDefaultNumberOfBands = 100;
-constexpr int kMinNumberOfBands = 1;
-constexpr int kMaxNumberOfBands = 10000;
 
 static const QString kDefaultSpectrumName = "Background";
 static const QColor kDefaultSpectrumColor = Qt::black;
@@ -95,10 +93,10 @@ void ClassSpectraView::NumberOfBandsInputChanged() {
   const QString num_bands_string = number_of_bands_input_->text();
   num_bands_ = num_bands_string.toInt();
   // Make sure the number of bands is valid.
-  if (num_bands_ < kMinNumberOfBands) {
-    num_bands_ = kMinNumberOfBands;
-  } else if (num_bands_ > kMaxNumberOfBands) {
-    num_bands_ = kMaxNumberOfBands;
+  if (num_bands_ < util::kMinNumberOfBands) {
+    num_bands_ = util::kMinNumberOfBands;
+  } else if (num_bands_ > util::kMaxNumberOfBands) {
+    num_bands_ = util::kMaxNumberOfBands;
   }
   number_of_bands_input_->setText(QString::number(num_bands_));
   for (int i = 0; i < class_spectrum_rows_.size(); ++i) {

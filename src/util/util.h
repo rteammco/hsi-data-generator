@@ -6,6 +6,13 @@
 namespace hsi_data_generator {
 namespace util {
 
+// Size limits to avoid excessively massive file sizes and memory usage, or
+// generally invalid sizes:
+constexpr int kMinImageDimensionSize = 1;
+constexpr int kMaxImageDimensionSize = 10000;
+constexpr int kMinNumberOfBands = 1;
+constexpr int kMaxNumberOfBands = 10000;
+
 // Returns the root directory where this project was compiled. This uses the
 // root path preprocessor macro specified by CMake. If for some reason this
 // flag isn't defined, a warning will be logged and the local directory (".")

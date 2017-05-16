@@ -20,15 +20,16 @@ class HSIDataExporter {
  public:
   HSIDataExporter(
       const std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
-      const std::shared_ptr<ImageLayout> image_layout)
-      : spectra_(spectra), image_layout_(image_layout) {}
+      const std::shared_ptr<ImageLayout> image_layout,
+      const int num_bands)
+      : spectra_(spectra), image_layout_(image_layout), num_bands_(num_bands) {}
 
   // Saves the file to the given file path. This will be a binary ENVI file.
   // An additional header file will also be saved, which will have the same
   // name but with a ".hdr" extension.
   //
   // Returns true on success.
-  bool SaveFile(const QString& file_name);
+  bool SaveFile(const QString& file_name) const;
 
   // Returns any error message caused by SaveFile(). If no errors were logged,
   // returns a generic error string.
@@ -37,6 +38,12 @@ class HSIDataExporter {
  private:
   const std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
   const std::shared_ptr<ImageLayout> image_layout_;
+
+  // The number of bands that will be exported in the HSI image.
+  const int num_bands_;
+
+  // This error message is logged if the SaveFile operation fails.
+  mutable QString error_message_;
 };
 
 }  // namespace hsi_data_generator

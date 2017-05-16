@@ -1,6 +1,7 @@
 #include "gui/export_view.h"
 
 #include <QFileDialog>
+#include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
@@ -19,6 +20,8 @@ namespace {
 
 static const QString kQtExportViewStyle = "qt_stylesheets/export_view.qss";
 
+static const QString kInformationString =
+    "Export the HSI data as a binary ENVI image.";
 static const QString kExportButtonString = "Export HSI";
 static const QString kSaveFileDialogName = "Save HSI File";
 static const QString kSaveFileErrorDialogName = "File Save Error";
@@ -36,6 +39,10 @@ ExportView::ExportView(
   layout->setAlignment(Qt::AlignTop);
   setLayout(layout);
 
+  QLabel* info_label = new QLabel(kInformationString);
+  layout->addWidget(info_label);
+  layout->setAlignment(info_label, Qt::AlignCenter);
+
   QPushButton* export_button = new QPushButton(kExportButtonString);
   layout->addWidget(export_button);
   layout->setAlignment(export_button, Qt::AlignCenter);
@@ -49,7 +56,7 @@ void ExportView::ExportButtonPressed() {
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
   if (!file_name.isEmpty()) {
-    HSIDataExporter exporter(spectra_, image_layout_);
+    HSIDataExporter exporter(spectra_, image_layout_, 10);  // TODO: NUM BANDS!
     if (!exporter.SaveFile(file_name)) {
       QMessageBox::critical(
           this,

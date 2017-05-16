@@ -56,10 +56,12 @@ class ImageLayout {
   void GenerateRandomLayout(
       const int num_classes, const int random_blob_size = 1);
 
+  // Returns the width in pixels (number of columns) in the image.
   int GetWidth() const {
     return image_width_;
   }
 
+  // Returns the height in pixels (number of rows) in the image.
   int GetHeight() const {
     return image_height_;
   }
