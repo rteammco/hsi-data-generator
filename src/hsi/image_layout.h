@@ -71,6 +71,9 @@ class ImageLayout {
     return spectral_class_map_;
   }
 
+  // Returns the value at the given index.
+  int GetClassAtPixel(const int x_col, const int y_row) const;
+
   // Returns the 1D index (into the vector returned by GetClassMap() from a
   // given (X = col, Y = row) 2D image coordinate.
   int GetMapIndex(const int x_col, const int y_row) const;

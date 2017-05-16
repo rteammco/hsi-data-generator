@@ -88,7 +88,14 @@ void ImageLayout::GenerateRandomLayout(
   }
 }
 
+int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
+  const int map_index = GetMapIndex(x_col, y_row);
+  // TODO: Some range checking?
+  return spectral_class_map_[map_index];
+}
+
 int ImageLayout::GetMapIndex(const int x_col, const int y_row) const {
+  // TODO: Some range checking?
   return y_row * image_width_ + x_col;
 }
 

@@ -1,6 +1,7 @@
 #include "hsi/hsi_exporter.h"
 
 #include <QString>
+#include <QtDebug>
 
 #include <fstream>
 #include <vector>
@@ -9,6 +10,9 @@
 
 namespace hsi_data_generator {
 namespace {
+
+// The extension appended on the file name for writing header files:
+static const QString kHeaderFileExtension = ".hdr";
 
 // Error messages for various file operations:
 static const QString kSubstitutePlaceholder = "%";
@@ -81,8 +85,9 @@ bool HSIDataExporter::SaveFile(const QString& file_name) const {
   for (int band = 0; band < num_bands_; ++band) {
     for (int row = 0; row < num_rows; ++row) {
       for (int col = 0; col < num_cols; ++col) {
-        const int class_index = image_layout_->GetMapIndex(row, col);
+        const int class_index = image_layout_->GetClassAtPixel(col, row);
         if (class_index < 0 || class_index >= num_spectra) {
+          qInfo() << class_index;
           error_message_ = kInvalidSpectrumClassErrorMessage;
           error_message_.replace(
               kSubstitutePlaceholder, QString::number(num_spectra - 1));
@@ -98,7 +103,23 @@ bool HSIDataExporter::SaveFile(const QString& file_name) const {
   }
   data_file.close();
 
-  // TODO: Now write the header file:
+  // Now write the header file:
+  const QString header_file_name = file_name + kHeaderFileExtension;
+  std::ofstream header_file(header_file_name.toStdString());
+  if (!header_file.is_open()) {
+    error_message_ = kFileNotOpenErrorMessage;
+    error_message_.replace(kSubstitutePlaceholder, header_file_name);
+    return false;
+  }
+  // TODO: Adjust these header values as needed.
+  header_file << "interleave      = bsq\n";
+  header_file << "data type       = float\n";
+  header_file << "byte order      = 0\n";
+  header_file << "header offset   = 0\n";
+  header_file << "samples         = " << num_rows << "\n";
+  header_file << "lines           = " << num_cols << "\n";
+  header_file << "bands           = " << num_bands_ << "\n";
+  header_file.close();
 
   return true;
 }
