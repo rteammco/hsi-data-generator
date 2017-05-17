@@ -15,6 +15,7 @@
 #include "gui/export_view.h"
 #include "gui/image_layout_view.h"
 #include "hsi/image_layout.h"
+#include "hsi/project_loader.h"
 #include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
@@ -147,6 +148,9 @@ void MainWindow::ResetActionCalled() {
 
 void MainWindow::SaveActionCalled() {
   qInfo() << "Save Called";
+  // TODO: Num bands and file name, etc.
+  ProjectLoader project_loader(spectra_, image_layout_, 100);
+  project_loader.SaveProjectToFile("CHANGE THIS NAME");
 }
 
 }  // namespace hsi_data_generator
