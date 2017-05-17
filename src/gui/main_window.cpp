@@ -19,7 +19,10 @@
 namespace hsi_data_generator {
 namespace {
 
+// The default title. The window_counter is used to uniquely label multiple new
+// windows.
 static const QString kDefaultWindowTitle = "New Project";
+static int window_counter = 0;
 
 // File menu items:
 static const QString kFileMenuText = "File";
@@ -47,7 +50,12 @@ constexpr int kDefaultImageLayoutHeight = 500;
 }  // namespace
 
 MainWindow::MainWindow() {
-  setWindowTitle(kDefaultWindowTitle);
+  QString window_title = kDefaultWindowTitle;
+  if (window_counter > 0) {
+    window_title += " (" + QString::number(window_counter) + ")";
+  }
+  setWindowTitle(window_title);
+  window_counter++;
 
   // Create a file menu:
   QMenu* file_menu = menuBar()->addMenu(kFileMenuText);
@@ -104,7 +112,8 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::NewActionCalled() {
-  qInfo() << "New Called";
+  MainWindow* new_window = new MainWindow();
+  new_window->show();
 }
 
 void MainWindow::OpenActionCalled() {
