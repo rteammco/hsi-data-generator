@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QLabel>
 #include <QLayoutItem>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QShowEvent>
 #include <QString>
@@ -25,6 +26,10 @@ static const QString kQtImageLayoutViewStyle =
     "qt_stylesheets/image_layout_view.qss";
 
 // Popup dialog notification text.
+static const QString kNoSpectraErrorDialogTitle = "No Spectra Available";
+static const QString kNoSpectraErrorDialogMessage =
+    "No spectra are currently available. Use the Spectra Editor to make some.";
+
 static const QString kStripeWidthDialogTitle = "Select Stripe Width";
 static const QString kStripeWidthDialogSelectionLabel =
     "Stripe width (0 for automatic size):";
@@ -54,7 +59,10 @@ void GenerateLayout(
   // Generate the appropriate layout using the ImageLayout object.
   const int num_classes = spectra.size();
   if (num_classes == 0) {
-    // TODO: Inform the user of the fail.
+    QMessageBox::critical(
+        dialog_parent,
+        kNoSpectraErrorDialogTitle,
+        kNoSpectraErrorDialogMessage);
     return;
   }
   switch (layout_type) {

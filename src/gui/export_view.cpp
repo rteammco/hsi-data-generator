@@ -25,10 +25,10 @@ static const QString kSubstitutePlaceholder = "%";
 static const QString kInformationString =
     "Export the HSI data as a binary ENVI image.";
 static const QString kExportButtonString = "Export HSI";
-static const QString kSaveFileDialogName = "Save HSI File";
-static const QString kSaveFileErrorDialogName = "File Save Error";
-static const QString kSaveFileSuccessDialogName = "File Saved";
-static const QString kSaveFileSuccessDialongMessage =
+static const QString kSaveFileDialogTitle = "Save HSI File";
+static const QString kSaveFileErrorDialogTitle = "File Save Error";
+static const QString kSaveFileSuccessDialogTitle = "File Saved";
+static const QString kSaveFileSuccessDialogMessage =
     "Data was successfully saved to file \"%\".";
 
 }  // namespace
@@ -57,7 +57,7 @@ ExportView::ExportView(
 void ExportView::ExportButtonPressed() {
   const QString file_name = QFileDialog::getSaveFileName(
       this,
-      kSaveFileDialogName,           // Dialog save caption.
+      kSaveFileDialogTitle,          // Dialog save caption.
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
   if (!file_name.isEmpty()) {
@@ -66,12 +66,13 @@ void ExportView::ExportButtonPressed() {
     if (!exporter.SaveFile(file_name)) {
       QMessageBox::critical(
           this,
-          kSaveFileErrorDialogName,
+          kSaveFileErrorDialogTitle,
           exporter.GetErrorMessage());
     } else {
-      QString saved_message = kSaveFileSuccessDialongMessage;
+      QString saved_message = kSaveFileSuccessDialogMessage;
       saved_message.replace(kSubstitutePlaceholder, file_name);
-      QMessageBox::information(this, kSaveFileSuccessDialogName, saved_message);
+      QMessageBox::information(
+          this, kSaveFileSuccessDialogTitle, saved_message);
     }
   }
 }
