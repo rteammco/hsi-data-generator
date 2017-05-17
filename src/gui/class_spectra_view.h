@@ -27,6 +27,7 @@ class ClassSpectraView : public QWidget {
 
  public:
   explicit ClassSpectraView(
+      std::shared_ptr<int> num_bands,
       std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra);
 
   // Updates the GUI to reset all rows in accordance to the current spectra.
@@ -52,15 +53,15 @@ class ClassSpectraView : public QWidget {
   // The input field where the user can set the number of bands.
   QLineEdit* number_of_bands_input_;
 
-  // The current number of bands. This will be the number of bands set to all
-  // newly added spectra, and can be updated by the user using the
-  // number_of_bands_input_ filed.
-  int num_bands_;
-
   // This number just keeps track of the newly added spectra, and increments
   // every time a new spectrum is added. This ensures unique names of each
   // spectrum.
   int next_spectrum_number_;
+
+  // The current number of bands. This will be the number of bands set to all
+  // newly added spectra, and can be updated by the user using the
+  // number_of_bands_input_ filed.
+  std::shared_ptr<int> num_bands_;
 
   // The actual spectra are passed down and shared between the different view.
   // This view allows for editing the spectra directly.

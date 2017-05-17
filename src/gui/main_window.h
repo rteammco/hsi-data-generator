@@ -33,7 +33,9 @@ class MainWindow : public QMainWindow {
  private:
   // The spectra and image layout are shared between all GUI components of the
   // window. The GUI interacts with them to modify the spectral dictionary and
-  // image layout.
+  // image layout. The number of bands is also shared between the different
+  // widgets and needed for saving the project.
+  std::shared_ptr<int> num_bands_;
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
   std::shared_ptr<ImageLayout> image_layout_;
 

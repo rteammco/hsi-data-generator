@@ -52,6 +52,7 @@ static const QString kResetWarningDialogMessage =
     QString("All changed will be erased. This action cannot be undone.");
 
 // Default values for the GUI widgets:
+constexpr int kDefaultNumberOfBands = 100;
 constexpr int kDefaultImageLayoutWidth = 500;
 constexpr int kDefaultImageLayoutHeight = 500;
 
@@ -97,6 +98,7 @@ MainWindow::MainWindow() {
 
   // Initialize the spectra and image layout pointers, shared among the GUI
   // components.
+  num_bands_ = std::shared_ptr<int>(new int(kDefaultNumberOfBands));
   spectra_ = std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>>(
       new std::vector<std::shared_ptr<Spectrum>>());
   image_layout_ = std::shared_ptr<ImageLayout>(
@@ -106,13 +108,13 @@ MainWindow::MainWindow() {
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 
-  class_spectra_view_ = new ClassSpectraView(spectra_);
+  class_spectra_view_ = new ClassSpectraView(num_bands_, spectra_);
   tabs->addTab(class_spectra_view_, kClassSpectraViewString);
 
   image_layout_view_ = new ImageLayoutView(spectra_, image_layout_);
   tabs->addTab(image_layout_view_, kImageLayoutViewString);
 
-  ExportView* export_view = new ExportView(spectra_, image_layout_);
+  ExportView* export_view = new ExportView(num_bands_, spectra_, image_layout_);
   tabs->addTab(export_view, kExportViewString);
 
   setCentralWidget(tabs);

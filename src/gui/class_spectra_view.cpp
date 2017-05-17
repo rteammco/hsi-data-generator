@@ -20,9 +20,6 @@ namespace {
 static const QString kQtClassSpectraViewStyle =
     "qt_stylesheets/class_spectra_view.qss";
 
-// The default number of bands that is pre-set until the user changes it.
-constexpr int kDefaultNumberOfBands = 100;
-
 static const QString kDefaultSpectrumName = "Background";
 static const QColor kDefaultSpectrumColor = Qt::black;
 
@@ -31,8 +28,9 @@ static const QString kNewSpectrumButtonString = "Add Spectrum";
 }  // namespace
 
 ClassSpectraView::ClassSpectraView(
+    std::shared_ptr<int> num_bands,
     std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra)
-    : num_bands_(kDefaultNumberOfBands),
+    : num_bands_(num_bands),
       next_spectrum_number_(1),
       spectra_(spectra) {
 
@@ -43,8 +41,7 @@ ClassSpectraView::ClassSpectraView(
   setLayout(layout_);
 
   // Add the input field to change the number of spectral bands.
-  number_of_bands_input_ =
-      new QLineEdit(QString::number(num_bands_));
+  number_of_bands_input_ = new QLineEdit(QString::number(*num_bands_));
   layout_->addWidget(number_of_bands_input_);
   connect(
       number_of_bands_input_,
@@ -102,16 +99,16 @@ void ClassSpectraView::NumberOfBandsInputChanged() {
     return;
   }
   const QString num_bands_string = number_of_bands_input_->text();
-  num_bands_ = num_bands_string.toInt();
+  *num_bands_ = num_bands_string.toInt();
   // Make sure the number of bands is valid.
-  if (num_bands_ < util::kMinNumberOfBands) {
-    num_bands_ = util::kMinNumberOfBands;
-  } else if (num_bands_ > util::kMaxNumberOfBands) {
-    num_bands_ = util::kMaxNumberOfBands;
+  if (*num_bands_ < util::kMinNumberOfBands) {
+    *num_bands_ = util::kMinNumberOfBands;
+  } else if (*num_bands_ > util::kMaxNumberOfBands) {
+    *num_bands_ = util::kMaxNumberOfBands;
   }
-  number_of_bands_input_->setText(QString::number(num_bands_));
+  number_of_bands_input_->setText(QString::number(*num_bands_));
   for (int i = 0; i < class_spectrum_rows_.size(); ++i) {
-    class_spectrum_rows_[i]->SetNumberOfBands(num_bands_);
+    class_spectrum_rows_[i]->SetNumberOfBands(*num_bands_);
   }
 }
 
@@ -137,7 +134,7 @@ void ClassSpectraView::InsertNewSpectrum(const QString& name) {
 }
 
 void ClassSpectraView::AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum) {
-  ClassSpectrumRow* row = new ClassSpectrumRow(num_bands_, spectrum, this);
+  ClassSpectrumRow* row = new ClassSpectrumRow(*num_bands_, spectrum, this);
   class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be
   // the new spectrum button.

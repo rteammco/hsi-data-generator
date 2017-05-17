@@ -21,6 +21,7 @@ class ExportView : public QWidget {
 
  public:
   ExportView(
+      std::shared_ptr<int> num_bands,
       std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
       std::shared_ptr<ImageLayout> image_layout);
 
@@ -28,6 +29,7 @@ class ExportView : public QWidget {
   void ExportButtonPressed();
 
  private:
+  std::shared_ptr<int> num_bands_;
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
   std::shared_ptr<ImageLayout> image_layout_;
 };

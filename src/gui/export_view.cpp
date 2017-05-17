@@ -34,9 +34,10 @@ static const QString kSaveFileSuccessDialogMessage =
 }  // namespace
 
 ExportView::ExportView(
+    std::shared_ptr<int> num_bands,
     std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
     std::shared_ptr<ImageLayout> image_layout)
-    : spectra_(spectra), image_layout_(image_layout) {
+    : num_bands_(num_bands), spectra_(spectra), image_layout_(image_layout) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtExportViewStyle));
 
@@ -61,8 +62,7 @@ void ExportView::ExportButtonPressed() {
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
   if (!file_name.isEmpty()) {
-    // TODO: Number of bands! Don't hard code 10.
-    const HSIDataExporter exporter(spectra_, image_layout_, 10);
+    const HSIDataExporter exporter(spectra_, image_layout_, *num_bands_);
     if (!exporter.SaveFile(file_name)) {
       QMessageBox::critical(
           this,
