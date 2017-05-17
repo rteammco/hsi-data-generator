@@ -151,8 +151,10 @@ void MainWindow::ResetActionCalled() {
 void MainWindow::SaveActionCalled() {
   qInfo() << "Save Called";
   // TODO: Num bands and file name, etc.
-  ProjectLoader project_loader(spectra_, image_layout_, 100);
-  project_loader.SaveProjectToFile("CHANGE THIS NAME");
+  ProjectLoader project_loader(spectra_, image_layout_, *num_bands);
+  if (!project_loader.SaveProjectToFile("CHANGE THIS NAME")) {
+    // TODO: Report error (project_loader.GetErrorMessage()).
+  }
 }
 
 }  // namespace hsi_data_generator

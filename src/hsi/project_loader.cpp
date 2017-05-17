@@ -3,13 +3,23 @@
 #include <QString>
 
 namespace hsi_data_generator {
+namespace {
 
-void ProjectLoader::SaveProjectToFile(const QString& file_name) const {
+static const QString kGenericErrorMessage =
+    "File I/O general error... IDK WHATS GOING ON!?!?!?!"
+
+}  // namespace
+
+bool ProjectLoader::SaveProjectToFile(const QString& file_name) const {
   // TODO: Implement.
 }
 
-void ProjectLoader::LoadProjectFromFile(const QString& file_name) {
+bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {
   // TODO: Implement;
+}
+
+QString ProjectLoader::GetErrorMessage() const {
+  return kGenericErrorMessage;
 }
 
 }  // namespace hsi_data_generator

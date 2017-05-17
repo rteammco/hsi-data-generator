@@ -23,16 +23,22 @@ class ProjectLoader {
       const int num_bands)
       : spectra_(spectra), image_layout_(image_layout), num_bands_(num_bands) {}
 
-  void SaveProjectToFile(const QString& file_name) const;
+  bool SaveProjectToFile(const QString& file_name) const;
 
-  void LoadProjectFromFile(const QString& file_name);
+  bool LoadProjectFromFile(const QString& file_name);
+
+  // Returns any error message caused by the save or load methods. If no errors
+  // were logged, returns a generic error string.
+  QString GetErrorMessage() const;
 
  private:
   const std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
   const std::shared_ptr<ImageLayout> image_layout_;
 
-  // The number of bands that will be exported in the HSI image.
   const int num_bands_;
+
+  // This error message is logged if any of the file operations fails.
+  mutable QString error_message_;
 };
 
 }  // namespace hsi_data_generator
