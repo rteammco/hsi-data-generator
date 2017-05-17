@@ -2,6 +2,7 @@
 
 #include <QAction>
 #include <QMenuBar>
+#include <QMessagebox>
 #include <QString>
 #include <QTabWidget>
 #include <QtDebug>  // TODO: Remove when done.
@@ -42,6 +43,12 @@ static const QString kSaveActionTip = "Save your current workflow to a file";
 static const QString kClassSpectraViewString = "Class Spectra";
 static const QString kImageLayoutViewString = "Image Layout";
 static const QString kExportViewString = "Export";
+
+// Dialog strings:
+static const QString kResetWarningDialogTitle = "Reset Project?";
+static const QString kResetWarningDialogMessage =
+    QString("Are you sure you want to reset this project? ") +
+    QString("All changed will be erased. This action cannot be undone.");
 
 // Default values for the GUI widgets:
 constexpr int kDefaultImageLayoutWidth = 500;
@@ -120,6 +127,14 @@ void MainWindow::OpenActionCalled() {
 }
 
 void MainWindow::ResetActionCalled() {
+  const QMessageBox::StandardButton answer = QMessageBox::question(
+      this,
+      kResetWarningDialogTitle,
+      kResetWarningDialogMessage,
+      QMessageBox::Yes | QMessageBox::No);
+  if (answer != QMessageBox::Yes) {
+    return;
+  }
   spectra_->clear();
   image_layout_->ResetLayout();
   if (class_spectra_view_ != nullptr) {
