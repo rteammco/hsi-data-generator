@@ -151,7 +151,7 @@ void MainWindow::ResetActionCalled() {
 void MainWindow::SaveActionCalled() {
   qInfo() << "Save Called";
   // TODO: Num bands and file name, etc.
-  ProjectLoader project_loader(spectra_, image_layout_, *num_bands);
+  ProjectLoader project_loader(spectra_, image_layout_, *num_bands_);
   if (!project_loader.SaveProjectToFile("CHANGE THIS NAME")) {
     // TODO: Report error (project_loader.GetErrorMessage()).
   }
