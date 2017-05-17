@@ -101,9 +101,8 @@ MainWindow::MainWindow() {
   ClassSpectraView* spectra_view = new ClassSpectraView(spectra_);
   tabs->addTab(spectra_view, kClassSpectraViewString);
 
-  ImageLayoutView* image_layout_view =
-      new ImageLayoutView(spectra_, image_layout_);
-  tabs->addTab(image_layout_view, kImageLayoutViewString);
+  image_layout_view_ = new ImageLayoutView(spectra_, image_layout_);
+  tabs->addTab(image_layout_view_, kImageLayoutViewString);
 
   ExportView* export_view = new ExportView(spectra_, image_layout_);
   tabs->addTab(export_view, kExportViewString);
@@ -123,7 +122,9 @@ void MainWindow::OpenActionCalled() {
 void MainWindow::ResetActionCalled() {
   spectra_->clear();
   image_layout_->ResetLayout();
-  update();
+  if (image_layout_view_->isVisible()) {
+    image_layout_view_->UpdateGUI();
+  }
 }
 
 void MainWindow::SaveActionCalled() {

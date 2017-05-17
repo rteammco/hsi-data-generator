@@ -7,6 +7,7 @@
 #define SRC_GUI_IMAGE_LAYOUT_VIEW_H_
 
 #include <QLayout>
+#include <QPaintEvent>
 #include <QShowEvent>
 #include <QWidget>
 
@@ -26,6 +27,11 @@ class ImageLayoutView : public QWidget {
   explicit ImageLayoutView(
       std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
       std::shared_ptr<ImageLayout> image_layout);
+
+  // Call whenever the GUI needs updating after changes to the spectrum or
+  // layout that affects the spectra_ list or the image_layout_. This is called
+  // automatically when the view comes into focus.
+  void UpdateGUI();
 
  protected:
   void showEvent(QShowEvent* event) override;

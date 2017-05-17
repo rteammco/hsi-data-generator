@@ -187,7 +187,7 @@ ImageLayoutView::ImageLayoutView(
   layout->addLayout(pattern_list_layout);
 }
 
-void ImageLayoutView::showEvent(QShowEvent* event) {
+void ImageLayoutView::UpdateGUI() {
   // Remove all existing spectrum name labels before re-inserting them.
   QLayoutItem* item;
   while ((item = class_names_layout_->itemAt(0)) != nullptr) {
@@ -205,6 +205,10 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
     new_label->setPalette(label_palette);
     class_names_layout_->addWidget(new_label);
   }
+}
+
+void ImageLayoutView::showEvent(QShowEvent* event) {
+  UpdateGUI();
 }
 
 void ImageLayoutView::HorizontalStripesButtonPressed() {

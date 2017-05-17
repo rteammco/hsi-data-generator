@@ -10,6 +10,7 @@
 #include <memory>
 #include <vector>
 
+#include "gui/image_layout_view.h"
 #include "hsi/image_layout.h"
 #include "hsi/spectrum.h"
 
@@ -34,6 +35,9 @@ class MainWindow : public QMainWindow {
   // image layout.
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
   std::shared_ptr<ImageLayout> image_layout_;
+
+  // The widgets contained by this window:
+  ImageLayoutView* image_layout_view_ = nullptr;
 };
 
 }  // namespace hsi_data_generator
