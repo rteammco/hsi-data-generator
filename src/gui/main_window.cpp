@@ -19,6 +19,9 @@
 namespace hsi_data_generator {
 namespace {
 
+constexpr int kDefaultImageLayoutWidth = 500;
+constexpr int kDefaultImageLayoutHeight = 500;
+
 static const QString kClassSpectraViewString = "Class Spectra";
 static const QString kImageLayoutViewString = "Image Layout";
 static const QString kExportViewString = "Export";
@@ -44,8 +47,8 @@ MainWindow::MainWindow() {
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra(
       new std::vector<std::shared_ptr<Spectrum>>());
 
-  // TODO: Set the size dimensions appropriately.
-  std::shared_ptr<ImageLayout> image_layout(new ImageLayout(500, 500));
+  std::shared_ptr<ImageLayout> image_layout(
+      new ImageLayout(kDefaultImageLayoutWidth, kDefaultImageLayoutHeight));
 
   ClassSpectraView* spectra_view = new ClassSpectraView(spectra);
   tabs->addTab(spectra_view, kClassSpectraViewString);

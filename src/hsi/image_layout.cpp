@@ -4,6 +4,7 @@
 #include <QtGlobal>  // qrand()
 
 #include <algorithm>
+#include <utility>
 #include <vector>
 
 namespace hsi_data_generator {
@@ -14,6 +15,13 @@ namespace {
 // number of classes cannot fit into the width of the image unless each stripe
 // is thinner than this value.
 constexpr int kDefaultMaxStripeWidth = 25;
+
+static const std::vector<std::pair<int, int>> kCoordinateNeighborOffsets = {
+    std::make_pair(0, -1),  // left
+    std::make_pair(0, 1),   // right
+    std::make_pair(-1, 0),  // top
+    std::make_pair(1, 0),   // bottom
+};
 
 }  // namespace
 
@@ -79,88 +87,74 @@ void ImageLayout::GenerateGridLayout(
 void ImageLayout::GenerateRandomLayout(
     const int num_classes, const int random_blob_size) {
 
-  // TODO: Implement support for blob size greater than 1!
   const int width = GetWidth();
   const int height = GetHeight();
   int num_pixels_remaining = spectral_class_map_.size();
   std::vector<bool> filled_in_pixels(num_pixels_remaining, false);
   while (num_pixels_remaining > 0) {
+    // Select a random class for the next blob:
     const int current_class = qrand() % num_classes;
+    // Select a random pixel that isn't part of a blob:
     int start_index = qrand() % num_pixels_remaining;
-    int initial_start_index = start_index;
     while (filled_in_pixels[start_index]) {
       start_index++;
       if (start_index >= filled_in_pixels.size()) {
         start_index = 0;
       }
-      if (start_index == initial_start_index) {
-        return;
-      }
     }
+    // Fill in the randomly selected pixel:
     spectral_class_map_[start_index] = current_class;
+    num_pixels_remaining--;
     filled_in_pixels[start_index] = true;
+    // Add this pixel as the only initial edge pixel in the blob:
     std::vector<int> edge_pixels;
     edge_pixels.push_back(start_index);
-    //qInfo() << "Start index =" << start_index << "(class" << current_class << ")";
-    for (int i = 0; i < random_blob_size; ++i) {
-      if (num_pixels_remaining <= 0) {
+    // Fill in pixels for the rest of the blob:
+    for (int i = 1; i < random_blob_size; ++i) {
+      // Stop if there no more available edges or if all pixels were filled in.
+      if (num_pixels_remaining <= 0 || edge_pixels.empty()) {
         break;
       }
+      // Randomly select one of the blob's edge pixels:
       const int edge_index = qrand() % edge_pixels.size();
       const int expand_index = edge_pixels[edge_index];
       const int expand_row = expand_index / width;
       const int expand_col = expand_index % width;
-      //qInfo() << "Edge selected =" << expand_index << "(" << expand_row << "," << expand_col << ")";
+      // Select all valid candidate pixels adjacent (left, right, top, or
+      // bottom) to the selected egde pixel to be filled in next. A candidate
+      // is only valid if it is inside the bounds of the image and if it hasn't
+      // already been filled in before.
       std::vector<int> neighbor_candidates;
-      if (expand_col > 0) {  // left
-        const int neighbor_index =  expand_row * width + (expand_col - 1);
+      for (const std::pair<int, int>& offset : kCoordinateNeighborOffsets) {
+        const int row = expand_row + offset.first;
+        if (row < 0 || row >= height) {
+          continue;
+        }
+        const int col = expand_col + offset.second;
+        if (col < 0 || col >= width) {
+          continue;
+        }
+        const int neighbor_index =  row * width + col;
         if (!filled_in_pixels[neighbor_index]) {
           neighbor_candidates.push_back(neighbor_index);
         }
       }
-      if (expand_col < (width - 1)) {  // right
-        const int neighbor_index =  expand_row * width + (expand_col + 1);
-        if (!filled_in_pixels[neighbor_index]) {
-          neighbor_candidates.push_back(neighbor_index);
-        }
-      }
-      if (expand_row > 0) {  // top
-        const int neighbor_index =  (expand_row - 1) * width + expand_col;
-        if (!filled_in_pixels[neighbor_index]) {
-          neighbor_candidates.push_back(neighbor_index);
-        }
-      }
-      if (expand_row < (height - 1)) {  // bottom
-        const int neighbor_index =  (expand_row + 1) * width + expand_col;
-        if (!filled_in_pixels[neighbor_index]) {
-          neighbor_candidates.push_back(neighbor_index);
-        }
-      }
-      //qInfo() << "Candidates are:";
-      for (const int candidate : neighbor_candidates) {
-        //qInfo() << "    " << candidate;
-      }
+      // If no neighbors are available, this edge pixel has no valid neighbors,
+      // so remove it from the set of neighbors.
       if (neighbor_candidates.size() == 0) {
         edge_pixels.erase(edge_pixels.begin() + edge_index);
-        //qInfo() << "    NONE";
       } else {
-        const int neighbor_selection = qrand() % neighbor_candidates.size();
-        const int neighbor_index = neighbor_candidates[neighbor_selection];
+        // Randomly select one of the neighbors and fill it in as part of the
+        // blob. This new filled-in pixel becomes a new edge pixel.
+        const int neighbor_index =
+            neighbor_candidates[qrand() % neighbor_candidates.size()];
         spectral_class_map_[neighbor_index] = current_class;
         filled_in_pixels[neighbor_index] = true;
+        edge_pixels.push_back(neighbor_index);
         num_pixels_remaining -= 1;
-        //qInfo() << "Selected: " << neighbor_selection << " (" << neighbor_index << ")";
       }
     }
-    //break;
   }
-
-//  for (int row = 0; row < image_height_; ++row) {
-//    for (int col = 0; col < image_width_; ++col) {
-//      const int index = row * image_width_ + col;
-//      spectral_class_map_[index] = qrand() % num_classes;
-//    }
-//  }
 }
 
 int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {

@@ -88,14 +88,14 @@ void GenerateLayout(
     break;
   }
   case IMAGE_RANDOM_LAYOUT: {
-    const int square_size = QInputDialog::getInt(
+    const int blob_size = QInputDialog::getInt(
         dialog_parent,
         kRandomBlobSizeDialogTitle,
         kRandomBlobSizeDialogSelectionLabel,
         1,  // default value
         1,  // min value
-        image_layout->GetWidth());  // max value; TODO: should be min(w, h).
-    image_layout->GenerateRandomLayout(num_classes);
+        image_layout->GetNumPixels());
+    image_layout->GenerateRandomLayout(num_classes, blob_size);
     break;
   }
   default:

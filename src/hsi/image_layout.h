@@ -66,6 +66,11 @@ class ImageLayout {
     return image_height_;
   }
 
+  // Returns the total number of pixels in this image layout.
+  int GetNumPixels() const {
+    return image_width_ * image_height_;
+  }
+
   // Used for referencing the layout externally.
   const std::vector<int>& GetClassMap() const {
     return spectral_class_map_;
