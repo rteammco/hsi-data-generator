@@ -98,8 +98,8 @@ MainWindow::MainWindow() {
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 
-  ClassSpectraView* spectra_view = new ClassSpectraView(spectra_);
-  tabs->addTab(spectra_view, kClassSpectraViewString);
+  class_spectra_view_ = new ClassSpectraView(spectra_);
+  tabs->addTab(class_spectra_view_, kClassSpectraViewString);
 
   image_layout_view_ = new ImageLayoutView(spectra_, image_layout_);
   tabs->addTab(image_layout_view_, kImageLayoutViewString);
@@ -122,7 +122,10 @@ void MainWindow::OpenActionCalled() {
 void MainWindow::ResetActionCalled() {
   spectra_->clear();
   image_layout_->ResetLayout();
-  if (image_layout_view_->isVisible()) {
+  if (class_spectra_view_ != nullptr) {
+    class_spectra_view_->UpdateGUI();
+  }
+  if (image_layout_view_ != nullptr) {
     image_layout_view_->UpdateGUI();
   }
 }

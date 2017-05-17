@@ -67,9 +67,20 @@ ClassSpectraView::ClassSpectraView(
   if (spectra_->empty()) {
     InsertNewSpectrum(kDefaultSpectrumName);
   } else {
-    for (std::shared_ptr<Spectrum> spectrum : *spectra_) {
-      AddClassSpectrumRow(spectrum);
-    }
+    UpdateGUI();  // Adds in all rows from the spectra_ list.
+  }
+}
+
+void ClassSpectraView::UpdateGUI() {
+  // Remove any existing rows:
+  for (ClassSpectrumRow* row : class_spectrum_rows_) {
+    layout_->removeWidget(row);
+    delete row;
+  }
+  class_spectrum_rows_.clear();
+  // Add in the rows for each of the spectra:
+  for (std::shared_ptr<Spectrum> spectrum : *spectra_) {
+    AddClassSpectrumRow(spectrum);
   }
 }
 
@@ -115,16 +126,17 @@ void ClassSpectraView::RowCloneButtonPressed(QWidget* caller) {
   const ClassSpectrumRow* spectrum_row =
       dynamic_cast<ClassSpectrumRow*>(caller);
   std::shared_ptr<Spectrum> spectrum_copy = spectrum_row->GetSpectrumCopy();
+  spectra_->push_back(spectrum_copy);
   AddClassSpectrumRow(spectrum_copy);
 }
 
 void ClassSpectraView::InsertNewSpectrum(const QString& name) {
   std::shared_ptr<Spectrum> spectrum(new Spectrum(name, kDefaultSpectrumColor));
+  spectra_->push_back(spectrum);
   AddClassSpectrumRow(spectrum);
 }
 
 void ClassSpectraView::AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum) {
-  spectra_->push_back(spectrum);
   ClassSpectrumRow* row = new ClassSpectrumRow(num_bands_, spectrum, this);
   class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be

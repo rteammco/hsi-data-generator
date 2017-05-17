@@ -10,6 +10,7 @@
 #include <memory>
 #include <vector>
 
+#include "gui/class_spectra_view.h"
 #include "gui/image_layout_view.h"
 #include "hsi/image_layout.h"
 #include "hsi/spectrum.h"
@@ -37,6 +38,7 @@ class MainWindow : public QMainWindow {
   std::shared_ptr<ImageLayout> image_layout_;
 
   // The widgets contained by this window:
+  ClassSpectraView* class_spectra_view_ = nullptr;
   ImageLayoutView* image_layout_view_ = nullptr;
 };
 

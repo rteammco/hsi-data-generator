@@ -29,6 +29,15 @@ class ClassSpectraView : public QWidget {
   explicit ClassSpectraView(
       std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra);
 
+  // Updates the GUI to reset all rows in accordance to the current spectra.
+  // This should only be called when an external object modifies the spectra_
+  // list (e.g. the main window through a menu action). It is also used during
+  // this object's construction.
+  void UpdateGUI();
+
+  // Delete a row in the ClassSpectraView. This is used by the individual rows
+  // to call delete on the parent view (this one) when the delete action is
+  // triggered through their GUI.
   void DeleteClassSpectrumRow(ClassSpectrumRow* row);
 
  private slots:  // NOLINT
@@ -65,7 +74,8 @@ class ClassSpectraView : public QWidget {
   void InsertNewSpectrum(const QString& name);
 
   // Adds a new ClassSpectrumRow to the widget. It will be displayed and
-  // tracked in the class_spectrum_rows_ list.
+  // tracked in the class_spectrum_rows_ list. This does NOT add the spectrum
+  // to the existing list of spectra.
   void AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum);
 };
 
