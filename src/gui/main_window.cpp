@@ -121,7 +121,9 @@ void MainWindow::OpenActionCalled() {
 }
 
 void MainWindow::ResetActionCalled() {
-  qInfo() << "Reset Called";
+  spectra_->clear();
+  image_layout_->ResetLayout();
+  update();
 }
 
 void MainWindow::SaveActionCalled() {

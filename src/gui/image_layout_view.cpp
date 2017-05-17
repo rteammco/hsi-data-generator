@@ -53,6 +53,10 @@ void GenerateLayout(
 
   // Generate the appropriate layout using the ImageLayout object.
   const int num_classes = spectra.size();
+  if (num_classes == 0) {
+    // TODO: Inform the user of the fail.
+    return;
+  }
   switch (layout_type) {
   case IMAGE_HORIZONTAL_STRIPES_LAYOUT: {
     const int stripe_width = QInputDialog::getInt(
@@ -176,32 +180,22 @@ ImageLayoutView::ImageLayoutView(
 }
 
 void ImageLayoutView::showEvent(QShowEvent* event) {
-  const int num_displayed_classes = class_names_layout_->count();
-  const int total_num_classes = spectra_->size();
-  // TODO: We should do deleting first and then re-inserting instead of
-  // replacing, but that's buggy for some reason.
-  for (int i = 0; i < total_num_classes; ++i) {
-    // Create the class label and set its color.
+  // Remove all existing spectrum name labels before re-inserting them.
+  QLayoutItem* item;
+  while ((item = class_names_layout_->itemAt(0)) != nullptr) {
+    class_names_layout_->removeItem(item);
+    delete item->widget();
+    delete item;
+  }
+  // Re-insert all of the updated labels.
+  for (int i = 0; i < spectra_->size(); ++i) {
     const QString class_name = spectra_->at(i)->GetName();
     const QColor class_color = spectra_->at(i)->GetColor();
     QLabel* new_label = new QLabel(class_name);
     QPalette label_palette;
     label_palette.setColor(new_label->foregroundRole(), class_color);
     new_label->setPalette(label_palette);
-    // Update (replace) or add the spectrum classes:
-    if (i < num_displayed_classes) {
-      QWidget* original_label = class_names_layout_->itemAt(i)->widget();
-      class_names_layout_->replaceWidget(original_label, new_label);
-      delete original_label;
-    } else {
-      class_names_layout_->addWidget(new_label);
-    }
-  }
-  // If any other were removed, delete the widgets.
-  for (int i = total_num_classes; i < num_displayed_classes; ++i) {
-    QWidget* old_label = class_names_layout_->itemAt(i)->widget();
-    class_names_layout_->removeWidget(old_label);
-    delete old_label;
+    class_names_layout_->addWidget(new_label);
   }
 }
 

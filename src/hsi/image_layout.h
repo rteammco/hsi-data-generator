@@ -56,6 +56,9 @@ class ImageLayout {
   void GenerateRandomLayout(
       const int num_classes, const int random_blob_size = 1);
 
+  // Resets the layout, re-initializing everything to unassigned.
+  void ResetLayout();
+
   // Returns the width in pixels (number of columns) in the image.
   int GetWidth() const {
     return image_width_;

@@ -28,6 +28,7 @@ ImageLayout::ImageLayout(const int image_width, const int image_height)
     : image_width_(image_width), image_height_(image_height) {
 
   // All pixels will be mapped to 0 (the default class index) initially.
+  // TODO: Fill with 0 or a "non-class" id, such as -1?
   spectral_class_map_.resize(image_width_ * image_height_);
 }
 
@@ -154,6 +155,11 @@ void ImageLayout::GenerateRandomLayout(
       }
     }
   }
+}
+
+void ImageLayout::ResetLayout() {
+  // TODO: Fill with 0 or a "non-class" id, such as -1?
+  std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
 }
 
 int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
