@@ -1,6 +1,5 @@
 #include "hsi/image_layout.h"
 
-#include <QtDebug>
 #include <QtGlobal>  // qrand()
 
 #include <algorithm>

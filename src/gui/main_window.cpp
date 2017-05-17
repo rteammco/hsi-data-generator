@@ -1,10 +1,10 @@
 #include "gui/main_window.h"
 
-//  #include <QAction>
-//  #include <QMenuBar>
-//  #include <QToolBar>
+#include <QAction>
+#include <QMenuBar>
 #include <QString>
 #include <QTabWidget>
+#include <QtDebug>  // TODO: Remove when done.
 
 #include <memory>
 #include <vector>
@@ -19,27 +19,67 @@
 namespace hsi_data_generator {
 namespace {
 
-constexpr int kDefaultImageLayoutWidth = 500;
-constexpr int kDefaultImageLayoutHeight = 500;
+static const QString kDefaultWindowTitle = "New Project";
+
+// File menu items:
+static const QString kFileMenuText = "File";
+
+static const QString kNewActionText = "New";
+static const QString kNewActionTip = "Opens a new project window";
+
+static const QString kOpenActionText = "Open";
+static const QString kOpenActionTip = "Open an existing workflow";
+
+static const QString kResetActionText = "Reset";
+static const QString kResetActionTip = "Reset the current workflow";
+
+static const QString kSaveActionText = "Save";
+static const QString kSaveActionTip = "Save your current workflow to a file";
 
 static const QString kClassSpectraViewString = "Class Spectra";
 static const QString kImageLayoutViewString = "Image Layout";
 static const QString kExportViewString = "Export";
 
+// Default values for the GUI widgets:
+constexpr int kDefaultImageLayoutWidth = 500;
+constexpr int kDefaultImageLayoutHeight = 500;
+
 }  // namespace
 
 MainWindow::MainWindow() {
-//  QMenu* file_menu = menuBar()->addMenu(tr("&File"));
-//  QToolBar* file_tool_bar = addToolBar(tr("File"));
-//
-//  QAction* new_action = new QAction(tr("&New"), this);
-//  new_action->setShortcuts(QKeySequence::New);
-//  new_action->setStatusTip(tr("Create a new file"));
-//  connect(new_action, &QAction::triggered, this, &MainWindow::NewFile);
-//  file_menu->addAction(new_action);
-//  file_tool_bar->addAction(new_action);
+  setWindowTitle(kDefaultWindowTitle);
 
-  // Set the tabs:
+  // Create a file menu:
+  QMenu* file_menu = menuBar()->addMenu(kFileMenuText);
+
+  // The "new" action menu item:
+  QAction* new_action = new QAction(kNewActionText, this);
+  new_action->setStatusTip(kNewActionTip);
+  new_action->setShortcuts(QKeySequence::New);
+  file_menu->addAction(new_action);
+  connect(new_action, SIGNAL(triggered()), this, SLOT(NewActionCalled()));
+
+  // The "open" action menu item:
+  QAction* open_action = new QAction(kOpenActionText, this);
+  open_action->setStatusTip(kOpenActionTip);
+  open_action->setShortcuts(QKeySequence::Open);
+  file_menu->addAction(open_action);
+  connect(open_action, SIGNAL(triggered()), this, SLOT(OpenActionCalled()));
+
+  // The "reset" action menu item:
+  QAction* reset_action = new QAction(kResetActionText, this);
+  reset_action->setStatusTip(kResetActionTip);
+  file_menu->addAction(reset_action);
+  connect(reset_action, SIGNAL(triggered()), this, SLOT(ResetActionCalled()));
+
+  // The "save" action menu item:
+  QAction* save_action = new QAction(kSaveActionText, this);
+  save_action->setStatusTip(kSaveActionTip);
+  save_action->setShortcuts(QKeySequence::Save);
+  file_menu->addAction(save_action);
+  connect(save_action, SIGNAL(triggered()), this, SLOT(SaveActionCalled()));
+
+  // Set the tabs with the main GUI components:
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 
@@ -61,6 +101,22 @@ MainWindow::MainWindow() {
   tabs->addTab(export_view, kExportViewString);
 
   setCentralWidget(tabs);
+}
+
+void MainWindow::NewActionCalled() {
+  qInfo() << "New Called";
+}
+
+void MainWindow::OpenActionCalled() {
+  qInfo() << "Open Called";
+}
+
+void MainWindow::ResetActionCalled() {
+  qInfo() << "Reset Called";
+}
+
+void MainWindow::SaveActionCalled() {
+  qInfo() << "Save Called";
 }
 
 }  // namespace hsi_data_generator

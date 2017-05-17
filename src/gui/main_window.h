@@ -10,12 +10,17 @@
 namespace hsi_data_generator {
 
 class MainWindow : public QMainWindow {
-//  Q_OBJECT
+  Q_OBJECT
 
  public:
   MainWindow();
 
-// TODO: Use "private slots:" instead?
+ private slots:  // NOLINT
+  // File menu actions:
+  void NewActionCalled();
+  void OpenActionCalled();
+  void ResetActionCalled();
+  void SaveActionCalled();
 };
 
 }  // namespace hsi_data_generator
