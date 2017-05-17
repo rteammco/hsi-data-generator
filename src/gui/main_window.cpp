@@ -87,25 +87,25 @@ MainWindow::MainWindow() {
   file_menu->addAction(save_action);
   connect(save_action, SIGNAL(triggered()), this, SLOT(SaveActionCalled()));
 
+  // Initialize the spectra and image layout pointers, shared among the GUI
+  // components.
+  spectra_ = std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>>(
+      new std::vector<std::shared_ptr<Spectrum>>());
+  image_layout_ = std::shared_ptr<ImageLayout>(
+      new ImageLayout(kDefaultImageLayoutWidth, kDefaultImageLayoutHeight));
+
   // Set the tabs with the main GUI components:
   QTabWidget* tabs = new QTabWidget();
   tabs->setParent(this);
 
-  // The spectral classes shared by all of the views.
-  std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra(
-      new std::vector<std::shared_ptr<Spectrum>>());
-
-  std::shared_ptr<ImageLayout> image_layout(
-      new ImageLayout(kDefaultImageLayoutWidth, kDefaultImageLayoutHeight));
-
-  ClassSpectraView* spectra_view = new ClassSpectraView(spectra);
+  ClassSpectraView* spectra_view = new ClassSpectraView(spectra_);
   tabs->addTab(spectra_view, kClassSpectraViewString);
 
   ImageLayoutView* image_layout_view =
-      new ImageLayoutView(spectra, image_layout);
+      new ImageLayoutView(spectra_, image_layout_);
   tabs->addTab(image_layout_view, kImageLayoutViewString);
 
-  ExportView* export_view = new ExportView(spectra, image_layout);
+  ExportView* export_view = new ExportView(spectra_, image_layout_);
   tabs->addTab(export_view, kExportViewString);
 
   setCentralWidget(tabs);

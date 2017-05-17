@@ -7,6 +7,12 @@
 
 #include <QMainWindow>
 
+#include <memory>
+#include <vector>
+
+#include "hsi/image_layout.h"
+#include "hsi/spectrum.h"
+
 namespace hsi_data_generator {
 
 class MainWindow : public QMainWindow {
@@ -21,6 +27,13 @@ class MainWindow : public QMainWindow {
   void OpenActionCalled();
   void ResetActionCalled();
   void SaveActionCalled();
+
+ private:
+  // The spectra and image layout are shared between all GUI components of the
+  // window. The GUI interacts with them to modify the spectral dictionary and
+  // image layout.
+  std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
+  std::shared_ptr<ImageLayout> image_layout_;
 };
 
 }  // namespace hsi_data_generator
