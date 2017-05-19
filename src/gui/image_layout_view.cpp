@@ -131,12 +131,13 @@ ImageLayoutView::ImageLayoutView(
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutViewStyle));
 
   QHBoxLayout* layout = new QHBoxLayout();
-  layout->setAlignment(Qt::AlignTop);
+  layout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
   setLayout(layout);
 
   // Left-hand column lists the class names and colors.
   // TODO: Maybe this should be a widget instead?
   class_names_layout_ = new QVBoxLayout();
+  class_names_layout_->setAlignment(Qt::AlignTop);
   layout->addLayout(class_names_layout_);
 
   // Center column is the image display widget.
@@ -146,6 +147,7 @@ ImageLayoutView::ImageLayoutView(
   // Right-hand column is the set of patterns to generate over the image.
   // TODO: Make this interactive, with preview images, etc.
   QVBoxLayout* pattern_list_layout = new QVBoxLayout();
+  pattern_list_layout->setAlignment(Qt::AlignTop);
 
   QPushButton* horizontal_stripes_button =
       new QPushButton("Horizontal Stripes");
