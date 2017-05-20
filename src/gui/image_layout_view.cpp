@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QShowEvent>
+#include <QSizePolicy>
 #include <QString>
 #include <QWidget>
 
@@ -142,6 +143,7 @@ ImageLayoutView::ImageLayoutView(
 
   // Center column is the image display widget.
   image_layout_widget_ = new ImageLayoutWidget(image_layout_);
+  image_layout_widget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   layout->addWidget(image_layout_widget_);
 
   // Right-hand column is the set of patterns to generate over the image.
