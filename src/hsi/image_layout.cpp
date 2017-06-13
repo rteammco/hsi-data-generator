@@ -27,7 +27,7 @@ static const std::vector<std::pair<int, int>> kCoordinateNeighborOffsets = {
 ImageLayout::ImageLayout(const int image_width, const int image_height)
     : image_width_(image_width),
       image_height_(image_height),
-      previous_layout_(LAYOUT_TYPE_GRID),
+      previous_layout_(LAYOUT_TYPE_NONE),
       previous_num_classes_(0),
       previous_size_parameter_(0) {
 
