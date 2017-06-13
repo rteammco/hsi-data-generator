@@ -275,12 +275,14 @@ void ImageLayoutView::SizeInputChanged() {
   const int new_width = width_string.toInt();
   const QString height_string = height_input_->text();
   const int new_height = height_string.toInt();
-  if (new_width <= 0 || new_height <= 0) {
-    // TODO: Report the issue to the user.
-    return;
+  if (new_width > 0 && new_height > 0) {
+    image_layout_->SetImageSize(new_width, new_height);
+    image_layout_widget_->update();
   }
-  image_layout_->SetImageSize(new_width, new_height);
-  image_layout_widget_->update();
+  // Display the valid value as it is rendered (in case this is different from
+  // the user's input):
+  width_input_->setText(QString::number(image_layout_->GetWidth()));
+  height_input_->setText(QString::number(image_layout_->GetHeight()));
 }
 
 }  // namespace hsi_data_generator
