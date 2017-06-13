@@ -49,13 +49,6 @@ static const QString kRandomBlobSizeDialogTitle = "Select Random Blob Size";
 static const QString kRandomBlobSizeDialogSelectionLabel = "Blob size:";
 
 // The layout options for the image controlled by the buttons.
-enum ImageLayoutType {
-  IMAGE_HORIZONTAL_STRIPES_LAYOUT,
-  IMAGE_VERTICAL_STRIPES_LAYOUT,
-  IMAGE_GRID_LAYOUT,
-  IMAGE_RANDOM_LAYOUT
-};
-
 void GenerateLayout(
     const ImageLayoutType layout_type,
     const std::vector<std::shared_ptr<Spectrum>>& spectra,
@@ -73,7 +66,7 @@ void GenerateLayout(
     return;
   }
   switch (layout_type) {
-  case IMAGE_HORIZONTAL_STRIPES_LAYOUT: {
+  case LAYOUT_TYPE_HORIZONTAL_STRIPES: {
     const int stripe_width = QInputDialog::getInt(
         dialog_parent,
         kStripeWidthDialogTitle,
@@ -84,7 +77,7 @@ void GenerateLayout(
     image_layout->GenerateHorizontalStripesLayout(num_classes, stripe_width);
     break;
   }
-  case IMAGE_VERTICAL_STRIPES_LAYOUT: {
+  case LAYOUT_TYPE_VERTICAL_STRIPES: {
     const int stripe_width = QInputDialog::getInt(
         dialog_parent,
         kStripeWidthDialogTitle,
@@ -95,7 +88,7 @@ void GenerateLayout(
     image_layout->GenerateVerticalStripesLayout(num_classes, stripe_width);
     break;
   }
-  case IMAGE_GRID_LAYOUT: {
+  case LAYOUT_TYPE_GRID: {
     const int square_size = QInputDialog::getInt(
         dialog_parent,
         kSquareSizeDialogTitle,
@@ -106,7 +99,7 @@ void GenerateLayout(
     image_layout->GenerateGridLayout(num_classes, square_size);
     break;
   }
-  case IMAGE_RANDOM_LAYOUT: {
+  case LAYOUT_TYPE_RANDOM: {
     const int blob_size = QInputDialog::getInt(
         dialog_parent,
         kRandomBlobSizeDialogTitle,
@@ -246,7 +239,7 @@ void ImageLayoutView::showEvent(QShowEvent* event) {
 
 void ImageLayoutView::HorizontalStripesButtonPressed() {
   GenerateLayout(
-      IMAGE_HORIZONTAL_STRIPES_LAYOUT,
+      LAYOUT_TYPE_HORIZONTAL_STRIPES,
       *spectra_,
       image_layout_,
       image_layout_widget_,
@@ -255,7 +248,7 @@ void ImageLayoutView::HorizontalStripesButtonPressed() {
 
 void ImageLayoutView::VerticalStripesButtonPressed() {
   GenerateLayout(
-      IMAGE_VERTICAL_STRIPES_LAYOUT,
+      LAYOUT_TYPE_VERTICAL_STRIPES,
       *spectra_,
       image_layout_,
       image_layout_widget_,
@@ -264,12 +257,12 @@ void ImageLayoutView::VerticalStripesButtonPressed() {
 
 void ImageLayoutView::GridButtonPressed() {
   GenerateLayout(
-      IMAGE_GRID_LAYOUT, *spectra_, image_layout_, image_layout_widget_, this);
+      LAYOUT_TYPE_GRID, *spectra_, image_layout_, image_layout_widget_, this);
 }
 
 void ImageLayoutView::RandomButtonPressed() {
   GenerateLayout(
-      IMAGE_RANDOM_LAYOUT,
+      LAYOUT_TYPE_RANDOM,
       *spectra_,
       image_layout_,
       image_layout_widget_,

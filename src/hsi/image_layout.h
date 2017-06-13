@@ -10,7 +10,7 @@
 
 namespace hsi_data_generator {
 
-enum LayoutType {
+enum ImageLayoutType {
   LAYOUT_TYPE_NONE,
   LAYOUT_TYPE_HORIZONTAL_STRIPES,
   LAYOUT_TYPE_VERTICAL_STRIPES,
@@ -110,7 +110,7 @@ class ImageLayout {
 
   // Tracks the previous layout generation variables in case the layout needs
   // to be recomputed (e.g. when resizing the image).
-  LayoutType previous_layout_ = LAYOUT_TYPE_NONE;
+  ImageLayoutType previous_layout_ = LAYOUT_TYPE_NONE;
   int previous_num_classes_ = 0;
   int previous_size_parameter_ = 0;
 };
