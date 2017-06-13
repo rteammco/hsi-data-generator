@@ -11,6 +11,7 @@
 #include <QShowEvent>
 #include <QSizePolicy>
 #include <QString>
+#include <QtDebug>
 #include <QWidget>
 
 #include <memory>
@@ -150,19 +151,17 @@ ImageLayoutView::ImageLayoutView(
   center_layout->addWidget(image_layout_widget_);
 
   // Add the width and height bars as well.
-  QLineEdit* width_input =
-      new QLineEdit(QString::number(image_layout_->GetWidth()));
-  center_layout->addWidget(width_input);
-  center_layout->setAlignment(width_input, Qt::AlignCenter);
+  width_input_ = new QLineEdit(QString::number(image_layout_->GetWidth()));
+  center_layout->addWidget(width_input_);
+  center_layout->setAlignment(width_input_, Qt::AlignCenter);
   connect(
-      width_input, SIGNAL(returnPressed()), this, SLOT(WidthInputChanged()));
+      width_input_, SIGNAL(returnPressed()), this, SLOT(SizeInputChanged()));
 
-  QLineEdit* height_input =
-      new QLineEdit(QString::number(image_layout_->GetHeight()));
-  center_layout->addWidget(height_input);
-  center_layout->setAlignment(height_input, Qt::AlignCenter);
+  height_input_ = new QLineEdit(QString::number(image_layout_->GetHeight()));
+  center_layout->addWidget(height_input_);
+  center_layout->setAlignment(height_input_, Qt::AlignCenter);
   connect(
-      height_input, SIGNAL(returnPressed()), this, SLOT(HeightInputChanged()));
+      height_input_, SIGNAL(returnPressed()), this, SLOT(SizeInputChanged()));
 
   layout->addLayout(center_layout);
 
@@ -267,13 +266,20 @@ void ImageLayoutView::RandomButtonPressed() {
       this);
 }
 
-void ImageLayoutView::WidthInputChanged() {
-  image_layout_->SetImageSize(250, 250);  // TODO: Fix, don't hardcode.
-  image_layout_widget_->update();
-}
-
-void ImageLayoutView::HeightInputChanged() {
-  image_layout_->SetImageSize(1000, 1000);  // TODO: Fix, don't hardcode.
+void ImageLayoutView::SizeInputChanged() {
+  if (width_input_ == nullptr || height_input_ == nullptr) {
+    qCritical() << "Image size input(s) not defined. Cannot change size.";
+    return;
+  }
+  const QString width_string = width_input_->text();
+  const int new_width = width_string.toInt();
+  const QString height_string = height_input_->text();
+  const int new_height = height_string.toInt();
+  if (new_width <= 0 || new_height <= 0) {
+    // TODO: Report the issue to the user.
+    return;
+  }
+  image_layout_->SetImageSize(new_width, new_height);
   image_layout_widget_->update();
 }
 

@@ -7,6 +7,7 @@
 #define SRC_GUI_IMAGE_LAYOUT_VIEW_H_
 
 #include <QLayout>
+#include <QLineEdit>
 #include <QPaintEvent>
 #include <QShowEvent>
 #include <QWidget>
@@ -41,8 +42,7 @@ class ImageLayoutView : public QWidget {
   void VerticalStripesButtonPressed();
   void GridButtonPressed();
   void RandomButtonPressed();
-  void WidthInputChanged();
-  void HeightInputChanged();
+  void SizeInputChanged();
 
  private:
   // The Spectrum objects generated in the ClassSpectrumView.
@@ -52,6 +52,10 @@ class ImageLayoutView : public QWidget {
   std::shared_ptr<ImageLayout> image_layout_;
 
   ImageLayoutWidget* image_layout_widget_ = nullptr;
+
+  // The input fields for width and height adjustment of the image layout.
+  QLineEdit* width_input_ = nullptr;
+  QLineEdit* height_input_ = nullptr;
 
   QLayout* class_names_layout_ = nullptr;
 };
