@@ -25,7 +25,11 @@ static const std::vector<std::pair<int, int>> kCoordinateNeighborOffsets = {
 }  // namespace
 
 ImageLayout::ImageLayout(const int image_width, const int image_height)
-    : image_width_(image_width), image_height_(image_height) {
+    : image_width_(image_width),
+      image_height_(image_height),
+      previous_layout_(LAYOUT_TYPE_GRID),
+      previous_num_classes_(0),
+      previous_size_parameter_(0) {
 
   // All pixels will be mapped to 0 (the default class index) initially.
   // TODO: Fill with 0 or a "non-class" id, such as -1?
@@ -47,6 +51,10 @@ void ImageLayout::GenerateHorizontalStripesLayout(
         spectral_class_map_.begin() + ((row + 1) * image_width_),
         class_index);
   }
+
+  previous_layout_ = LAYOUT_TYPE_HORIZONTAL_STRIPES;
+  previous_num_classes_ = num_classes;
+  previous_size_parameter_ = stripe_width;
 }
 
 void ImageLayout::GenerateVerticalStripesLayout(
@@ -64,6 +72,10 @@ void ImageLayout::GenerateVerticalStripesLayout(
       spectral_class_map_[index] = class_index;
     }
   }
+
+  previous_layout_ = LAYOUT_TYPE_VERTICAL_STRIPES;
+  previous_num_classes_ = num_classes;
+  previous_size_parameter_ = stripe_width;
 }
 
 void ImageLayout::GenerateGridLayout(
@@ -82,6 +94,10 @@ void ImageLayout::GenerateGridLayout(
       spectral_class_map_[index] = class_index;
     }
   }
+
+  previous_layout_ = LAYOUT_TYPE_GRID;
+  previous_num_classes_ = num_classes;
+  previous_size_parameter_ = square_width;
 }
 
 void ImageLayout::GenerateRandomLayout(
@@ -155,11 +171,40 @@ void ImageLayout::GenerateRandomLayout(
       }
     }
   }
+
+  previous_layout_ = LAYOUT_TYPE_RANDOM;
+  previous_num_classes_ = num_classes;
+  previous_size_parameter_ = random_blob_size;
 }
 
 void ImageLayout::ResetLayout() {
   // TODO: Fill with 0 or a "non-class" id, such as -1?
   std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
+}
+
+void ImageLayout::SetImageSize(const int width, const int height) {
+  image_width_ = width;
+  image_height_ = height;
+  spectral_class_map_.resize(image_width_ * image_height_);
+  switch (previous_layout_) {
+  case LAYOUT_TYPE_HORIZONTAL_STRIPES:
+    GenerateHorizontalStripesLayout(
+        previous_num_classes_, previous_size_parameter_);
+    break;
+  case LAYOUT_TYPE_VERTICAL_STRIPES:
+    GenerateVerticalStripesLayout(
+        previous_num_classes_, previous_size_parameter_);
+    break;
+  case LAYOUT_TYPE_GRID:
+    GenerateGridLayout(previous_num_classes_, previous_size_parameter_);
+    break;
+  case LAYOUT_TYPE_RANDOM:
+    GenerateRandomLayout(previous_num_classes_, previous_size_parameter_);
+    break;
+  case LAYOUT_TYPE_NONE:
+  default:
+    break;
+  }
 }
 
 int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {

@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QLabel>
 #include <QLayoutItem>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QShowEvent>
@@ -142,9 +143,28 @@ ImageLayoutView::ImageLayoutView(
   layout->addLayout(class_names_layout_);
 
   // Center column is the image display widget.
+  QVBoxLayout* center_layout = new QVBoxLayout();
   image_layout_widget_ = new ImageLayoutWidget(image_layout_);
-  image_layout_widget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  layout->addWidget(image_layout_widget_);
+  image_layout_widget_->setSizePolicy(
+      QSizePolicy::Expanding, QSizePolicy::Preferred);
+  center_layout->addWidget(image_layout_widget_);
+
+  // Add the width and height bars as well.
+  QLineEdit* width_input =
+      new QLineEdit(QString::number(image_layout_->GetWidth()));
+  center_layout->addWidget(width_input);
+  center_layout->setAlignment(width_input, Qt::AlignCenter);
+  connect(
+      width_input, SIGNAL(returnPressed()), this, SLOT(WidthInputChanged()));
+
+  QLineEdit* height_input =
+      new QLineEdit(QString::number(image_layout_->GetHeight()));
+  center_layout->addWidget(height_input);
+  center_layout->setAlignment(height_input, Qt::AlignCenter);
+  connect(
+      height_input, SIGNAL(returnPressed()), this, SLOT(HeightInputChanged()));
+
+  layout->addLayout(center_layout);
 
   // Right-hand column is the set of patterns to generate over the image.
   // TODO: Make this interactive, with preview images, etc.
@@ -245,6 +265,16 @@ void ImageLayoutView::RandomButtonPressed() {
       image_layout_,
       image_layout_widget_,
       this);
+}
+
+void ImageLayoutView::WidthInputChanged() {
+  image_layout_->SetImageSize(250, 250);  // TODO: Fix, don't hardcode.
+  image_layout_widget_->update();
+}
+
+void ImageLayoutView::HeightInputChanged() {
+  image_layout_->SetImageSize(1000, 1000);  // TODO: Fix, don't hardcode.
+  image_layout_widget_->update();
 }
 
 }  // namespace hsi_data_generator

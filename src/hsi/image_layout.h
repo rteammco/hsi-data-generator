@@ -10,6 +10,14 @@
 
 namespace hsi_data_generator {
 
+enum LayoutType {
+  LAYOUT_TYPE_NONE,
+  LAYOUT_TYPE_HORIZONTAL_STRIPES,
+  LAYOUT_TYPE_VERTICAL_STRIPES,
+  LAYOUT_TYPE_GRID,
+  LAYOUT_TYPE_RANDOM
+};
+
 class ImageLayout {
  public:
   ImageLayout(const int image_width, const int image_height);
@@ -59,6 +67,10 @@ class ImageLayout {
   // Resets the layout, re-initializing everything to unassigned.
   void ResetLayout();
 
+  // Updates the image size. This causes the layout to be recomputed for the
+  // new image dimensions.
+  void SetImageSize(const int width, const int height);
+
   // Returns the width in pixels (number of columns) in the image.
   int GetWidth() const {
     return image_width_;
@@ -95,6 +107,12 @@ class ImageLayout {
   // classes. The class indices start at 0 to indicate the first spectrum
   // class.
   std::vector<int> spectral_class_map_;
+
+  // Tracks the previous layout generation variables in case the layout needs
+  // to be recomputed (e.g. when resizing the image).
+  LayoutType previous_layout_ = LAYOUT_TYPE_NONE;
+  int previous_num_classes_ = 0;
+  int previous_size_parameter_ = 0;
 };
 
 }  // namespace hsi_data_generator

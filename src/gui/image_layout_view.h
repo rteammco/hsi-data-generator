@@ -41,6 +41,8 @@ class ImageLayoutView : public QWidget {
   void VerticalStripesButtonPressed();
   void GridButtonPressed();
   void RandomButtonPressed();
+  void WidthInputChanged();
+  void HeightInputChanged();
 
  private:
   // The Spectrum objects generated in the ClassSpectrumView.
