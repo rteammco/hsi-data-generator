@@ -28,6 +28,10 @@ namespace {
 static const QString kQtImageLayoutViewStyle =
     "qt_stylesheets/image_layout_view.qss";
 
+// ;
+static const QString kWidthInputLabel = "Width:";
+static const QString kHeightInputLabel = "Height:";
+
 // Popup dialog notification text.
 static const QString kNoSpectraErrorDialogTitle = "No Spectra Available";
 static const QString kNoSpectraErrorDialogMessage =
@@ -152,14 +156,20 @@ ImageLayoutView::ImageLayoutView(
 
   // Add the width and height bars as well.
   width_input_ = new QLineEdit(QString::number(image_layout_->GetWidth()));
-  center_layout->addWidget(width_input_);
-  center_layout->setAlignment(width_input_, Qt::AlignCenter);
+  QHBoxLayout* width_input_layout = new QHBoxLayout();
+  width_input_layout->addWidget(new QLabel(kWidthInputLabel));
+  width_input_layout->addWidget(width_input_);
+  center_layout->addLayout(width_input_layout);
+  center_layout->setAlignment(width_input_layout, Qt::AlignCenter);
   connect(
       width_input_, SIGNAL(returnPressed()), this, SLOT(SizeInputChanged()));
 
   height_input_ = new QLineEdit(QString::number(image_layout_->GetHeight()));
-  center_layout->addWidget(height_input_);
-  center_layout->setAlignment(height_input_, Qt::AlignCenter);
+  QHBoxLayout* height_input_layout = new QHBoxLayout();
+  height_input_layout->addWidget(new QLabel(kHeightInputLabel));
+  height_input_layout->addWidget(height_input_);
+  center_layout->addLayout(height_input_layout);
+  center_layout->setAlignment(height_input_layout, Qt::AlignCenter);
   connect(
       height_input_, SIGNAL(returnPressed()), this, SLOT(SizeInputChanged()));
 
