@@ -12,7 +12,7 @@ static const QString kGenericErrorMessage =
 
 bool ProjectLoader::SaveProjectToFile(const QString& file_name) const {
   // TODO: Implement.
-  return false;
+  return true;
 }
 
 bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {

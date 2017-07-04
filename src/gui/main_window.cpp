@@ -1,6 +1,7 @@
 #include "gui/main_window.h"
 
 #include <QAction>
+#include <QFileDialog>
 #include <QMenuBar>
 #include <QMessagebox>
 #include <QString>
@@ -17,6 +18,7 @@
 #include "hsi/image_layout.h"
 #include "hsi/project_loader.h"
 #include "hsi/spectrum.h"
+#include "util/util.h"
 
 namespace hsi_data_generator {
 namespace {
@@ -50,6 +52,10 @@ static const QString kResetWarningDialogTitle = "Reset Project?";
 static const QString kResetWarningDialogMessage =
     QString("Are you sure you want to reset this project? ") +
     QString("All changed will be erased. This action cannot be undone.");
+
+static const QString kSaveProjectDialogTitle = "Save Project";
+static const QString kSaveProjectErrorDialogTitle = "Save Project Error";
+static const QString kOpenProjectDialogTitle = "Open Project";
 
 // Default values for the GUI widgets:
 constexpr int kDefaultNumberOfBands = 100;
@@ -149,11 +155,21 @@ void MainWindow::ResetActionCalled() {
 }
 
 void MainWindow::SaveActionCalled() {
-  qInfo() << "Save Called";
-  // TODO: Num bands and file name, etc.
-  ProjectLoader project_loader(spectra_, image_layout_, *num_bands_);
-  if (!project_loader.SaveProjectToFile("CHANGE THIS NAME")) {
-    // TODO: Report error (project_loader.GetErrorMessage()).
+  const QString file_name = QFileDialog::getSaveFileName(
+      this,
+      kSaveProjectDialogTitle,       // Dialog save caption.
+      util::GetRootCodeDirectory(),  // Default directory.
+      "All Files (*)");              // File filter
+  if (!file_name.isEmpty()) {
+    ProjectLoader project_loader(spectra_, image_layout_, *num_bands_);
+    if (project_loader.SaveProjectToFile(file_name)) {
+      setWindowTitle(file_name);
+    } else {
+      QMessageBox::critical(
+          this,
+          kSaveProjectErrorDialogTitle,
+          project_loader.GetErrorMessage());
+    }
   }
 }
 
