@@ -1,6 +1,7 @@
 #include "gui/image_layout_view.h"
 
 #include <QColor>
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QLabel>
@@ -28,9 +29,14 @@ namespace {
 static const QString kQtImageLayoutViewStyle =
     "qt_stylesheets/image_layout_view.qss";
 
-// ;
+// Label and button text.
 static const QString kWidthInputLabel = "Width:";
 static const QString kHeightInputLabel = "Height:";
+static const QString kHorizontalStripesLayoutButtonText = "Horizontal Stripes";
+static const QString kVerticalStripesLayoutButtonText = "Vertical Stripes";
+static const QString kGridLayoutButtonText = "Grid";
+static const QString kRandomLayoutButtonText = "Random";
+static const QString kImportImageLayoutButtonText = "Import Image";
 
 // Popup dialog notification text.
 static const QString kNoSpectraErrorDialogTitle = "No Spectra Available";
@@ -47,6 +53,8 @@ static const QString kSquareSizeDialogSelectionLabel =
 
 static const QString kRandomBlobSizeDialogTitle = "Select Random Blob Size";
 static const QString kRandomBlobSizeDialogSelectionLabel = "Blob size:";
+
+static const QString kOpenLayoutImageDialogTitle = "Import Layout Image";
 
 // The layout options for the image controlled by the buttons.
 void GenerateLayout(
@@ -109,6 +117,14 @@ void GenerateLayout(
         image_layout->GetNumPixels());
     image_layout->GenerateRandomLayout(num_classes, blob_size);
     break;
+  }
+  case LAYOUT_TYPE_IMPORTED_IMAGE: {
+    const QString image_file_name = QFileDialog::getOpenFileName(
+        dialog_parent,
+        kOpenLayoutImageDialogTitle,         // Dialog save caption.
+        util::GetRootCodeDirectory(),  // Default directory.
+        "All Files (*)");              // File filter
+    // TODO: Implement!
   }
   default:
     break;
@@ -174,7 +190,7 @@ ImageLayoutView::ImageLayoutView(
   pattern_list_layout->setAlignment(Qt::AlignTop);
 
   QPushButton* horizontal_stripes_button =
-      new QPushButton("Horizontal Stripes");
+      new QPushButton(kHorizontalStripesLayoutButtonText);
   pattern_list_layout->addWidget(horizontal_stripes_button);
   connect(
       horizontal_stripes_button,
@@ -182,7 +198,8 @@ ImageLayoutView::ImageLayoutView(
       this,
       SLOT(HorizontalStripesButtonPressed()));
 
-  QPushButton* vertical_stripes_button = new QPushButton("Vertical Stripes");
+  QPushButton* vertical_stripes_button =
+      new QPushButton(kVerticalStripesLayoutButtonText);
   pattern_list_layout->addWidget(vertical_stripes_button);
   connect(
       vertical_stripes_button,
@@ -190,7 +207,7 @@ ImageLayoutView::ImageLayoutView(
       this,
       SLOT(VerticalStripesButtonPressed()));
 
-  QPushButton* grid_button = new QPushButton("Grid");
+  QPushButton* grid_button = new QPushButton(kGridLayoutButtonText);
   pattern_list_layout->addWidget(grid_button);
   connect(
       grid_button,
@@ -198,13 +215,22 @@ ImageLayoutView::ImageLayoutView(
       this,
       SLOT(GridButtonPressed()));
 
-  QPushButton* random_button = new QPushButton("Random");
+  QPushButton* random_button = new QPushButton(kRandomLayoutButtonText);
   pattern_list_layout->addWidget(random_button);
   connect(
       random_button,
       SIGNAL(released()),
       this,
       SLOT(RandomButtonPressed()));
+
+  QPushButton* import_image_button =
+      new QPushButton(kImportImageLayoutButtonText);
+  pattern_list_layout->addWidget(import_image_button);
+  connect(
+      import_image_button,
+      SIGNAL(released()),
+      this,
+      SLOT(ImportImageButtonPressed()));
 
   // TODO: Add these more advanced options.
 //  pattern_list_layout->addWidget(new QLabel("Markov"));
@@ -263,6 +289,15 @@ void ImageLayoutView::GridButtonPressed() {
 void ImageLayoutView::RandomButtonPressed() {
   GenerateLayout(
       LAYOUT_TYPE_RANDOM,
+      *spectra_,
+      image_layout_,
+      image_layout_widget_,
+      this);
+}
+
+void ImageLayoutView::ImportImageButtonPressed() {
+  GenerateLayout(
+      LAYOUT_TYPE_IMPORTED_IMAGE,
       *spectra_,
       image_layout_,
       image_layout_widget_,

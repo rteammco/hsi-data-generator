@@ -42,6 +42,7 @@ class ImageLayoutView : public QWidget {
   void VerticalStripesButtonPressed();
   void GridButtonPressed();
   void RandomButtonPressed();
+  void ImportImageButtonPressed();
   void SizeInputChanged();
 
  private:
