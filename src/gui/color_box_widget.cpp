@@ -13,18 +13,12 @@
 namespace hsi_data_generator {
 namespace {
 
-constexpr int kNumColorValues = 255;
-
 }  // namespace
 
 ColorBoxWidget::ColorBoxWidget(std::shared_ptr<Spectrum> spectrum)
     : spectrum_(spectrum) {
 
-  // Generate random RGB color:
-  const int rand_red = qrand() % kNumColorValues;
-  const int rand_green = qrand() % kNumColorValues;
-  const int rand_blue = qrand() % kNumColorValues;
-  SetColor(QColor(rand_red, rand_green, rand_blue));
+  SetColor(spectrum_->GetColor());
 }
 
 ColorBoxWidget::ColorBoxWidget(

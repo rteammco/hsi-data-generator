@@ -16,6 +16,15 @@ namespace {
 static const QString kDefaultSpectrumName = "Spectrum";
 static const QColor kDefaultSpectrumColor = Qt::black;
 
+constexpr int kNumColorValues = 255;
+
+QColor GetRandomColor() {
+  const int rand_red = qrand() % kNumColorValues;
+  const int rand_green = qrand() % kNumColorValues;
+  const int rand_blue = qrand() % kNumColorValues;
+  return QColor(rand_red, rand_green, rand_blue);
+}
+
 // Returns the value at the given point in the Gaussian distribution defined by
 // the given mean and variance.
 // See https://en.wikipedia.org/wiki/Normal_distribution for the equation.
@@ -34,9 +43,15 @@ double GetNormalDistributionValue(
 
 }  // namespace
 
-Spectrum::Spectrum()
-    : spectrum_class_name_(kDefaultSpectrumName),
-      spectrum_class_color_(kDefaultSpectrumColor) {}
+Spectrum::Spectrum() : spectrum_class_name_(kDefaultSpectrumName) {
+  spectrum_class_color_ = GetRandomColor();
+}
+
+Spectrum::Spectrum(const QString& spectrum_class_name)
+    : spectrum_class_name_(spectrum_class_name) {
+
+  spectrum_class_color_ = GetRandomColor();
+}
 
 void Spectrum::AddPeak(
     const double position, const double amplitude, const double width) {

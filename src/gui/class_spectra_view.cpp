@@ -21,7 +21,6 @@ static const QString kQtClassSpectraViewStyle =
     "qt_stylesheets/class_spectra_view.qss";
 
 static const QString kDefaultSpectrumName = "Background";
-static const QColor kDefaultSpectrumColor = Qt::black;
 
 static const QString kNewSpectrumButtonString = "Add Spectrum";
 
@@ -132,14 +131,13 @@ void ClassSpectraView::RowCloneButtonPressed(QWidget* caller) {
 }
 
 void ClassSpectraView::InsertNewSpectrum(const QString& name) {
-  std::shared_ptr<Spectrum> spectrum(new Spectrum(name, kDefaultSpectrumColor));
+  std::shared_ptr<Spectrum> spectrum(new Spectrum(name));
   spectra_->push_back(spectrum);
   AddClassSpectrumRow(spectrum);
 }
 
 void ClassSpectraView::AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum) {
   ClassSpectrumRow* row = new ClassSpectrumRow(*num_bands_, spectrum, this);
-  row->SetNumberOfBands(*num_bands_);
   class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be
   // the new spectrum button.

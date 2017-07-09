@@ -6,7 +6,6 @@
 #include <QString>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-#include <QtDebug>
 
 #include "hsi/spectrum.h"
 
@@ -122,11 +121,11 @@ bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {
                     } else if (xml_reader.name() == kPeakAmplitudeTag) {
                       const QString peak_amplitude_text =  // <amplitude>
                           xml_reader.readElementText();
-                      peak.position = peak_amplitude_text.toDouble();
+                      peak.amplitude = peak_amplitude_text.toDouble();
                     } else if (xml_reader.name() == kPeakWidthTag) {
                       const QString peak_width_text =  // <width>
                           xml_reader.readElementText();
-                      peak.position = peak_width_text.toDouble();
+                      peak.width = peak_width_text.toDouble();
                     } else {
                       xml_reader.skipCurrentElement();  // Unknown tag.
                     }
@@ -141,7 +140,8 @@ bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {
             } else if (xml_reader.name() == kSpectrumNameTag) {  // <name>
               spectrum->SetName(xml_reader.readElementText());
             } else if (xml_reader.name() == kSpectrumColorTag) {  // <color>
-              const QColor color(xml_reader.readElementText());
+              const QString color_string = xml_reader.readElementText();
+              const QColor color(color_string);
               spectrum->SetColor(color);
             }
           }

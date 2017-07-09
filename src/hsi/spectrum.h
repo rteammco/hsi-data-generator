@@ -41,8 +41,11 @@ struct PeakDistribution {
 
 class Spectrum {
  public:
-  // Default spectrum sets the name to "New Spectrum" and color to black.
+  // Default spectrum sets the name to "New Spectrum" and a random color.
   Spectrum();
+
+  // Creates a spectrum with a random color.
+  explicit Spectrum(const QString& spectrum_class_name);
 
   // Set the spectrum's name and representative color. This can be modified
   // later.

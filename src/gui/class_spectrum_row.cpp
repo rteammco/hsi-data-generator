@@ -1,6 +1,5 @@
 #include "gui/class_spectrum_row.h"
 
-#include <QColor>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
