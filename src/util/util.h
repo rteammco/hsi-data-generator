@@ -13,6 +13,16 @@ constexpr int kMaxImageDimensionSize = 10000;
 constexpr int kMinNumberOfBands = 1;
 constexpr int kMaxNumberOfBands = 10000;
 
+// This character is used as a substitution placeholder for template strings to
+// be adapted for specific use cases (e.g. error messages, where the "%" is
+// substituted with a file name that failed to load).
+static const QString kTextSubPlaceholder = "%";
+
+// Replaces the placeholder (defined above) in the given template string with
+// the text in the given replacement string.
+QString ReplaceTextSubPlaceholder(
+    const QString& template_string, const QString& replacement);
+
 // Returns the root directory where this project was compiled. This uses the
 // root path preprocessor macro specified by CMake. If for some reason this
 // flag isn't defined, a warning will be logged and the local directory (".")

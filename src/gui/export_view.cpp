@@ -20,8 +20,6 @@ namespace {
 
 static const QString kQtExportViewStyle = "qt_stylesheets/export_view.qss";
 
-static const QString kSubstitutePlaceholder = "%";
-
 static const QString kInformationString =
     "Export the HSI data as a binary ENVI image.";
 static const QString kExportButtonString = "Export HSI";
@@ -29,7 +27,8 @@ static const QString kSaveFileDialogTitle = "Save HSI File";
 static const QString kSaveFileErrorDialogTitle = "File Save Error";
 static const QString kSaveFileSuccessDialogTitle = "File Saved";
 static const QString kSaveFileSuccessDialogMessage =
-    "Data was successfully saved to file \"%\".";
+    "Data was successfully saved to file \"" +
+    util::kTextSubPlaceholder + "\".";
 
 }  // namespace
 
@@ -69,8 +68,8 @@ void ExportView::ExportButtonPressed() {
           kSaveFileErrorDialogTitle,
           exporter.GetErrorMessage());
     } else {
-      QString saved_message = kSaveFileSuccessDialogMessage;
-      saved_message.replace(kSubstitutePlaceholder, file_name);
+      const QString saved_message =
+          util::ReplaceTextSubPlaceholder(kSaveFileSuccessDialogMessage, file_name);
       QMessageBox::information(
           this, kSaveFileSuccessDialogTitle, saved_message);
     }

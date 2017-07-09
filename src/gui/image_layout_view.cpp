@@ -54,11 +54,10 @@ static const QString kSquareSizeDialogSelectionLabel =
 static const QString kRandomBlobSizeDialogTitle = "Select Random Blob Size";
 static const QString kRandomBlobSizeDialogSelectionLabel = "Blob size:";
 
-static const QString kSubstitutePlaceholder = "%";  // TODO: Make universal.
 static const QString kOpenLayoutImageDialogTitle = "Import Layout Image";
 static const QString kOpenLayoutImageErrorDialogTitle = "Error Loading Image";
 static const QString kOpenLayoutImageErrorMessage =
-    "Could not load file " + kSubstitutePlaceholder + ".";
+    "Could not load file " + util::kTextSubPlaceholder + ".";
 
 // The layout options for the image controlled by the buttons.
 void GenerateLayout(
@@ -134,8 +133,8 @@ void GenerateLayout(
     }
     QImage layout_image;
     if (!layout_image.load(image_file_name)) {
-      QString error_message = kOpenLayoutImageErrorMessage;
-      error_message.replace(kSubstitutePlaceholder, image_file_name);
+      const QString error_message = util::ReplaceTextSubPlaceholder(
+          kOpenLayoutImageErrorMessage, image_file_name);
       QMessageBox::critical(
           dialog_parent,
           kOpenLayoutImageErrorDialogTitle,

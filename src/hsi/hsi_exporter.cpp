@@ -15,8 +15,6 @@ namespace {
 static const QString kHeaderFileExtension = ".hdr";
 
 // Error messages for various file operations:
-static const QString kSubstitutePlaceholder = "%";
-
 static const QString kGenericErrorMessage =
     "Sorry. I derped trying to save the file.";
 
@@ -34,11 +32,11 @@ static const QString kInvalidImageSizeErrorMessage =
     QString::number(util::kMaxImageDimensionSize) + ".";
 
 static const QString kFileNotOpenErrorMessage =
-    "Could not open file \"" + kSubstitutePlaceholder + "\" for writing.";
+    "Could not open file \"" + util::kTextSubPlaceholder + "\" for writing.";
 
 static const QString kInvalidSpectrumClassErrorMessage =
     "Invalid spectrum class: must be between 0 and " +
-    kSubstitutePlaceholder + ".";
+    util::kTextSubPlaceholder + ".";
 
 }  // namespace
 
@@ -77,8 +75,8 @@ bool HSIDataExporter::SaveFile(const QString& file_name) const {
   // Write the file:
   std::ofstream data_file(file_name.toStdString());
   if (!data_file.is_open()) {
-    error_message_ = kFileNotOpenErrorMessage;
-    error_message_.replace(kSubstitutePlaceholder, file_name);
+    error_message_ = util::ReplaceTextSubPlaceholder(
+        kFileNotOpenErrorMessage, file_name);
     return false;
   }
   // BSQ (band sequential) format:
@@ -87,10 +85,9 @@ bool HSIDataExporter::SaveFile(const QString& file_name) const {
       for (int col = 0; col < num_cols; ++col) {
         const int class_index = image_layout_->GetClassAtPixel(col, row);
         if (class_index < 0 || class_index >= num_spectra) {
-          qInfo() << class_index;
-          error_message_ = kInvalidSpectrumClassErrorMessage;
-          error_message_.replace(
-              kSubstitutePlaceholder, QString::number(num_spectra - 1));
+          error_message_ = util::ReplaceTextSubPlaceholder(
+              kInvalidSpectrumClassErrorMessage,
+              QString::number(num_spectra - 1));
           data_file.close();
           return false;
         }
@@ -107,8 +104,8 @@ bool HSIDataExporter::SaveFile(const QString& file_name) const {
   const QString header_file_name = file_name + kHeaderFileExtension;
   std::ofstream header_file(header_file_name.toStdString());
   if (!header_file.is_open()) {
-    error_message_ = kFileNotOpenErrorMessage;
-    error_message_.replace(kSubstitutePlaceholder, header_file_name);
+    error_message_ = util::ReplaceTextSubPlaceholder(
+        kFileNotOpenErrorMessage, header_file_name);
     return false;
   }
   // TODO: Adjust these header values as needed.

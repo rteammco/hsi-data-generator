@@ -9,6 +9,14 @@
 namespace hsi_data_generator {
 namespace util {
 
+QString ReplaceTextSubPlaceholder(
+    const QString& template_string, const QString& replacement) {
+
+  QString modified_string = template_string;
+  modified_string.replace(kTextSubPlaceholder, replacement);
+  return modified_string;
+}
+
 QString GetRootCodeDirectory() {
 #ifdef ROOT_CODE_DIRECTORY
   return QString(ROOT_CODE_DIRECTORY);

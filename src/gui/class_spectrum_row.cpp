@@ -35,10 +35,9 @@ static const QString kClearButtonString = "Clear";
 static const QString kCloneButtonString = "Clone";
 
 // Prompt dialog strings:
-static const QString kSubstitutePlaceholder = "%";
 static const QString kDeleteSpectrumName = "Delete Spectrum";
 static const QString kDeleteSpectrumQuestionString =
-    "Delete spectrum \"" + kSubstitutePlaceholder + "\"?";
+    "Delete spectrum \"" + util::kTextSubPlaceholder + "\"?";
 
 }  // namespace
 
@@ -153,8 +152,8 @@ void ClassSpectrumRow::ClearButtonPressed() {
   // If the clear button is pressed and the spectrum is currently clear, prompt
   // the user to delete the row. Otherwise, just clear the spectrum.
   if (spectrum_->IsEmpty()) {
-    QString prompt_question = kDeleteSpectrumQuestionString;
-    prompt_question.replace(kSubstitutePlaceholder, spectrum_->GetName());
+    const QString prompt_question = util::ReplaceTextSubPlaceholder(
+        kDeleteSpectrumQuestionString, spectrum_->GetName());
     QMessageBox::StandardButton reply = QMessageBox::question(
         this,
         kDeleteSpectrumName,

@@ -8,6 +8,7 @@
 #include <QXmlStreamWriter>
 
 #include "hsi/spectrum.h"
+#include "util/util.h"
 
 namespace hsi_data_generator {
 namespace {
@@ -28,22 +29,20 @@ static const QString kPeakWidthTag = "width";
 static const QString kNumBandsTag = "num_bands";
 
 // Error messages:
-static const QString kSubstitutePlaceholder = "%";
-
 static const QString kGenericErrorMessage =
     "File read/write error.";
 static const QString kFileNotOpenWriteErrorMessage =
-    "Could not open file \"" + kSubstitutePlaceholder + "\" for writing.";
+    "Could not open file \"" + util::kTextSubPlaceholder + "\" for writing.";
 static const QString kFileNotOpenReadErrorMessage =
-    "Could not open file \"" + kSubstitutePlaceholder + "\" for reading.";
+    "Could not open file \"" + util::kTextSubPlaceholder + "\" for reading.";
 
 }  // namespace
 
 bool ProjectLoader::SaveProjectToFile(const QString& file_name) const {
   QFile project_file(file_name);
   if (!project_file.open(QIODevice::WriteOnly)) {
-    error_message_ = kFileNotOpenWriteErrorMessage;
-    error_message_.replace(kSubstitutePlaceholder, file_name);
+    error_message_ = util::ReplaceTextSubPlaceholder(
+        kFileNotOpenWriteErrorMessage, file_name);
     return false;
   }
   QXmlStreamWriter xml_writer(&project_file);
@@ -97,8 +96,8 @@ bool ProjectLoader::SaveProjectToFile(const QString& file_name) const {
 bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {
   QFile project_file(file_name);
   if (!project_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    error_message_ = kFileNotOpenReadErrorMessage;
-    error_message_.replace(kSubstitutePlaceholder, file_name);
+    error_message_ = util::ReplaceTextSubPlaceholder(
+        kFileNotOpenReadErrorMessage, file_name);
     return false;
   }
   QXmlStreamReader xml_reader(&project_file);
