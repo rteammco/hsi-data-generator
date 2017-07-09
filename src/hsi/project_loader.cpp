@@ -1,5 +1,6 @@
 #include "hsi/project_loader.h"
 
+#include <QColor>
 #include <QFile>
 #include <QIODevice>
 #include <QString>
@@ -74,7 +75,7 @@ bool ProjectLoader::SaveProjectToFile(const QString& file_name) const {
     xml_writer.writeTextElement(kSpectrumColorTag, spectrum->GetColor().name());
     xml_writer.writeEndElement();  // </spectrum>
   }
-  xml_writer.writeTextElement(kNumBandsTag, QString::number(num_bands_));
+  xml_writer.writeTextElement(kNumBandsTag, QString::number(*num_bands_));
   xml_writer.writeEndElement();  // </spectral_dictionary>
 
 //  // TODO: Save the layout.
@@ -104,39 +105,51 @@ bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {
   QXmlStreamReader xml_reader(&project_file);
   if (xml_reader.readNextStartElement()) {
     if (xml_reader.name() == kSpectralDictionaryTag) {  // <spectral_dictionary>
+      spectra_->clear();
       while (xml_reader.readNextStartElement()) {
         if (xml_reader.name() == kSpectrumTag) {  // <spectrum>
+          std::shared_ptr<Spectrum> spectrum(new Spectrum());
           while (xml_reader.readNextStartElement()) {
             if (xml_reader.name() == kSpectrumPeaksTag) {  // <peaks>
               while (xml_reader.readNextStartElement()) {
                 if (xml_reader.name() == kPeakTag) {  // <peak>
+                  PeakDistribution peak;
                   while (xml_reader.readNextStartElement()) {
-                    // <position>, <amplitude>, <width>
                     if (xml_reader.name() == kPeakPositionTag) {
-                      qInfo() << "POSITION:" << xml_reader.readElementText();
+                      const QString peak_position_text =  // <position>
+                          xml_reader.readElementText();
+                      peak.position = peak_position_text.toDouble();
                     } else if (xml_reader.name() == kPeakAmplitudeTag) {
-                      qInfo() << "AMPLITUDE:" << xml_reader.readElementText();
+                      const QString peak_amplitude_text =  // <amplitude>
+                          xml_reader.readElementText();
+                      peak.position = peak_amplitude_text.toDouble();
                     } else if (xml_reader.name() == kPeakWidthTag) {
-                      qInfo() << "WIDTH:" << xml_reader.readElementText();
+                      const QString peak_width_text =  // <width>
+                          xml_reader.readElementText();
+                      peak.position = peak_width_text.toDouble();
                     } else {
                       xml_reader.skipCurrentElement();  // Unknown tag.
                     }
                   }
                   // </peak>
+                  spectrum->AddPeak(peak.position, peak.amplitude, peak.width);
                 } else {
                   xml_reader.skipCurrentElement();  // Unknown tag.
                 }
               }
               // </peaks>
             } else if (xml_reader.name() == kSpectrumNameTag) {  // <name>
-              qInfo() << "NAME:" << xml_reader.readElementText();
+              spectrum->SetName(xml_reader.readElementText());
             } else if (xml_reader.name() == kSpectrumColorTag) {  // <color>
-              qInfo() << "COLOR:" << xml_reader.readElementText();
+              const QColor color(xml_reader.readElementText());
+              spectrum->SetColor(color);
             }
           }
+          spectra_->push_back(spectrum);
           // </spectrum>
         } else if (xml_reader.name() == kNumBandsTag) {  // <num_bands>
-          qInfo() << "NUM BANDS = " << xml_reader.readElementText();
+          const QString num_bands_string = xml_reader.readElementText();
+          *num_bands_ = num_bands_string.toInt();
         } else {
           xml_reader.skipCurrentElement();  // Unknown tag.
         }
@@ -145,8 +158,7 @@ bool ProjectLoader::LoadProjectFromFile(const QString& file_name) {
     // </spectral_dictionary>
   }
   project_file.close();
-
-  return false;
+  return true;
 }
 
 QString ProjectLoader::GetErrorMessage() const {

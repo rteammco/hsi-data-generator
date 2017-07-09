@@ -18,9 +18,9 @@ namespace hsi_data_generator {
 class ProjectLoader {
  public:
   ProjectLoader(
-      const std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
-      const std::shared_ptr<ImageLayout> image_layout,
-      const int num_bands)
+      std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra,
+      std::shared_ptr<ImageLayout> image_layout,
+      std::shared_ptr<int> num_bands)
       : spectra_(spectra), image_layout_(image_layout), num_bands_(num_bands) {}
 
   bool SaveProjectToFile(const QString& file_name) const;
@@ -32,10 +32,9 @@ class ProjectLoader {
   QString GetErrorMessage() const;
 
  private:
-  const std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
-  const std::shared_ptr<ImageLayout> image_layout_;
-
-  const int num_bands_;
+  std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
+  std::shared_ptr<ImageLayout> image_layout_;
+  std::shared_ptr<int> num_bands_;
 
   // This error message is logged if any of the file operations fails.
   mutable QString error_message_;

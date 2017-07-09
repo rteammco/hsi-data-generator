@@ -41,6 +41,9 @@ struct PeakDistribution {
 
 class Spectrum {
  public:
+  // Default spectrum sets the name to "New Spectrum" and color to black.
+  Spectrum();
+
   // Set the spectrum's name and representative color. This can be modified
   // later.
   Spectrum(

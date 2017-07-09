@@ -79,6 +79,10 @@ void ClassSpectraView::UpdateGUI() {
   for (std::shared_ptr<Spectrum> spectrum : *spectra_) {
     AddClassSpectrumRow(spectrum);
   }
+  // Update the current number count.
+  if (number_of_bands_input_ != nullptr) {
+    number_of_bands_input_->setText(QString::number(*num_bands_));
+  }
 }
 
 void ClassSpectraView::DeleteClassSpectrumRow(ClassSpectrumRow* row) {
@@ -135,6 +139,7 @@ void ClassSpectraView::InsertNewSpectrum(const QString& name) {
 
 void ClassSpectraView::AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum) {
   ClassSpectrumRow* row = new ClassSpectrumRow(*num_bands_, spectrum, this);
+  row->SetNumberOfBands(*num_bands_);
   class_spectrum_rows_.push_back(row);
   // Insert as the second-to-last item, since the last item should always be
   // the new spectrum button.

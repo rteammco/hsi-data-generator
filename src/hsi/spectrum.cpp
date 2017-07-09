@@ -1,5 +1,7 @@
 #include "hsi/spectrum.h"
 
+#include <QColor>
+#include <QString>
 #include <QtDebug>
 
 #include <math.h>
@@ -10,6 +12,9 @@
 
 namespace hsi_data_generator {
 namespace {
+
+static const QString kDefaultSpectrumName = "Spectrum";
+static const QColor kDefaultSpectrumColor = Qt::black;
 
 // Returns the value at the given point in the Gaussian distribution defined by
 // the given mean and variance.
@@ -28,6 +33,10 @@ double GetNormalDistributionValue(
 }
 
 }  // namespace
+
+Spectrum::Spectrum()
+    : spectrum_class_name_(kDefaultSpectrumName),
+      spectrum_class_color_(kDefaultSpectrumColor) {}
 
 void Spectrum::AddPeak(
     const double position, const double amplitude, const double width) {

@@ -139,9 +139,15 @@ void MainWindow::OpenActionCalled() {
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
   if (!file_name.isEmpty()) {
-    ProjectLoader project_loader(spectra_, image_layout_, *num_bands_);
+    ProjectLoader project_loader(spectra_, image_layout_, num_bands_);
     if (project_loader.LoadProjectFromFile(file_name)) {
       setWindowTitle(file_name);
+      if (class_spectra_view_ != nullptr) {
+        class_spectra_view_->UpdateGUI();
+      }
+      if (image_layout_view_ != nullptr) {
+        image_layout_view_->UpdateGUI();
+      }
     } else {
       QMessageBox::critical(
           this,
@@ -177,7 +183,7 @@ void MainWindow::SaveActionCalled() {
       util::GetRootCodeDirectory(),  // Default directory.
       "All Files (*)");              // File filter
   if (!file_name.isEmpty()) {
-    ProjectLoader project_loader(spectra_, image_layout_, *num_bands_);
+    ProjectLoader project_loader(spectra_, image_layout_, num_bands_);
     if (project_loader.SaveProjectToFile(file_name)) {
       setWindowTitle(file_name);
     } else {
