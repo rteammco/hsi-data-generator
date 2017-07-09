@@ -68,8 +68,8 @@ void ExportView::ExportButtonPressed() {
           kSaveFileErrorDialogTitle,
           exporter.GetErrorMessage());
     } else {
-      const QString saved_message =
-          util::ReplaceTextSubPlaceholder(kSaveFileSuccessDialogMessage, file_name);
+      const QString saved_message = util::ReplaceTextSubPlaceholder(
+          kSaveFileSuccessDialogMessage, file_name);
       QMessageBox::information(
           this, kSaveFileSuccessDialogTitle, saved_message);
     }

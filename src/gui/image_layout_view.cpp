@@ -78,47 +78,70 @@ void GenerateLayout(
   }
   switch (layout_type) {
   case LAYOUT_TYPE_HORIZONTAL_STRIPES: {
+    bool ok_pressed;
     const int stripe_width = QInputDialog::getInt(
         dialog_parent,
         kStripeWidthDialogTitle,
         kStripeWidthDialogSelectionLabel,
         0,  // default value
         0,  // min value
-        image_layout->GetWidth());  // max value
+        image_layout->GetWidth(),  // max value
+        1,  // slider step size
+        &ok_pressed);
+    if (!ok_pressed) {
+      return;
+    }
     image_layout->GenerateHorizontalStripesLayout(num_classes, stripe_width);
     break;
   }
   case LAYOUT_TYPE_VERTICAL_STRIPES: {
+    bool ok_pressed;
     const int stripe_width = QInputDialog::getInt(
         dialog_parent,
         kStripeWidthDialogTitle,
         kStripeWidthDialogSelectionLabel,
         0,  // default value
         0,  // min value
-        image_layout->GetHeight());  // max value
+        image_layout->GetHeight(),  // max value
+        1,  // slider step size
+        &ok_pressed);
+    if (!ok_pressed) {
+      return;
+    }
     image_layout->GenerateVerticalStripesLayout(num_classes, stripe_width);
     break;
   }
   case LAYOUT_TYPE_GRID: {
+    bool ok_pressed;
     const int square_size = QInputDialog::getInt(
         dialog_parent,
         kSquareSizeDialogTitle,
         kSquareSizeDialogSelectionLabel,
         0,  // default value
         0,  // min value
-        image_layout->GetWidth());  // max value; TODO: should be max(w, h).
+        image_layout->GetWidth(),  // max value; TODO: should be max(w, h).
+        1,  // slider step size
+        &ok_pressed);
+    if (!ok_pressed) {
+      return;
+    }
     image_layout->GenerateGridLayout(num_classes, square_size);
     break;
   }
   case LAYOUT_TYPE_RANDOM: {
+    bool ok_pressed;
     const int blob_size = QInputDialog::getInt(
         dialog_parent,
         kRandomBlobSizeDialogTitle,
         kRandomBlobSizeDialogSelectionLabel,
         1,  // default value
         1,  // min value
-        image_layout->GetNumPixels());
-    // TODO: return on cancel.
+        image_layout->GetNumPixels(),
+        1,  // slider step size
+        &ok_pressed);
+    if (!ok_pressed) {
+      return;
+    }
     image_layout->GenerateRandomLayout(num_classes, blob_size);
     break;
   }
