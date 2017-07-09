@@ -54,7 +54,11 @@ static const QString kSquareSizeDialogSelectionLabel =
 static const QString kRandomBlobSizeDialogTitle = "Select Random Blob Size";
 static const QString kRandomBlobSizeDialogSelectionLabel = "Blob size:";
 
+static const QString kSubstitutePlaceholder = "%";  // TODO: Make universal.
 static const QString kOpenLayoutImageDialogTitle = "Import Layout Image";
+static const QString kOpenLayoutImageErrorDialogTitle = "Error Loading Image";
+static const QString kOpenLayoutImageErrorMessage =
+    "Could not load file " + kSubstitutePlaceholder + ".";
 
 // The layout options for the image controlled by the buttons.
 void GenerateLayout(
@@ -115,16 +119,30 @@ void GenerateLayout(
         1,  // default value
         1,  // min value
         image_layout->GetNumPixels());
+    // TODO: return on cancel.
     image_layout->GenerateRandomLayout(num_classes, blob_size);
     break;
   }
   case LAYOUT_TYPE_IMPORTED_IMAGE: {
     const QString image_file_name = QFileDialog::getOpenFileName(
         dialog_parent,
-        kOpenLayoutImageDialogTitle,   // Dialog save caption.
-        util::GetRootCodeDirectory(),  // Default directory.
-        "All Files (*)");              // File filter
-    // TODO: Implement!
+        kOpenLayoutImageDialogTitle,         // Dialog save caption.
+        util::GetRootCodeDirectory(),        // Default directory.
+        "Image Files (*.png *.jpg *.bmp)");  // File filter
+    if (image_file_name.isEmpty()) {
+      return;
+    }
+    QImage layout_image;
+    if (!layout_image.load(image_file_name)) {
+      QString error_message = kOpenLayoutImageErrorMessage;
+      error_message.replace(kSubstitutePlaceholder, image_file_name);
+      QMessageBox::critical(
+          dialog_parent,
+          kOpenLayoutImageErrorDialogTitle,
+          error_message);
+      return;
+    }
+    // TODO: Pass the image into the ImageLayout object.
   }
   default:
     break;

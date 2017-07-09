@@ -6,6 +6,8 @@
 #ifndef SRC_HSI_IMAGE_LAYOUT_H_
 #define SRC_HSI_IMAGE_LAYOUT_H_
 
+#include <QImage>
+
 #include <vector>
 
 namespace hsi_data_generator {
@@ -64,6 +66,10 @@ class ImageLayout {
   // spatial correlations in the image.
   void GenerateRandomLayout(
       const int num_classes, const int random_blob_size = 1);
+
+  // Attempts to generate a layout from the given image file.
+  // TODO: Implement and comment.
+  void GenerateLayoutFromImage(const QImage& layout_image);
 
   // Resets the layout, re-initializing everything to unassigned.
   void ResetLayout();
