@@ -121,7 +121,7 @@ void GenerateLayout(
   case LAYOUT_TYPE_IMPORTED_IMAGE: {
     const QString image_file_name = QFileDialog::getOpenFileName(
         dialog_parent,
-        kOpenLayoutImageDialogTitle,         // Dialog save caption.
+        kOpenLayoutImageDialogTitle,   // Dialog save caption.
         util::GetRootCodeDirectory(),  // Default directory.
         "All Files (*)");              // File filter
     // TODO: Implement!

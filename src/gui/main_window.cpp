@@ -58,6 +58,9 @@ static const QString kSaveProjectErrorDialogTitle = "Save Project Error";
 static const QString kOpenProjectDialogTitle = "Open Project";
 static const QString kOpenProjectErrorDialogTitle = "Open Project Error";
 
+// File operation filters:
+static const QString kXMLFileFilter = "XML (*.xml)";
+
 // Default values for the GUI widgets:
 constexpr int kDefaultNumberOfBands = 100;
 constexpr int kDefaultImageLayoutWidth = 500;
@@ -137,7 +140,7 @@ void MainWindow::OpenActionCalled() {
       this,
       kOpenProjectDialogTitle,       // Dialog save caption.
       util::GetRootCodeDirectory(),  // Default directory.
-      "All Files (*)");              // File filter
+      kXMLFileFilter);               // File filter
   if (!file_name.isEmpty()) {
     ProjectLoader project_loader(spectra_, image_layout_, num_bands_);
     if (project_loader.LoadProjectFromFile(file_name)) {
@@ -181,7 +184,7 @@ void MainWindow::SaveActionCalled() {
       this,
       kSaveProjectDialogTitle,       // Dialog save caption.
       util::GetRootCodeDirectory(),  // Default directory.
-      "All Files (*)");              // File filter
+      kXMLFileFilter);               // File filter
   if (!file_name.isEmpty()) {
     ProjectLoader project_loader(spectra_, image_layout_, num_bands_);
     if (project_loader.SaveProjectToFile(file_name)) {
