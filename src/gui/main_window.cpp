@@ -56,6 +56,7 @@ static const QString kResetWarningDialogMessage =
 static const QString kSaveProjectDialogTitle = "Save Project";
 static const QString kSaveProjectErrorDialogTitle = "Save Project Error";
 static const QString kOpenProjectDialogTitle = "Open Project";
+static const QString kOpenProjectErrorDialogTitle = "Open Project Error";
 
 // Default values for the GUI widgets:
 constexpr int kDefaultNumberOfBands = 100;
@@ -132,7 +133,22 @@ void MainWindow::NewActionCalled() {
 }
 
 void MainWindow::OpenActionCalled() {
-  qInfo() << "Open Called";
+  const QString file_name = QFileDialog::getOpenFileName(
+      this,
+      kOpenProjectDialogTitle,       // Dialog save caption.
+      util::GetRootCodeDirectory(),  // Default directory.
+      "All Files (*)");              // File filter
+  if (!file_name.isEmpty()) {
+    ProjectLoader project_loader(spectra_, image_layout_, *num_bands_);
+    if (project_loader.LoadProjectFromFile(file_name)) {
+      setWindowTitle(file_name);
+    } else {
+      QMessageBox::critical(
+          this,
+          kOpenProjectErrorDialogTitle,
+          project_loader.GetErrorMessage());
+    }
+  }
 }
 
 void MainWindow::ResetActionCalled() {
