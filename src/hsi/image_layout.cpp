@@ -3,8 +3,10 @@
 #include <QImage>
 #include <QColor>
 #include <QtGlobal>  // qrand()
+#include <QtDebug>
 
 #include <algorithm>
+#include <cmath>
 #include <utility>
 #include <vector>
 
@@ -203,7 +205,9 @@ void ImageLayout::GenerateLayoutFromImage(
   for (int col = 0; col < image_width_; ++col) {
     for (int row = 0; row < image_height_; ++row) {
       const int gray_value = qGray(image.pixel(col, row));
-      const int class_index = gray_value / (256 / num_classes);
+      // 256 possible intensity values, remapped into num_classes values.
+      const int class_index =
+          gray_value / std::ceil(256.0 / static_cast<double>(num_classes));
       spectral_class_map_[GetMapIndex(col, row)] = class_index;
     }
   }
