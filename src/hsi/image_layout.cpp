@@ -1,5 +1,7 @@
 #include "hsi/image_layout.h"
 
+#include <QImage>
+#include <QColor>
 #include <QtGlobal>  // qrand()
 
 #include <algorithm>
@@ -175,6 +177,39 @@ void ImageLayout::GenerateRandomLayout(
   previous_layout_ = LAYOUT_TYPE_RANDOM;
   previous_num_classes_ = num_classes;
   previous_size_parameter_ = random_blob_size;
+}
+
+void ImageLayout::GenerateLayoutFromImage(
+    const int num_classes, const QImage& layout_image) {
+
+  // Resize the image to fit the layout's size.
+  QImage image = layout_image.scaled(image_width_, image_height_);
+
+  // Convert the image to grayscale if it isn't already. Code taken from:
+  // https://stackoverflow.com/questions/27949569/convert-a-qimage-to-grayscale
+  // Pixel depth is 1 (grayscale), 3 (rgb), or 4 (rgba), etc. QImage.depth is
+  // given in bits (8 per byte).
+  const int pixel_depth = image.depth() / 8;
+  for (int row = 0; row < image_height_; ++row) {
+    unsigned char* scanline = image.scanLine(row);
+    for (int col = 0; col < image_width_; ++col) {
+      QRgb* rgb_pixel = reinterpret_cast<QRgb*>(scanline + col * pixel_depth);
+      const int gray_value = qGray(*rgb_pixel);
+      *rgb_pixel = QColor(gray_value, gray_value, gray_value).rgba();
+    }
+  }
+  image = image.convertToFormat(QImage::Format_Indexed8);
+
+  // Set the class map values by pixel intensity.
+  // TODO: Possibly, do pixel intensity clustering instead of this hack.
+  for (int row = 0; row < image_height_; ++row) {
+    for (int col = 0; col < image_width_; ++col) {
+      const int index = row * image_width_ + col;
+      const int gray_value = qGray(image.pixel(row, col));
+      const int class_index = gray_value / (256 / num_classes);
+      spectral_class_map_[index] = class_index;
+    }
+  }
 }
 
 void ImageLayout::ResetLayout() {

@@ -48,8 +48,7 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
   QImage image(layout_width, layout_height, QImage::Format_RGB32);
   for (int x = 0; x < layout_width; ++x) {
     for (int y = 0; y < layout_height; ++y) {
-      const int pixel_index = image_layout_->GetMapIndex(x, y);
-      const int class_index = image_class_map.at(pixel_index);
+      const int class_index = image_layout_->GetClassAtPixel(x, y);
       QColor color;
       if (class_index < image_class_colors_.size()) {
         color = image_class_colors_[class_index];

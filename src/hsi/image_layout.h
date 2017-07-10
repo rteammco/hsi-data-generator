@@ -67,9 +67,11 @@ class ImageLayout {
   void GenerateRandomLayout(
       const int num_classes, const int random_blob_size = 1);
 
-  // Attempts to generate a layout from the given image file.
-  // TODO: Implement and comment.
-  void GenerateLayoutFromImage(const QImage& layout_image);
+  // Attempts to generate a layout from the given image file. Different colors
+  // and shades of the image will be used to map the different spectral classes
+  // to the image texture.
+  void GenerateLayoutFromImage(
+      const int num_classes, const QImage& layout_image);
 
   // Resets the layout, re-initializing everything to unassigned.
   void ResetLayout();

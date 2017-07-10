@@ -164,7 +164,7 @@ void GenerateLayout(
           error_message);
       return;
     }
-    // TODO: Pass the image into the ImageLayout object.
+    image_layout->GenerateLayoutFromImage(num_classes, layout_image);
   }
   default:
     break;
