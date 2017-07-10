@@ -70,8 +70,7 @@ void ImageLayout::GenerateVerticalStripesLayout(
   for (int col = 0; col < image_width_; ++col) {
     const int class_index = (col / pixels_per_class) % num_classes;
     for (int row = 0; row < image_height_; ++row) {
-      const int index = row * image_width_ + col;
-      spectral_class_map_[index] = class_index;
+      spectral_class_map_[GetMapIndex(col, row)] = class_index;
     }
   }
 
@@ -88,12 +87,11 @@ void ImageLayout::GenerateGridLayout(
     pixels_per_class =
         std::min(image_width_ / num_classes, kDefaultMaxStripeWidth);
   }
-  for (int row = 0; row < image_height_; ++row) {
-    for (int col = 0; col < image_width_; ++col) {
-      const int index = row * image_width_ + col;
+  for (int col = 0; col < image_width_; ++col) {
+    for (int row = 0; row < image_height_; ++row) {
       const int class_index =
           ((row / pixels_per_class) + (col / pixels_per_class)) % num_classes;
-      spectral_class_map_[index] = class_index;
+      spectral_class_map_[GetMapIndex(col, row)] = class_index;
     }
   }
 
@@ -202,12 +200,11 @@ void ImageLayout::GenerateLayoutFromImage(
 
   // Set the class map values by pixel intensity.
   // TODO: Possibly, do pixel intensity clustering instead of this hack.
-  for (int row = 0; row < image_height_; ++row) {
-    for (int col = 0; col < image_width_; ++col) {
-      const int index = row * image_width_ + col;
-      const int gray_value = qGray(image.pixel(row, col));
+  for (int col = 0; col < image_width_; ++col) {
+    for (int row = 0; row < image_height_; ++row) {
+      const int gray_value = qGray(image.pixel(col, row));
       const int class_index = gray_value / (256 / num_classes);
-      spectral_class_map_[index] = class_index;
+      spectral_class_map_[GetMapIndex(col, row)] = class_index;
     }
   }
 }
