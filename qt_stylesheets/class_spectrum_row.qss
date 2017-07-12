@@ -1,5 +1,7 @@
 QPushButton {
+  max-height: 30px;
   max-width: 80px;
+  min-height: 30px;
   min-width: 80px;
 }
 
