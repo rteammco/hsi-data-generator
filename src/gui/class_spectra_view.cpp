@@ -36,6 +36,7 @@ ClassSpectraView::ClassSpectraView(
       spectra_(spectra) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtClassSpectraViewStyle));
+  viewport()->setAutoFillBackground(false);
 
 //  layout_ = new QVBoxLayout();
 //  layout_->setAlignment(Qt::AlignTop);

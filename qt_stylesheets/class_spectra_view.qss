@@ -1,3 +1,8 @@
+QListView {
+  /* Hide selection highlight (border). */
+  show-decoration-selected: 0;
+}
+
 QLineEdit {
   max-width: 100px;
   min-width: 100px;
