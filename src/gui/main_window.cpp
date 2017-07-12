@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessagebox>
+#include <QScrollArea>
 #include <QString>
 #include <QTabWidget>
 #include <QtDebug>  // TODO: Remove when done.
