@@ -36,10 +36,16 @@ void ColorBoxWidget::mousePressEvent(QMouseEvent* event) {
 }
 
 void ColorBoxWidget::SetColor(const QColor& color) {
-  QPalette palette;
-  palette.setColor(QPalette::Background, color);
-  setAutoFillBackground(true);
-  setPalette(palette);
+  // TODO: This code below should work but doesn't when using this inside a
+  // QListWidget parent.
+//  QPalette palette;
+//  palette.setColor(QPalette::Window, color);
+//  palette.setBrush(QPalette::Window, color);
+//  setAutoFillBackground(true);
+//  setPalette(palette);
+  // TODO: This is the current hacky workaround.
+  const QString color_name = color.name();
+  setStyleSheet("background-color: " + color_name + ";");
   color_ = color;
   spectrum_->SetColor(color_);
 }
