@@ -23,7 +23,7 @@
 
 namespace hsi_data_generator {
 
-class ClassSpectraView : public QListWidget {
+class ClassSpectraView : public QWidget {
   Q_OBJECT
 
  public:
@@ -49,7 +49,10 @@ class ClassSpectraView : public QListWidget {
 
  private:
   // The layout used by this widget.
-//  QBoxLayout* layout_;
+  QBoxLayout* layout_;
+
+  // The list containing all of the spectra.
+  QListWidget* spectra_list_;
 
   // The input field where the user can set the number of bands.
   QLineEdit* number_of_bands_input_;

@@ -1,5 +1,6 @@
 #include "gui/class_spectra_view.h"
 
+#include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -22,8 +23,8 @@ namespace {
 static const QString kQtClassSpectraViewStyle =
     "qt_stylesheets/class_spectra_view.qss";
 
+static const QString kNumberOfBandsInputLabel = "Number of Bands:";
 static const QString kDefaultSpectrumName = "Background";
-
 static const QString kNewSpectrumButtonString = "Add Spectrum";
 
 }  // namespace
@@ -36,34 +37,30 @@ ClassSpectraView::ClassSpectraView(
       spectra_(spectra) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtClassSpectraViewStyle));
-  viewport()->setAutoFillBackground(false);
 
-//  layout_ = new QVBoxLayout();
-//  layout_->setAlignment(Qt::AlignTop);
-//  setLayout(layout_);
+  layout_ = new QVBoxLayout();
+  layout_->setAlignment(Qt::AlignTop);
+  setLayout(layout_);
 
   // Add the input field to change the number of spectral bands.
   number_of_bands_input_ = new QLineEdit(QString::number(*num_bands_));
-  QListWidgetItem* list_item = new QListWidgetItem();
-  list_item->setSizeHint(number_of_bands_input_->sizeHint());
-  addItem(list_item);
-  setItemWidget(list_item, number_of_bands_input_);
-//  layout_->addWidget(number_of_bands_input_);
+  layout_->addWidget(number_of_bands_input_);
   connect(
       number_of_bands_input_,
       SIGNAL(returnPressed()),
       this,
       SLOT(NumberOfBandsInputChanged()));
 
+  // The next item is the spectra rows QListWidget.
+  spectra_list_ = new QListWidget();
+  spectra_list_->viewport()->setAutoFillBackground(false);
+  layout_->addWidget(spectra_list_);
+
   // Add a button to add a new spectrum. Pushing this button will add a new
   // blank spectrum to the list.
   QPushButton* new_spectrum_button = new QPushButton(kNewSpectrumButtonString);
-  list_item = new QListWidgetItem();
-  list_item->setSizeHint(new_spectrum_button->sizeHint());
-  addItem(list_item);
-  setItemWidget(list_item, new_spectrum_button);
-//  layout_->addWidget(new_spectrum_button);
-//  layout_->setAlignment(new_spectrum_button, Qt::AlignCenter);
+  layout_->addWidget(new_spectrum_button);
+  layout_->setAlignment(new_spectrum_button, Qt::AlignCenter);
   connect(
       new_spectrum_button,
       SIGNAL(released()),
@@ -84,8 +81,9 @@ void ClassSpectraView::UpdateGUI() {
 //    layout_->removeWidget(row);
 //    delete row;
 //  }
+// TODO: Fix this...?
   for (int i = 0; i < class_spectrum_rows_.size(); ++i) {
-    QListWidgetItem* list_item = takeItem(i + 1);  // TODO: Dangerous.
+    QListWidgetItem* list_item = spectra_list_->takeItem(i);
     delete list_item;
     ClassSpectrumRow* row = class_spectrum_rows_[i];
     delete row;
@@ -104,10 +102,11 @@ void ClassSpectraView::UpdateGUI() {
 void ClassSpectraView::DeleteClassSpectrumRow(ClassSpectrumRow* row) {
   for (int i = 0; i < class_spectrum_rows_.size(); ++i) {
     if (class_spectrum_rows_[i] == row) {
-      class_spectrum_rows_.erase(class_spectrum_rows_.begin() + i);
+      // Delete the spectrum:
       spectra_->erase(spectra_->begin() + i);
-//      layout_->removeWidget(row);
-      QListWidgetItem* list_item = takeItem(i + 1);  // TODO: Dangerous.
+      // Delete from the GUI:
+      class_spectrum_rows_.erase(class_spectrum_rows_.begin() + i);
+      QListWidgetItem* list_item = spectra_list_->takeItem(i);
       delete list_item;
       delete row;
       break;
@@ -158,15 +157,10 @@ void ClassSpectraView::InsertNewSpectrum(const QString& name) {
 void ClassSpectraView::AddClassSpectrumRow(std::shared_ptr<Spectrum> spectrum) {
   ClassSpectrumRow* row = new ClassSpectrumRow(*num_bands_, spectrum, this);
   class_spectrum_rows_.push_back(row);
-  // Insert as the second-to-last item, since the last item should always be
-  // the new spectrum button.
-//  const int new_row_index = std::max(layout_->count() - 1, 0);
-  const int new_row_index = std::max(count() - 1, 0);
-//  layout_->insertWidget(new_row_index, row);
   QListWidgetItem* list_item = new QListWidgetItem();
   list_item->setSizeHint(row->sizeHint());
-  insertItem(new_row_index, list_item);
-  setItemWidget(list_item, row);
+  spectra_list_->addItem(list_item);
+  spectra_list_->setItemWidget(list_item, row);
 }
 
 }  // namespace hsi_data_generator
