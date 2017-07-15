@@ -206,8 +206,10 @@ ImageLayoutView::ImageLayoutView(
   // Add the width and height bars as well.
   width_input_ = new QLineEdit(QString::number(image_layout_->GetWidth()));
   QHBoxLayout* width_input_layout = new QHBoxLayout();
+  width_input_layout->addStretch();  // Pad left to center widgets.
   width_input_layout->addWidget(new QLabel(kWidthInputLabel));
   width_input_layout->addWidget(width_input_);
+  width_input_layout->addStretch();  // Pad right to center widgets.
   center_layout->addLayout(width_input_layout);
   center_layout->setAlignment(width_input_layout, Qt::AlignCenter);
   connect(
@@ -215,8 +217,10 @@ ImageLayoutView::ImageLayoutView(
 
   height_input_ = new QLineEdit(QString::number(image_layout_->GetHeight()));
   QHBoxLayout* height_input_layout = new QHBoxLayout();
+  height_input_layout->addStretch();  // Pad left to center widgets.
   height_input_layout->addWidget(new QLabel(kHeightInputLabel));
   height_input_layout->addWidget(height_input_);
+  height_input_layout->addStretch();  // Pad right to center widgets.
   center_layout->addLayout(height_input_layout);
   center_layout->setAlignment(height_input_layout, Qt::AlignCenter);
   connect(

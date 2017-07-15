@@ -1,5 +1,6 @@
 #include "gui/class_spectra_view.h"
 
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -44,7 +45,12 @@ ClassSpectraView::ClassSpectraView(
 
   // Add the input field to change the number of spectral bands.
   number_of_bands_input_ = new QLineEdit(QString::number(*num_bands_));
-  layout_->addWidget(number_of_bands_input_);
+  QHBoxLayout* number_of_bands_input_layout = new QHBoxLayout();
+  number_of_bands_input_layout->addStretch();  // Pad left to center widgets.
+  number_of_bands_input_layout->addWidget(new QLabel(kNumberOfBandsInputLabel));
+  number_of_bands_input_layout->addWidget(number_of_bands_input_);
+  number_of_bands_input_layout->addStretch();  // Pad right to center widgets.
+  layout_->addLayout(number_of_bands_input_layout);
   connect(
       number_of_bands_input_,
       SIGNAL(returnPressed()),
