@@ -1,3 +1,5 @@
+// TODO: Fix comments.
+
 // The ImageLayout class maps pixels in the image to different spectrum
 // classes, keeping track of the 2D hyperspectral image layout. Once the layout
 // is completed and all the spectra are edited, the 2D ImageLayout can be
@@ -8,10 +10,26 @@
 
 #include <QImage>
 
+#include <utility>
 #include <vector>
 
 namespace hsi_data_generator {
 
+struct LayoutComponentShape {
+  LayoutComponentShape(
+      const double left_x,
+      const double top_y,
+      const double width,
+      const double height)
+      : left_x(left_x), top_y(top_y), width(width), height(height) {}
+
+  const double left_x;
+  const double top_y;
+  const double width;
+  const double height;
+};
+
+// TODO: Remove?
 enum ImageLayoutType {
   LAYOUT_TYPE_NONE,
   LAYOUT_TYPE_HORIZONTAL_STRIPES,
@@ -24,6 +42,22 @@ enum ImageLayoutType {
 class ImageLayout {
  public:
   ImageLayout(const int image_width, const int image_height);
+
+  // Add a sublayout.
+  void AddSubLayout(
+      const double left_x,
+      const double top_y,
+      const double width,
+      const double height,
+      ImageLayout layout);
+
+  // Add a primitive shape with a single class.
+  void AddLayoutPrimitive(
+      const double left_x,
+      const double top_y,
+      const double width,
+      const double height,
+      const int spectral_class);
 
   // TODO: Add a Resize() method that will re-interpolate the image class map
   // to a new width and height.
@@ -76,21 +110,31 @@ class ImageLayout {
   // Resets the layout, re-initializing everything to unassigned.
   void ResetLayout();
 
+  // TODO: This should replace SetImageSize()!
+  //
+  // Renders the layout at the given image size, which will assign each pixel
+  // to the appropriate spectral class value. This will generate assignments
+  // for the spectral class map (see GetClassMap()).
+  void Render(const int width, const int height);
+
   // Updates the image size. This causes the layout to be recomputed for the
   // new image dimensions.
   void SetImageSize(const int width, const int height);
 
   // Returns the width in pixels (number of columns) in the image.
+  // TODO: Remove.
   int GetWidth() const {
     return image_width_;
   }
 
   // Returns the height in pixels (number of rows) in the image.
+  // TODO: Remove.
   int GetHeight() const {
     return image_height_;
   }
 
   // Returns the total number of pixels in this image layout.
+  // TODO: Remove?
   int GetNumPixels() const {
     return image_width_ * image_height_;
   }
@@ -108,9 +152,13 @@ class ImageLayout {
   int GetMapIndex(const int x_col, const int y_row) const;
 
  private:
-  // The spatial dimensions of the hyperspectral image.
+  // The spatial dimensions of the hyperspectral image when it is rendered.
   int image_width_;
   int image_height_;
+
+  // TODO: Comments.
+  std::vector<std::pair<LayoutComponentShape, ImageLayout>> sub_layouts_;
+  std::vector<std::pair<LayoutComponentShape, int>> layout_primitives_;
 
   // This map identifies each pixel in the image as one of the spectral
   // classes. The class indices start at 0 to indicate the first spectrum

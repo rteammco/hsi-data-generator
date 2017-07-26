@@ -40,6 +40,30 @@ ImageLayout::ImageLayout(const int image_width, const int image_height)
   spectral_class_map_.resize(image_width_ * image_height_);
 }
 
+void ImageLayout::AddSubLayout(
+    const double left_x,
+    const double top_y,
+    const double width,
+    const double height,
+    ImageLayout layout) {
+
+  // TODO: Check valid ranges.
+  const LayoutComponentShape component_shape(left_x, top_y, width, height);
+  sub_layouts_.push_back(std::make_pair(component_shape, layout));
+}
+
+void ImageLayout::AddLayoutPrimitive(
+    const double left_x,
+    const double top_y,
+    const double width,
+    const double height,
+    const int spectral_class) {
+
+  // TODO: Check valid ranges.
+  const LayoutComponentShape component_shape(left_x, top_y, width, height);
+  layout_primitives_.push_back(std::make_pair(component_shape, spectral_class));
+}
+
 void ImageLayout::GenerateHorizontalStripesLayout(
     const int num_classes, const int stripe_width) {
 
@@ -218,7 +242,12 @@ void ImageLayout::ResetLayout() {
   std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
 }
 
+void ImageLayout::Render(const int , const int height) {
+  // TODO: Implement.
+}
+
 void ImageLayout::SetImageSize(const int width, const int height) {
+  // TODO: Delegate this to Render() and then remove it later.
   image_width_ = width;
   image_height_ = height;
   spectral_class_map_.resize(image_width_ * image_height_);
