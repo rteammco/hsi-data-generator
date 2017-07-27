@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <utility>
 #include <vector>
 
@@ -61,6 +62,7 @@ void ImageLayout::AddLayoutPrimitive(
 
   // TODO: Check valid ranges.
   const LayoutComponentShape component_shape(left_x, top_y, width, height);
+  qInfo() << "Added for class" << spectral_class;
   layout_primitives_.push_back(std::make_pair(component_shape, spectral_class));
 }
 
@@ -86,23 +88,34 @@ void ImageLayout::GenerateHorizontalStripesLayout(
 }
 
 void ImageLayout::GenerateVerticalStripesLayout(
-    const int num_classes, const int stripe_width) {
+    const int num_classes, const int stripe_width_ignored) {
 
-  int pixels_per_class = stripe_width;
-  if (stripe_width <= 0) {
-    pixels_per_class =
-        std::min(image_width_ / num_classes, kDefaultMaxStripeWidth);
-  }
-  for (int col = 0; col < image_width_; ++col) {
-    const int class_index = (col / pixels_per_class) % num_classes;
-    for (int row = 0; row < image_height_; ++row) {
-      spectral_class_map_[GetMapIndex(col, row)] = class_index;
-    }
+  // TODO: Incorporate stripe width...
+  const double stripe_width = 0.1;
+  int stripe_counter = 0;
+  double width_filled = 0.0;
+  while ((1.0 - width_filled) > std::numeric_limits<double>::epsilon()) {
+    const int spectral_class = stripe_counter % num_classes;
+    AddLayoutPrimitive(width_filled, 0.0, stripe_width, 1.0, spectral_class);
+    width_filled += stripe_width;
+    stripe_counter++;
   }
 
-  previous_layout_ = LAYOUT_TYPE_VERTICAL_STRIPES;
-  previous_num_classes_ = num_classes;
-  previous_size_parameter_ = stripe_width;
+//  int pixels_per_class = stripe_width;
+//  if (stripe_width <= 0) {
+//    pixels_per_class =
+//        std::min(image_width_ / num_classes, kDefaultMaxStripeWidth);
+//  }
+//  for (int col = 0; col < image_width_; ++col) {
+//    const int class_index = (col / pixels_per_class) % num_classes;
+//    for (int row = 0; row < image_height_; ++row) {
+//      spectral_class_map_[GetMapIndex(col, row)] = class_index;
+//    }
+//  }
+//
+//  previous_layout_ = LAYOUT_TYPE_VERTICAL_STRIPES;
+//  previous_num_classes_ = num_classes;
+//  previous_size_parameter_ = stripe_width;
 }
 
 void ImageLayout::GenerateGridLayout(
@@ -242,13 +255,41 @@ void ImageLayout::ResetLayout() {
   std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
 }
 
-void ImageLayout::Render(const int , const int height) {
-  // TODO: Implement.
+void ImageLayout::Render(const int width, const int height) {
+  // TODO: Check width and height validity.
+  image_width_ = width;
+  image_height_ = height;
+  const int num_pixels = image_width_ * image_height_;
+  spectral_class_map_.resize(num_pixels);
+  std::fill(
+      spectral_class_map_.begin(),
+      spectral_class_map_.begin() + num_pixels,
+      0);  // TODO: Default class value.
+  for (const auto& shape_and_class : layout_primitives_) {
+    const LayoutComponentShape& component_shape = shape_and_class.first;
+    const int spectral_class = shape_and_class.second;
+    const int start_x = static_cast<int>(
+        component_shape.left_x * static_cast<double>(image_width_));
+    const int end_x = start_x + static_cast<int>(
+        component_shape.width * static_cast<double>(image_width_));
+    const int start_y = static_cast<int>(
+        component_shape.top_y * static_cast<double>(image_height_));
+    const int end_y = start_y + static_cast<int>(
+        component_shape.height * static_cast<double>(image_height_));
+    for (int x = start_x; x < end_x; ++x) {
+      for (int y = start_y; y < end_y; ++y) {
+        spectral_class_map_[GetMapIndex(x, y)] = spectral_class;
+      }
+    }
+    qInfo() << "Set primitive @" << start_x << "-" << end_x
+            << "," << start_y << "-" << end_y << "to class" << spectral_class;
+  }
 }
 
 void ImageLayout::SetImageSize(const int width, const int height) {
   // TODO: Delegate this to Render() and then remove it later.
-  image_width_ = width;
+  Render(width, height);
+/*  image_width_ = width;
   image_height_ = height;
   spectral_class_map_.resize(image_width_ * image_height_);
   switch (previous_layout_) {
@@ -270,6 +311,7 @@ void ImageLayout::SetImageSize(const int width, const int height) {
   default:
     break;
   }
+  */
 }
 
 int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
