@@ -1,9 +1,12 @@
-// TODO: Fix comments.
-
-// The ImageLayout class maps pixels in the image to different spectrum
-// classes, keeping track of the 2D hyperspectral image layout. Once the layout
-// is completed and all the spectra are edited, the 2D ImageLayout can be
-// combined with each spectrum to generate the full 3D hyperspectral data cube.
+// The ImageLayout class stores a 2D layout for the hyperspectral image. Each
+// layout can contain rectangles of a single spectral class (primitives) or
+// complex sub-layouts that are stored inside this layout. The layout is
+// recursively rendered at any given pixel resolution.
+//
+// The rendered layout maps pixels in the image to different spectrum classes.
+// Once the layout is completed and all the spectra are edited, the 2D
+// ImageLayout can be combined with each spectrum to generate the full 3D
+// hyperspectral data cube.
 
 #ifndef SRC_HSI_IMAGE_LAYOUT_H_
 #define SRC_HSI_IMAGE_LAYOUT_H_
@@ -59,35 +62,33 @@ class ImageLayout {
       const double height,
       const int spectral_class);
 
-  // TODO: Add a Resize() method that will re-interpolate the image class map
-  // to a new width and height.
-
-  // TODO: Add the option to modify individual pixels, so that the GUI can
-  // allow manual user editing.
+  // TODO: Possibly, add the option to modify individual pixels, so that the
+  // GUI can allow manual user editing.
 
   // Generates a stripe pattern for the given number of spectral classes.
   //
   // This generates a pattern of horizontal stripes, alternating by class, from
   // the top to the bottom of the image.
   //
-  // Set stripe_width (>= 1) to force each stripe to be a specific width (in
-  // pixels). A value of 0 will automatically set the size to a default value
-  // based on the image size and number of classes.
+  // Set stripe_size (0, 1] to force each stripe to be a specific width (in
+  // relative size on a 1x1 grid). A value of 0 will automatically set the size
+  // to a default value based on the number of classes.
   void GenerateHorizontalStripesLayout(
-      const int num_classes, const int stripe_width = 0);
+      const int num_classes, const double stripe_size = 0.0);
 
   // This generates a pattern of vertical stripes, alternating by class, from
   // the left to the right of the image.
   //
-  // stripe_width behaves the same was as in GenerateHorizontalStripesLayout().
+  // stripe_size behaves the same was as in GenerateHorizontalStripesLayout().
   void GenerateVerticalStripesLayout(
-      const int num_classes, const int stripe_width = 0);
+      const int num_classes, const double stripe_size = 0.0);
 
   // This generates a grid pattern, where the classes alternate in both the
   // horizontal and vertical directions.
   //
   // square_width behaves the same way as stripe_width in the functions above.
-  void GenerateGridLayout(const int num_classes, const int square_width = 0);
+  void GenerateGridLayout(
+      const int num_classes, const double square_size = 0.0);
 
   // This generates a random layout, where each blob of pixels is assigned a
   // class label with a uniformly random probability.
@@ -120,19 +121,16 @@ class ImageLayout {
   void SetImageSize(const int width, const int height);
 
   // Returns the width in pixels (number of columns) in the image.
-  // TODO: Remove.
   int GetWidth() const {
     return image_width_;
   }
 
   // Returns the height in pixels (number of rows) in the image.
-  // TODO: Remove.
   int GetHeight() const {
     return image_height_;
   }
 
   // Returns the total number of pixels in this image layout.
-  // TODO: Remove?
   int GetNumPixels() const {
     return GetWidth() * GetHeight();
   }
@@ -150,11 +148,16 @@ class ImageLayout {
   int GetMapIndex(const int x_col, const int y_row) const;
 
  private:
-  // The spatial dimensions of the hyperspectral image when it is rendered.
+  // The spatial dimensions (pixels) of the hyperspectral image when it is
+  // rendered.
   int image_width_;
   int image_height_;
 
-  // TODO: Comments.
+  // These lists contain sub-layouts and layout primitives (single-class
+  // rectangles) that are rendered together to produce a finalized layout
+  // design. All shapes are stored at relative sizes, but when rendered, they
+  // are scaled to the appropriate number of pixels based on the layout's width
+  // and height.
   std::vector<std::pair<LayoutComponentShape, ImageLayout>> sub_layouts_;
   std::vector<std::pair<LayoutComponentShape, int>> layout_primitives_;
 

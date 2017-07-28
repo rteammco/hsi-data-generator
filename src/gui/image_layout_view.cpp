@@ -43,13 +43,16 @@ static const QString kNoSpectraErrorDialogTitle = "No Spectra Available";
 static const QString kNoSpectraErrorDialogMessage =
     "No spectra are currently available. Use the Spectra Editor to make some.";
 
+// Input dialog selection inputs.
+constexpr int kLayoutSizeSelectorNumDecimals = 2;  // Input decimal precision.
+
 static const QString kStripeWidthDialogTitle = "Select Stripe Width";
 static const QString kStripeWidthDialogSelectionLabel =
-    "Stripe width (0 for automatic size):";
+    "Stripe width (0 to 1; 0 for automatic size):";
 
 static const QString kSquareSizeDialogTitle = "Select Grid Square Size";
 static const QString kSquareSizeDialogSelectionLabel =
-    "Square size (0 for automatic size):";
+    "Square size (0 to 1; 0 for automatic size):";
 
 static const QString kRandomBlobSizeDialogTitle = "Select Random Blob Size";
 static const QString kRandomBlobSizeDialogSelectionLabel = "Blob size:";
@@ -79,14 +82,14 @@ void GenerateLayout(
   switch (layout_type) {
   case LAYOUT_TYPE_HORIZONTAL_STRIPES: {
     bool ok_pressed;
-    const int stripe_width = QInputDialog::getInt(
+    const double stripe_width = QInputDialog::getDouble(
         dialog_parent,
         kStripeWidthDialogTitle,
         kStripeWidthDialogSelectionLabel,
-        0,  // default value
-        0,  // min value
-        image_layout->GetWidth(),  // max value
-        1,  // slider step size
+        0.0,  // default value
+        0.0,  // min value
+        1.0,  // max value
+        kLayoutSizeSelectorNumDecimals,
         &ok_pressed);
     if (!ok_pressed) {
       return;
@@ -96,14 +99,14 @@ void GenerateLayout(
   }
   case LAYOUT_TYPE_VERTICAL_STRIPES: {
     bool ok_pressed;
-    const int stripe_width = QInputDialog::getInt(
+    const double stripe_width = QInputDialog::getDouble(
         dialog_parent,
         kStripeWidthDialogTitle,
         kStripeWidthDialogSelectionLabel,
-        0,  // default value
-        0,  // min value
-        image_layout->GetHeight(),  // max value
-        1,  // slider step size
+        0.0,  // default value
+        0.0,  // min value
+        1.0,  // max value
+        kLayoutSizeSelectorNumDecimals,
         &ok_pressed);
     if (!ok_pressed) {
       return;
@@ -113,14 +116,14 @@ void GenerateLayout(
   }
   case LAYOUT_TYPE_GRID: {
     bool ok_pressed;
-    const int square_size = QInputDialog::getInt(
+    const double square_size = QInputDialog::getDouble(
         dialog_parent,
         kSquareSizeDialogTitle,
         kSquareSizeDialogSelectionLabel,
-        0,  // default value
-        0,  // min value
-        image_layout->GetWidth(),  // max value; TODO: should be max(w, h).
-        1,  // slider step size
+        0.0,  // default value
+        0.0,  // min value
+        1.0,  // max value
+        kLayoutSizeSelectorNumDecimals,
         &ok_pressed);
     if (!ok_pressed) {
       return;

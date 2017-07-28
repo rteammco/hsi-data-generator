@@ -14,11 +14,11 @@
 namespace hsi_data_generator {
 namespace {
 
-// This is the default stripe width in pixels for generating the stripe and
-// grid layouts. The actual assigned stripe width can be smaller if the given
-// number of classes cannot fit into the width of the image unless each stripe
-// is thinner than this value.
-constexpr int kDefaultMaxStripeWidth = 25;
+// This is the default stripe width for generating the stripe and grid layouts.
+// The actual assigned stripe width can be smaller if the given number of
+// classes cannot fit into the width of the image unless each stripe is thinner
+// than this value.
+constexpr double kDefaultMaxPrimitiveSize = 0.1;
 
 static const std::vector<std::pair<int, int>> kCoordinateNeighborOffsets = {
     std::make_pair(0, -1),  // left
@@ -26,6 +26,26 @@ static const std::vector<std::pair<int, int>> kCoordinateNeighborOffsets = {
     std::make_pair(-1, 0),  // top
     std::make_pair(1, 0),   // bottom
 };
+
+// Returns the appropriate width or height for a single layout stripe
+// primitive.  If the given input size is within valid range, it will just
+// return that.  Otherwise the default size will be returned. If that is too
+// large (i.e. the number of classes is too many for this size to acomodate all
+// of them per row/column, the size will be shrunk to fit all the classes.
+double GetAppropriateShapeSize(
+    const double input_shape_size, const int num_classes) {
+
+  if (input_shape_size > 0.0 && input_shape_size <= 1.0) {
+    return input_shape_size;
+  }
+
+  const double shape_size = kDefaultMaxPrimitiveSize;
+  const double min_shape_size = 1.0 / static_cast<double>(num_classes);
+  if (shape_size > min_shape_size) {
+    return min_shape_size;
+  }
+  return shape_size;
+}
 
 }  // namespace
 
@@ -48,7 +68,6 @@ void ImageLayout::AddSubLayout(
     const double height,
     ImageLayout layout) {
 
-  // TODO: Check valid ranges.
   const LayoutComponentShape component_shape(left_x, top_y, width, height);
   sub_layouts_.push_back(std::make_pair(component_shape, layout));
 }
@@ -60,16 +79,15 @@ void ImageLayout::AddLayoutPrimitive(
     const double height,
     const int spectral_class) {
 
-  // TODO: Check valid ranges.
   const LayoutComponentShape component_shape(left_x, top_y, width, height);
   layout_primitives_.push_back(std::make_pair(component_shape, spectral_class));
 }
 
 void ImageLayout::GenerateHorizontalStripesLayout(
-    const int num_classes, const int ignored_stripe_width) {
+    const int num_classes, const double stripe_size) {
 
-  // TODO: Incorporate the correct stripe width...
-  const double stripe_height = 0.1;
+  const double stripe_height =
+      GetAppropriateShapeSize(stripe_size, num_classes);
   int stripe_counter = 0;
   double height_filled = 0.0;
   while ((1.0 - height_filled) > std::numeric_limits<double>::epsilon()) {
@@ -82,10 +100,10 @@ void ImageLayout::GenerateHorizontalStripesLayout(
 }
 
 void ImageLayout::GenerateVerticalStripesLayout(
-    const int num_classes, const int stripe_width_ignored) {
+    const int num_classes, const double stripe_size) {
 
-  // TODO: Incorporate the correct stripe width...
-  const double stripe_width = 0.1;
+  const double stripe_width =
+      GetAppropriateShapeSize(stripe_size, num_classes);
   int stripe_counter = 0;
   double width_filled = 0.0;
   while ((1.0 - width_filled) > std::numeric_limits<double>::epsilon()) {
@@ -98,10 +116,10 @@ void ImageLayout::GenerateVerticalStripesLayout(
 }
 
 void ImageLayout::GenerateGridLayout(
-    const int num_classes, const int ignored_square_width) {
+    const int num_classes, const double input_square_size) {
 
-  // TODO: Incorporate the correct square width...
-  const double square_size = 0.1;
+  const double square_size =
+      GetAppropriateShapeSize(input_square_size, num_classes);
   int row_counter = 0;
   double height_filled = 0.0;
   while ((1.0 - height_filled) > std::numeric_limits<double>::epsilon()) {
