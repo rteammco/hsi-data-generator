@@ -62,35 +62,29 @@ void ImageLayout::AddLayoutPrimitive(
 
   // TODO: Check valid ranges.
   const LayoutComponentShape component_shape(left_x, top_y, width, height);
-  qInfo() << "Added for class" << spectral_class;
   layout_primitives_.push_back(std::make_pair(component_shape, spectral_class));
 }
 
 void ImageLayout::GenerateHorizontalStripesLayout(
-    const int num_classes, const int stripe_width) {
+    const int num_classes, const int ignored_stripe_width) {
 
-  int pixels_per_class = stripe_width;
-  if (stripe_width <= 0) {
-    pixels_per_class =
-        std::min(image_height_ / num_classes, kDefaultMaxStripeWidth);
+  // TODO: Incorporate the correct stripe width...
+  const double stripe_height = 0.1;
+  int stripe_counter = 0;
+  double height_filled = 0.0;
+  while ((1.0 - height_filled) > std::numeric_limits<double>::epsilon()) {
+    const int spectral_class = stripe_counter % num_classes;
+    AddLayoutPrimitive(0.0, height_filled, 1.0, stripe_height, spectral_class);
+    height_filled += stripe_height;
+    stripe_counter++;
   }
-  for (int row = 0; row < image_height_; ++row) {
-    const int class_index = (row / pixels_per_class) % num_classes;
-    std::fill(
-        spectral_class_map_.begin() + (row * image_width_),
-        spectral_class_map_.begin() + ((row + 1) * image_width_),
-        class_index);
-  }
-
-  previous_layout_ = LAYOUT_TYPE_HORIZONTAL_STRIPES;
-  previous_num_classes_ = num_classes;
-  previous_size_parameter_ = stripe_width;
+  Render();
 }
 
 void ImageLayout::GenerateVerticalStripesLayout(
     const int num_classes, const int stripe_width_ignored) {
 
-  // TODO: Incorporate stripe width...
+  // TODO: Incorporate the correct stripe width...
   const double stripe_width = 0.1;
   int stripe_counter = 0;
   double width_filled = 0.0;
@@ -100,48 +94,40 @@ void ImageLayout::GenerateVerticalStripesLayout(
     width_filled += stripe_width;
     stripe_counter++;
   }
-
-//  int pixels_per_class = stripe_width;
-//  if (stripe_width <= 0) {
-//    pixels_per_class =
-//        std::min(image_width_ / num_classes, kDefaultMaxStripeWidth);
-//  }
-//  for (int col = 0; col < image_width_; ++col) {
-//    const int class_index = (col / pixels_per_class) % num_classes;
-//    for (int row = 0; row < image_height_; ++row) {
-//      spectral_class_map_[GetMapIndex(col, row)] = class_index;
-//    }
-//  }
-//
-//  previous_layout_ = LAYOUT_TYPE_VERTICAL_STRIPES;
-//  previous_num_classes_ = num_classes;
-//  previous_size_parameter_ = stripe_width;
+  Render();
 }
 
 void ImageLayout::GenerateGridLayout(
-    const int num_classes, const int square_width) {
+    const int num_classes, const int ignored_square_width) {
 
-  int pixels_per_class = square_width;
-  if (square_width <= 0) {
-    pixels_per_class =
-        std::min(image_width_ / num_classes, kDefaultMaxStripeWidth);
-  }
-  for (int col = 0; col < image_width_; ++col) {
-    for (int row = 0; row < image_height_; ++row) {
-      const int class_index =
-          ((row / pixels_per_class) + (col / pixels_per_class)) % num_classes;
-      spectral_class_map_[GetMapIndex(col, row)] = class_index;
+  // TODO: Incorporate the correct square width...
+  const double square_size = 0.1;
+  int row_counter = 0;
+  double height_filled = 0.0;
+  while ((1.0 - height_filled) > std::numeric_limits<double>::epsilon()) {
+    int col_counter = row_counter;
+    double width_filled = 0.0;
+    while ((1.0 - width_filled) > std::numeric_limits<double>::epsilon()) {
+      const int spectral_class = col_counter % num_classes;
+      AddLayoutPrimitive(
+          width_filled,
+          height_filled,
+          square_size,
+          square_size,
+          spectral_class);
+      width_filled += square_size;
+      col_counter++;
     }
+    height_filled += square_size;
+    row_counter += num_classes / 2;
   }
-
-  previous_layout_ = LAYOUT_TYPE_GRID;
-  previous_num_classes_ = num_classes;
-  previous_size_parameter_ = square_width;
+  Render();
 }
 
 void ImageLayout::GenerateRandomLayout(
     const int num_classes, const int random_blob_size) {
 
+  // TODO: Fix to new standards.
   const int width = GetWidth();
   const int height = GetHeight();
   int num_pixels_remaining = spectral_class_map_.size();
@@ -219,6 +205,7 @@ void ImageLayout::GenerateRandomLayout(
 void ImageLayout::GenerateLayoutFromImage(
     const int num_classes, const QImage& layout_image) {
 
+  // TODO: Fix to new standards.
   // Resize the image to fit the layout's size.
   QImage image = layout_image.scaled(image_width_, image_height_);
 
@@ -255,10 +242,7 @@ void ImageLayout::ResetLayout() {
   std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
 }
 
-void ImageLayout::Render(const int width, const int height) {
-  // TODO: Check width and height validity.
-  image_width_ = width;
-  image_height_ = height;
+void ImageLayout::Render() {
   const int num_pixels = image_width_ * image_height_;
   spectral_class_map_.resize(num_pixels);
   std::fill(
@@ -278,17 +262,18 @@ void ImageLayout::Render(const int width, const int height) {
         component_shape.height * static_cast<double>(image_height_));
     for (int x = start_x; x < end_x; ++x) {
       for (int y = start_y; y < end_y; ++y) {
+        // TODO: Check range validity.
         spectral_class_map_[GetMapIndex(x, y)] = spectral_class;
       }
     }
-    qInfo() << "Set primitive @" << start_x << "-" << end_x
-            << "," << start_y << "-" << end_y << "to class" << spectral_class;
   }
 }
 
 void ImageLayout::SetImageSize(const int width, const int height) {
-  // TODO: Delegate this to Render() and then remove it later.
-  Render(width, height);
+  // TODO: Check width and height validity.
+  image_width_ = width;
+  image_height_ = height;
+  Render();
 /*  image_width_ = width;
   image_height_ = height;
   spectral_class_map_.resize(image_width_ * image_height_);

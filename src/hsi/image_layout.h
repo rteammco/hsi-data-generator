@@ -110,12 +110,10 @@ class ImageLayout {
   // Resets the layout, re-initializing everything to unassigned.
   void ResetLayout();
 
-  // TODO: This should replace SetImageSize()!
-  //
-  // Renders the layout at the given image size, which will assign each pixel
+  // Renders the layout at the current image size, which will assign each pixel
   // to the appropriate spectral class value. This will generate assignments
-  // for the spectral class map (see GetClassMap()).
-  void Render(const int width, const int height);
+  // for the spectral class map (see GetClassMap() and GetClassAtPixel()).
+  void Render();
 
   // Updates the image size. This causes the layout to be recomputed for the
   // new image dimensions.
