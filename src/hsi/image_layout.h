@@ -134,7 +134,7 @@ class ImageLayout {
   // Returns the total number of pixels in this image layout.
   // TODO: Remove?
   int GetNumPixels() const {
-    return image_width_ * image_height_;
+    return GetWidth() * GetHeight();
   }
 
   // Used for referencing the layout externally.

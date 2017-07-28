@@ -38,7 +38,7 @@ ImageLayout::ImageLayout(const int image_width, const int image_height)
 
   // All pixels will be mapped to 0 (the default class index) initially.
   // TODO: Fill with 0 or a "non-class" id, such as -1?
-  spectral_class_map_.resize(image_width_ * image_height_);
+  spectral_class_map_.resize(GetNumPixels());
 }
 
 void ImageLayout::AddSubLayout(
@@ -207,16 +207,16 @@ void ImageLayout::GenerateLayoutFromImage(
 
   // TODO: Fix to new standards.
   // Resize the image to fit the layout's size.
-  QImage image = layout_image.scaled(image_width_, image_height_);
+  QImage image = layout_image.scaled(GetWidth(), GetHeight());
 
   // Convert the image to grayscale if it isn't already. Code taken from:
   // https://stackoverflow.com/questions/27949569/convert-a-qimage-to-grayscale
   // Pixel depth is 1 (grayscale), 3 (rgb), or 4 (rgba), etc. QImage.depth is
   // given in bits (8 per byte).
   const int pixel_depth = image.depth() / 8;
-  for (int row = 0; row < image_height_; ++row) {
+  for (int row = 0; row < GetHeight(); ++row) {
     unsigned char* scanline = image.scanLine(row);
-    for (int col = 0; col < image_width_; ++col) {
+    for (int col = 0; col < GetWidth(); ++col) {
       QRgb* rgb_pixel = reinterpret_cast<QRgb*>(scanline + col * pixel_depth);
       const int gray_value = qGray(*rgb_pixel);
       *rgb_pixel = QColor(gray_value, gray_value, gray_value).rgba();
@@ -226,8 +226,8 @@ void ImageLayout::GenerateLayoutFromImage(
 
   // Set the class map values by pixel intensity.
   // TODO: Possibly, do pixel intensity clustering instead of this hack.
-  for (int col = 0; col < image_width_; ++col) {
-    for (int row = 0; row < image_height_; ++row) {
+  for (int col = 0; col < GetWidth(); ++col) {
+    for (int row = 0; row < GetHeight(); ++row) {
       const int gray_value = qGray(image.pixel(col, row));
       // 256 possible intensity values, remapped into num_classes values.
       const int class_index =
@@ -243,7 +243,7 @@ void ImageLayout::ResetLayout() {
 }
 
 void ImageLayout::Render() {
-  const int num_pixels = image_width_ * image_height_;
+  const int num_pixels = GetNumPixels();
   spectral_class_map_.resize(num_pixels);
   std::fill(
       spectral_class_map_.begin(),
@@ -253,16 +253,19 @@ void ImageLayout::Render() {
     const LayoutComponentShape& component_shape = shape_and_class.first;
     const int spectral_class = shape_and_class.second;
     const int start_x = static_cast<int>(
-        component_shape.left_x * static_cast<double>(image_width_));
+        component_shape.left_x * static_cast<double>(GetWidth()));
     const int end_x = start_x + static_cast<int>(
-        component_shape.width * static_cast<double>(image_width_));
+        component_shape.width * static_cast<double>(GetWidth()));
     const int start_y = static_cast<int>(
-        component_shape.top_y * static_cast<double>(image_height_));
+        component_shape.top_y * static_cast<double>(GetHeight()));
     const int end_y = start_y + static_cast<int>(
-        component_shape.height * static_cast<double>(image_height_));
-    for (int x = start_x; x < end_x; ++x) {
-      for (int y = start_y; y < end_y; ++y) {
-        // TODO: Check range validity.
+        component_shape.height * static_cast<double>(GetHeight()));
+    const int start_x_index = std::max(start_x, 0);
+    const int end_x_index = std::min(end_x, GetWidth() - 1);
+    const int start_y_index = std::max(start_y, 0);
+    const int end_y_index = std::min(end_y, GetHeight() - 1);
+    for (int x = start_x_index; x < end_x_index; ++x) {
+      for (int y = start_y_index; y < end_y_index; ++y) {
         spectral_class_map_[GetMapIndex(x, y)] = spectral_class;
       }
     }
@@ -307,7 +310,7 @@ int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
 
 int ImageLayout::GetMapIndex(const int x_col, const int y_row) const {
   // TODO: Some range checking?
-  return y_row * image_width_ + x_col;
+  return y_row * GetWidth() + x_col;
 }
 
 }  // namespace hsi_data_generator
