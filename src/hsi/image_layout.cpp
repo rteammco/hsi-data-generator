@@ -82,6 +82,7 @@ void ImageLayout::AddLayoutPrimitive(
 void ImageLayout::GenerateHorizontalStripesLayout(
     const int num_classes, const double stripe_size) {
 
+  ResetLayout();
   const double stripe_height =
       GetAppropriateShapeSize(stripe_size, num_classes);
   int stripe_counter = 0;
@@ -98,6 +99,7 @@ void ImageLayout::GenerateHorizontalStripesLayout(
 void ImageLayout::GenerateVerticalStripesLayout(
     const int num_classes, const double stripe_size) {
 
+  ResetLayout();
   const double stripe_width =
       GetAppropriateShapeSize(stripe_size, num_classes);
   int stripe_counter = 0;
@@ -114,6 +116,7 @@ void ImageLayout::GenerateVerticalStripesLayout(
 void ImageLayout::GenerateGridLayout(
     const int num_classes, const double input_square_size) {
 
+  ResetLayout();
   const double square_size =
       GetAppropriateShapeSize(input_square_size, num_classes);
   int row_counter = 0;
@@ -251,10 +254,13 @@ void ImageLayout::GenerateLayoutFromImage(
 
 void ImageLayout::ResetLayout() {
   // TODO: Fill with 0 or a "non-class" id, such as -1?
+  sub_layouts_.clear();
+  layout_primitives_.clear();
   std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
 }
 
 void ImageLayout::Render() {
+  qInfo() << "Render()," << layout_primitives_.size();
   const int num_pixels = GetNumPixels();
   spectral_class_map_.resize(num_pixels);
   std::fill(
