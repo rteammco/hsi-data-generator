@@ -7,7 +7,9 @@
 #define SRC_GUI_IMAGE_LAYOUT_WIDGET_H_
 
 #include <QColor>
+#include <QMouseEvent>
 #include <QPaintEvent>
+#include <QPoint>
 #include <QWidget>
 
 #include <memory>
@@ -33,6 +35,16 @@ class ImageLayoutWidget : public QWidget {
  protected:
   void paintEvent(QPaintEvent* event) override;
 
+  // If the user presses down, they can start drawing a rectangle to add a new
+  // layout component.
+  void mousePressEvent(QMouseEvent* event) override;
+
+  // Once dragging, draw in the area for the new component.
+  void mouseMoveEvent(QMouseEvent* event) override;
+
+  // Releasing the mouse stops the drawing.
+  void mouseReleaseEvent(QMouseEvent* event) override;
+
  private:
   // The internal layout.
   std::shared_ptr<ImageLayout> image_layout_;
@@ -40,6 +52,11 @@ class ImageLayoutWidget : public QWidget {
   // A color map that's set when Render() is called and used to render the
   // image layout.
   std::vector<QColor> image_class_colors_;
+
+  // True if the mouse is currently being dragged to draw a new rectange.
+  bool is_mouse_dragging_;
+  QPoint drag_start_point_;
+  QPoint drag_end_point_;
 };
 
 }  // namespace hsi_data_generator
