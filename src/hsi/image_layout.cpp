@@ -14,6 +14,11 @@
 namespace hsi_data_generator {
 namespace {
 
+// The default class "index" for un-specified pixels or pixels which contain a
+// sub-layout.
+constexpr int kDefaultSpectralClassIndex = 0;
+constexpr int kSubLayoutClassIndex = -1;
+
 // This is the default stripe width for generating the stripe and grid layouts.
 // The actual assigned stripe width can be smaller if the given number of
 // classes cannot fit into the width of the image unless each stripe is thinner
@@ -26,6 +31,14 @@ static const std::vector<std::pair<int, int>> kCoordinateNeighborOffsets = {
     std::make_pair(-1, 0),  // top
     std::make_pair(1, 0),   // bottom
 };
+
+// Returns a 1D list index from a 2D (X, Y) coordinate given the width of the
+// layout. Use ImageLayout::GetMapIndex() unless function does not have access
+// to the class. GetMapIndex() uses this function to compute the index.
+int GetIndexFromXY(const int x_col, const int y_row, const int layout_width) {
+  // TODO: Some range checking?
+  return y_row * layout_width + x_col;
+}
 
 // Returns the appropriate width or height for a single layout stripe
 // primitive.  If the given input size is within valid range, it will just
@@ -47,25 +60,61 @@ double GetAppropriateShapeSize(
   return shape_size;
 }
 
+// Given a component shape defining a region of the layout and an index, this
+// function will fill that region (in the given spectral class map) with the
+// given index. This is used to fill in primitives or sub-layout values.
+void FillLayoutRenderRegion(
+    const LayoutComponentShape& component_shape,
+    const int layout_width,
+    const int layout_height,
+    const int fill_index,
+    std::vector<int>* spectral_class_map) {
+
+  const int start_x = static_cast<int>(
+      component_shape.left_x * static_cast<double>(layout_width));
+  const int end_x = start_x + static_cast<int>(
+      component_shape.width * static_cast<double>(layout_height));
+  const int start_y = static_cast<int>(
+      component_shape.top_y * static_cast<double>(layout_height));
+  const int end_y = start_y + static_cast<int>(
+      component_shape.height * static_cast<double>(layout_height));
+  const int start_x_index = std::max(start_x, 0);
+  const int end_x_index = std::min(end_x, layout_width - 1);
+  const int start_y_index = std::max(start_y, 0);
+  const int end_y_index = std::min(end_y, layout_height - 1);
+  for (int x = start_x_index; x < end_x_index; ++x) {
+    for (int y = start_y_index; y < end_y_index; ++y) {
+      (*spectral_class_map)[GetIndexFromXY(x, y, layout_width)] = fill_index;
+    }
+  }
+}
+
 }  // namespace
 
 ImageLayout::ImageLayout(const int image_width, const int image_height)
     : image_width_(image_width), image_height_(image_height) {
 
   // All pixels will be mapped to 0 (the default class index) initially.
-  // TODO: Fill with 0 or a "non-class" id, such as -1?
   spectral_class_map_.resize(GetNumPixels());
+  std::fill(
+      spectral_class_map_.begin(),
+      spectral_class_map_.end(),
+      kDefaultSpectralClassIndex);
 }
 
 void ImageLayout::AddSubLayout(
     const double left_x,
     const double top_y,
     const double width,
-    const double height,
-    ImageLayout layout) {
+    const double height) {
 
   const LayoutComponentShape component_shape(left_x, top_y, width, height);
-  sub_layouts_.push_back(std::make_pair(component_shape, layout));
+  const int sub_layout_width =
+      static_cast<int>(width * static_cast<double>(GetWidth()));
+  const int sub_layout_height =
+      static_cast<int>(height * static_cast<double>(GetHeight()));
+  ImageLayout sub_layout(sub_layout_width, sub_layout_height);
+  sub_layouts_.push_back(std::make_pair(component_shape, sub_layout));
 }
 
 void ImageLayout::AddLayoutPrimitive(
@@ -221,6 +270,7 @@ void ImageLayout::GenerateLayoutFromImage(
     const int num_classes, const QImage& layout_image) {
 
   // TODO: Fix to new standards.
+  /*
   // Resize the image to fit the layout's size.
   QImage image = layout_image.scaled(GetWidth(), GetHeight());
 
@@ -250,13 +300,16 @@ void ImageLayout::GenerateLayoutFromImage(
       spectral_class_map_[GetMapIndex(col, row)] = class_index;
     }
   }
+  */
 }
 
 void ImageLayout::ResetLayout() {
-  // TODO: Fill with 0 or a "non-class" id, such as -1?
   sub_layouts_.clear();
   layout_primitives_.clear();
-  std::fill(spectral_class_map_.begin(), spectral_class_map_.end(), 0);
+  std::fill(
+      spectral_class_map_.begin(),
+      spectral_class_map_.end(),
+      kDefaultSpectralClassIndex);
 }
 
 void ImageLayout::Render() {
@@ -264,28 +317,23 @@ void ImageLayout::Render() {
   spectral_class_map_.resize(num_pixels);
   std::fill(
       spectral_class_map_.begin(),
-      spectral_class_map_.begin() + num_pixels,
-      0);  // TODO: Default class value.
+      spectral_class_map_.end(),
+      kDefaultSpectralClassIndex);
   for (const auto& shape_and_class : layout_primitives_) {
-    const LayoutComponentShape& component_shape = shape_and_class.first;
-    const int spectral_class = shape_and_class.second;
-    const int start_x = static_cast<int>(
-        component_shape.left_x * static_cast<double>(GetWidth()));
-    const int end_x = start_x + static_cast<int>(
-        component_shape.width * static_cast<double>(GetWidth()));
-    const int start_y = static_cast<int>(
-        component_shape.top_y * static_cast<double>(GetHeight()));
-    const int end_y = start_y + static_cast<int>(
-        component_shape.height * static_cast<double>(GetHeight()));
-    const int start_x_index = std::max(start_x, 0);
-    const int end_x_index = std::min(end_x, GetWidth() - 1);
-    const int start_y_index = std::max(start_y, 0);
-    const int end_y_index = std::min(end_y, GetHeight() - 1);
-    for (int x = start_x_index; x < end_x_index; ++x) {
-      for (int y = start_y_index; y < end_y_index; ++y) {
-        spectral_class_map_[GetMapIndex(x, y)] = spectral_class;
-      }
-    }
+    FillLayoutRenderRegion(
+        shape_and_class.first,
+        GetWidth(),
+        GetHeight(),
+        shape_and_class.second,
+        &spectral_class_map_);
+  }
+  for (const auto& shape_and_sub_layout : sub_layouts_) {
+    FillLayoutRenderRegion(
+        shape_and_sub_layout.first,
+        GetWidth(),
+        GetHeight(),
+        kSubLayoutClassIndex,
+        &spectral_class_map_);
   }
 }
 
@@ -303,8 +351,7 @@ int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
 }
 
 int ImageLayout::GetMapIndex(const int x_col, const int y_row) const {
-  // TODO: Some range checking?
-  return y_row * GetWidth() + x_col;
+  return GetIndexFromXY(x_col, y_row, GetWidth());
 }
 
 }  // namespace hsi_data_generator

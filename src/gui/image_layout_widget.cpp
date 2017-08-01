@@ -67,12 +67,12 @@ void ImageLayoutWidget::Render() {
     for (int y = 0; y < layout_height; ++y) {
       const int class_index = image_layout_->GetClassAtPixel(x, y);
       QColor color;
-      if (class_index < image_class_colors_.size()) {
+      if (class_index >= 0 && class_index < image_class_colors_.size()) {
         color = image_class_colors_[class_index];
       } else {
-        // If the class does not match the number of colors given, just set it
-        // to white.
-        color = Qt::white;
+        // If the class does not match the number of colors given, or the index
+        // is invalid, just set it to the default color.
+        color = kDefaultBackgroundColor;
       }
       layout_visualization_image_.setPixelColor(x, y, color);
     }
@@ -157,7 +157,11 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
     const double component_width = component_end_x - component_start_x;
     const double component_height = component_end_y - component_start_y;
     if (adding_sub_layouts_) {
-      // TODO: implement here.
+      image_layout_->AddSubLayout(
+          component_start_x,
+          component_start_y,
+          component_width,
+          component_height);
     } else {
       image_layout_->AddLayoutPrimitive(
           component_start_x,

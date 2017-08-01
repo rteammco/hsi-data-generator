@@ -43,8 +43,7 @@ class ImageLayout {
       const double left_x,
       const double top_y,
       const double width,
-      const double height,
-      ImageLayout layout);
+      const double height);
 
   // Add a primitive shape with a single class.
   void AddLayoutPrimitive(

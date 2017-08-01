@@ -388,7 +388,6 @@ void ImageLayoutView::ImportImageButtonPressed() {
 }
 
 void ImageLayoutView::AddSubLayoutButtonPressed(const bool toggled) {
-  // TODO: Add an informative dialog to tell the user this is about to happen.
   if (toggled) {
     image_layout_widget_->SetAddSubLayoutMode();
   } else {
