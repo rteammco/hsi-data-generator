@@ -28,10 +28,18 @@ class ImageLayoutWidget : public QWidget {
   // modified later to reside the image.
   explicit ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout);
 
-  // Renders the image and updates the display, using the given colors for the
-  // different spectral classes. The number of colors must match the number of
-  // classes used to generate the pattern.
-  void Render(const std::vector<QColor>& class_colors);
+  // Set the class colors that will be used to render the layout visualization.
+  // The given number of colors should match the number of classes in the
+  // layout; otherwise a warning will be reported.
+  void SetClassColors(const std::vector<QColor>& class_colors) {
+    image_class_colors_ = class_colors;
+  }
+
+  // Renders the layout image using the given colors (see SetClassColors()).
+  // This does not repaint the widget (use update() instead), but forces the
+  // layout to render the class map and generates the color representation
+  // image.
+  void Render();
 
  protected:
   void paintEvent(QPaintEvent* event) override;

@@ -46,11 +46,7 @@ ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
   setMouseTracking(true);
 }
 
-void ImageLayoutWidget::Render(const std::vector<QColor>& class_colors) {
-  // TODO: This may not be the best solution, by temporarily setting the
-  // private class variable to the given color set.
-  image_class_colors_ = class_colors;
-  /* */
+void ImageLayoutWidget::Render() {
   const int layout_width = image_layout_->GetWidth();
   const int layout_height = image_layout_->GetHeight();
   const std::vector<int>& image_class_map = image_layout_->GetClassMap();
@@ -71,7 +67,6 @@ void ImageLayoutWidget::Render(const std::vector<QColor>& class_colors) {
       layout_visualization_image_.setPixelColor(x, y, color);
     }
   }
-  /* */
   update();
 }
 
@@ -145,8 +140,7 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
         component_height,
         component_class);
     image_layout_->Render();  // TODO: Handle this in Render() here.
-    Render(image_class_colors_);  // TODO: Set colors separately.
-    update();
+    Render();
   }
 }
 

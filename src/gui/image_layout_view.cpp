@@ -187,7 +187,8 @@ void GenerateLayout(
   for (const std::shared_ptr<Spectrum> spectrum : spectra) {
     class_colors.push_back(spectrum->GetColor());
   }
-  image_layout_widget->Render(class_colors);
+  image_layout_widget->SetClassColors(class_colors);
+  image_layout_widget->Render();
 }
 
 }  // namespace
@@ -372,7 +373,7 @@ void ImageLayoutView::SizeInputChanged() {
   const int new_height = height_string.toInt();
   if (new_width > 0 && new_height > 0) {
     image_layout_->SetImageSize(new_width, new_height);
-    image_layout_widget_->update();
+    image_layout_widget_->Render();
   }
   // Display the valid value as it is rendered (in case this is different from
   // the user's input):
