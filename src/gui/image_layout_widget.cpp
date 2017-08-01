@@ -49,6 +49,11 @@ ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
 }
 
 void ImageLayoutWidget::Render() {
+  // Do nothing if no colors were set (this can also be the case if there are
+  // no spectra available).
+  if (image_class_colors_.size() == 0) {
+    return;
+  }
   const int layout_width = image_layout_->GetWidth();
   const int layout_height = image_layout_->GetHeight();
   const std::vector<int>& image_class_map = image_layout_->GetClassMap();
@@ -61,10 +66,9 @@ void ImageLayoutWidget::Render() {
       if (class_index < image_class_colors_.size()) {
         color = image_class_colors_[class_index];
       } else {
-        qWarning() << "Invalid colors: number of colors provided is "
-                   << image_class_colors_.size()
-                   << " but class index is " << class_index;
-        color = Qt::black;
+        // If the class does not match the number of colors given, just set it
+        // to white.
+        color = Qt::white;
       }
       layout_visualization_image_.setPixelColor(x, y, color);
     }
