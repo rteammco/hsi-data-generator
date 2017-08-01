@@ -9,6 +9,7 @@
 #include <QString>
 #include <QtDebug>
 #include <QtGlobal>
+#include <QVector>
 
 #include <algorithm>
 #include <memory>
@@ -26,7 +27,9 @@ static const QString kQtImageLayoutStyle =
 static const QColor kDefaultBackgroundColor = Qt::white;
 
 // The animation constants for the user's dragging visualization.
-static const QColor kDragRectangleColor = Qt::black;
+static const QColor kDragRectangleColor1 = Qt::black;
+static const QColor kDragRectangleColor2 = Qt::white;
+constexpr int kDragDashSpacing = 4;
 constexpr int kDragRectangleWidth = 1;
 
 }  // namespace
@@ -85,10 +88,24 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
   // If the user is dragging to draw a rectangle, draw that in.
   if (is_mouse_dragging_) {
     const QRect drag_rectangle(drag_start_point_, drag_end_point_);
-    QPen drag_pen(kDragRectangleColor);
+    QPen drag_pen;
     drag_pen.setWidth(kDragRectangleWidth);
     drag_pen.setCapStyle(Qt::RoundCap);
-    painter.setPen(drag_pen);
+    // Color-alternating dash pattern. First color:
+    QPen drag_pen_1 = drag_pen;
+    drag_pen_1.setColor(kDragRectangleColor1);
+    drag_pen_1.setDashPattern(QVector<qreal>()
+        << kDragDashSpacing << kDragDashSpacing);
+    drag_pen_1.setStyle(Qt::CustomDashLine);
+    painter.setPen(drag_pen_1);
+    painter.drawRect(drag_rectangle);
+    // Second color (with offset spacing):
+    QPen drag_pen_2 = drag_pen;
+    drag_pen_2.setColor(kDragRectangleColor2);
+    drag_pen_2.setDashPattern(QVector<qreal>()
+        << 0 << kDragDashSpacing << kDragDashSpacing << 0);
+    drag_pen_2.setStyle(Qt::CustomDashLine);
+    painter.setPen(drag_pen_2);
     painter.drawRect(drag_rectangle);
   }
 }
