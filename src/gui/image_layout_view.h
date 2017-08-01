@@ -6,7 +6,6 @@
 #ifndef SRC_GUI_IMAGE_LAYOUT_VIEW_H_
 #define SRC_GUI_IMAGE_LAYOUT_VIEW_H_
 
-#include <QLayout>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QPaintEvent>
@@ -50,15 +49,20 @@ class ImageLayoutView : public QWidget {
   // The Spectrum objects generated in the ClassSpectrumView.
   std::shared_ptr<std::vector<std::shared_ptr<Spectrum>>> spectra_;
 
-  // TODO: Some comments.
+  // A pointer to the ImageLayout which contains all of the underlying layout
+  // representation required to display it.
   std::shared_ptr<ImageLayout> image_layout_;
 
+  // The ImageLayoutWidget actually handles displaying a visualization of the
+  // layout.
   ImageLayoutWidget* image_layout_widget_ = nullptr;
 
   // The input fields for width and height adjustment of the image layout.
   QLineEdit* width_input_ = nullptr;
   QLineEdit* height_input_ = nullptr;
 
+  // A list of the spectral class names, color-coded, and user-selectable when
+  // editing the layout.
   QListWidget* class_names_list_ = nullptr;
 };
 
