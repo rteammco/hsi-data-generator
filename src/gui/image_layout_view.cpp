@@ -47,6 +47,7 @@ static const QString kVerticalStripesLayoutButtonText = "Vertical Stripes";
 static const QString kGridLayoutButtonText = "Grid";
 static const QString kRandomLayoutButtonText = "Random";
 static const QString kImportImageLayoutButtonText = "Import Image";
+static const QString kClearLayoutButtonText = "Clear";
 
 // Popup dialog notification text.
 static const QString kNoSpectraErrorDialogTitle = "No Spectra Available";
@@ -306,6 +307,10 @@ ImageLayoutView::ImageLayoutView(
       this,
       SLOT(ImportImageButtonPressed()));
 
+  QPushButton* clear_button = new QPushButton(kClearLayoutButtonText);
+  pattern_list_layout->addWidget(clear_button);
+  connect(clear_button, SIGNAL(released()), this, SLOT(ClearButtonPressed()));
+
   // TODO: Add these more advanced options.
 //  pattern_list_layout->addWidget(new QLabel("Markov"));
 //  pattern_list_layout->addWidget(new QLabel("Custom Draw"));
@@ -368,6 +373,11 @@ void ImageLayoutView::ImportImageButtonPressed() {
       image_layout_,
       image_layout_widget_,
       this);
+}
+
+void ImageLayoutView::ClearButtonPressed() {
+  image_layout_->ResetLayout();
+  image_layout_widget_->Render();
 }
 
 void ImageLayoutView::SizeInputChanged() {
