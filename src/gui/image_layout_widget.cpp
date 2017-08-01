@@ -37,6 +37,7 @@ constexpr int kDragRectangleWidth = 1;
 ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
     : image_layout_(image_layout),
       is_mouse_dragging_(false),
+      adding_sub_layouts_(false),
       user_selected_class_index_(0) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutStyle));
@@ -155,12 +156,16 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
     }
     const double component_width = component_end_x - component_start_x;
     const double component_height = component_end_y - component_start_y;
-    image_layout_->AddLayoutPrimitive(
-        component_start_x,
-        component_start_y,
-        component_width,
-        component_height,
-        user_selected_class_index_);
+    if (adding_sub_layouts_) {
+      // TODO: implement here.
+    } else {
+      image_layout_->AddLayoutPrimitive(
+          component_start_x,
+          component_start_y,
+          component_width,
+          component_height,
+          user_selected_class_index_);
+    }
     image_layout_->Render();
     Render();
   }

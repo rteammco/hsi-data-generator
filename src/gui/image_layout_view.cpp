@@ -47,6 +47,7 @@ static const QString kVerticalStripesLayoutButtonText = "Vertical Stripes";
 static const QString kGridLayoutButtonText = "Grid";
 static const QString kRandomLayoutButtonText = "Random";
 static const QString kImportImageLayoutButtonText = "Import Image";
+static const QString kAddSubLayoutButtonText = "Add Sub-Layout";
 static const QString kClearLayoutButtonText = "Clear";
 
 // Popup dialog notification text.
@@ -258,14 +259,15 @@ ImageLayoutView::ImageLayoutView(
   center_layout->addStretch();
   layout->addLayout(center_layout);
 
-  // Right-hand column is the set of patterns to generate over the image.
+  // Right-hand column is the set of patterns to generate over the image or
+  // editing options.
   // TODO: Make this interactive, with preview images, etc.
-  QVBoxLayout* pattern_list_layout = new QVBoxLayout();
-  pattern_list_layout->setAlignment(Qt::AlignTop);
+  QVBoxLayout* edit_buttons_layout = new QVBoxLayout();
+  edit_buttons_layout->setAlignment(Qt::AlignTop);
 
   QPushButton* horizontal_stripes_button =
       new QPushButton(kHorizontalStripesLayoutButtonText);
-  pattern_list_layout->addWidget(horizontal_stripes_button);
+  edit_buttons_layout->addWidget(horizontal_stripes_button);
   connect(
       horizontal_stripes_button,
       SIGNAL(released()),
@@ -274,7 +276,7 @@ ImageLayoutView::ImageLayoutView(
 
   QPushButton* vertical_stripes_button =
       new QPushButton(kVerticalStripesLayoutButtonText);
-  pattern_list_layout->addWidget(vertical_stripes_button);
+  edit_buttons_layout->addWidget(vertical_stripes_button);
   connect(
       vertical_stripes_button,
       SIGNAL(released()),
@@ -282,7 +284,7 @@ ImageLayoutView::ImageLayoutView(
       SLOT(VerticalStripesButtonPressed()));
 
   QPushButton* grid_button = new QPushButton(kGridLayoutButtonText);
-  pattern_list_layout->addWidget(grid_button);
+  edit_buttons_layout->addWidget(grid_button);
   connect(
       grid_button,
       SIGNAL(released()),
@@ -291,7 +293,7 @@ ImageLayoutView::ImageLayoutView(
 
   QPushButton* random_button = new QPushButton(kRandomLayoutButtonText);
   random_button->setEnabled(false);
-  pattern_list_layout->addWidget(random_button);
+  edit_buttons_layout->addWidget(random_button);
   connect(
       random_button,
       SIGNAL(released()),
@@ -301,22 +303,31 @@ ImageLayoutView::ImageLayoutView(
   QPushButton* import_image_button =
       new QPushButton(kImportImageLayoutButtonText);
   import_image_button->setEnabled(false);
-  pattern_list_layout->addWidget(import_image_button);
+  edit_buttons_layout->addWidget(import_image_button);
   connect(
       import_image_button,
       SIGNAL(released()),
       this,
       SLOT(ImportImageButtonPressed()));
 
+  QPushButton* add_sublayout_button = new QPushButton(kAddSubLayoutButtonText);
+  add_sublayout_button->setCheckable(true);
+  edit_buttons_layout->addWidget(add_sublayout_button);
+  connect(
+      add_sublayout_button,
+      SIGNAL(clicked(const bool)),
+      this,
+      SLOT(AddSubLayoutButtonPressed(const bool)));
+
   QPushButton* clear_button = new QPushButton(kClearLayoutButtonText);
-  pattern_list_layout->addWidget(clear_button);
+  edit_buttons_layout->addWidget(clear_button);
   connect(clear_button, SIGNAL(released()), this, SLOT(ClearButtonPressed()));
 
   // TODO: Add these more advanced options.
-//  pattern_list_layout->addWidget(new QLabel("Markov"));
-//  pattern_list_layout->addWidget(new QLabel("Custom Draw"));
+//  edit_buttons_layout->addWidget(new QLabel("Markov"));
+//  edit_buttons_layout->addWidget(new QLabel("Custom Draw"));
 
-  layout->addLayout(pattern_list_layout);
+  layout->addLayout(edit_buttons_layout);
 }
 
 void ImageLayoutView::UpdateGUI() {
@@ -376,7 +387,17 @@ void ImageLayoutView::ImportImageButtonPressed() {
       this);
 }
 
+void ImageLayoutView::AddSubLayoutButtonPressed(const bool toggled) {
+  // TODO: Add an informative dialog to tell the user this is about to happen.
+  if (toggled) {
+    image_layout_widget_->SetAddSubLayoutMode();
+  } else {
+    image_layout_widget_->SetAddLayoutPrimitiveMode();
+  }
+}
+
 void ImageLayoutView::ClearButtonPressed() {
+  // TODO: Add a confirmation dialog.
   image_layout_->ResetLayout();
   image_layout_widget_->Render();
 }

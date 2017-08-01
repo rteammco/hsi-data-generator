@@ -37,6 +37,18 @@ class ImageLayoutWidget : public QWidget {
     user_selected_class_index_ = class_index;
   }
 
+  // Switches to add either layout primitives or sub-layouts when the user
+  // drags the mouse across the widget. In the case of a layout primitive, the
+  // current user_selected_class_index_ value will be used as the primitive's
+  // spectral class.
+  void SetAddSubLayoutMode() {
+    adding_sub_layouts_ = true;
+  }
+
+  void SetAddLayoutPrimitiveMode() {
+    adding_sub_layouts_ = false;
+  }
+
   // Set the class colors that will be used to render the layout visualization.
   // The given number of colors should match the number of classes in the
   // layout; otherwise a warning will be reported.
@@ -80,9 +92,13 @@ class ImageLayoutWidget : public QWidget {
   QPoint drag_start_point_;
   QPoint drag_end_point_;
 
-  // The index of the class that the user currently selected (0 by default).
-  // This can be updated using the SetUserSelectedClass() method via user
-  // interaction.
+  // If adding_sub_layouts_ is false, dragging will add layout primitives
+  // instead of sub-layouts. The primitive class will be this index that the
+  // user currently selected (0 by default). The index can be updated using the
+  // SetUserSelectedClass() method via user interaction. Use
+  // SetAddSubLayoutMode() and SetAddLayoutPrimitiveMode() to toggle between
+  // primitive and sub-layout insertion modes.
+  bool adding_sub_layouts_;
   int user_selected_class_index_;
 };
 
