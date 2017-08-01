@@ -39,6 +39,8 @@ ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
   // By default, there is only a single image class.
   image_class_colors_.resize(1);
   image_class_colors_[0] = kDefaultBackgroundColor;
+  layout_visualization_image_ = QImage(width(), height(), QImage::Format_RGB32);
+  layout_visualization_image_.fill(kDefaultBackgroundColor);
 
   // Required for the mouseMoveEvent method to work.
   setMouseTracking(true);
@@ -48,17 +50,12 @@ void ImageLayoutWidget::Render(const std::vector<QColor>& class_colors) {
   // TODO: This may not be the best solution, by temporarily setting the
   // private class variable to the given color set.
   image_class_colors_ = class_colors;
-  update();
-}
-
-void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
-  // TODO: Paint this into the QImage buffer in Render(). Then just transfer
-  // the buffer. This will save a lot of compute power when repainting for the
-  // sake of the drag animations.
+  /* */
   const int layout_width = image_layout_->GetWidth();
   const int layout_height = image_layout_->GetHeight();
   const std::vector<int>& image_class_map = image_layout_->GetClassMap();
-  QImage image(layout_width, layout_height, QImage::Format_RGB32);
+  layout_visualization_image_ =
+      QImage(layout_width, layout_height, QImage::Format_RGB32);
   for (int x = 0; x < layout_width; ++x) {
     for (int y = 0; y < layout_height; ++y) {
       const int class_index = image_layout_->GetClassAtPixel(x, y);
@@ -71,12 +68,19 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
                    << " but class index is " << class_index;
         color = Qt::black;
       }
-      image.setPixelColor(x, y, color);
+      layout_visualization_image_.setPixelColor(x, y, color);
     }
   }
-  QPainter painter(this);
-  painter.drawImage(0, 0, image.scaled(width(), height()));
+  /* */
+  update();
+}
 
+void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
+  // Draw the rendered layout image.
+  QPainter painter(this);
+  const QImage scaled_image =
+      layout_visualization_image_.scaled(width(), height());
+  painter.drawImage(0, 0, scaled_image);
   // If the user is dragging to draw a rectangle, draw that in.
   if (is_mouse_dragging_) {
     const QRect drag_rectangle(drag_start_point_, drag_end_point_);
@@ -141,6 +145,7 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
         component_height,
         component_class);
     image_layout_->Render();  // TODO: Handle this in Render() here.
+    Render(image_class_colors_);  // TODO: Set colors separately.
     update();
   }
 }

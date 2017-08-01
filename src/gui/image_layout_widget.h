@@ -7,6 +7,7 @@
 #define SRC_GUI_IMAGE_LAYOUT_WIDGET_H_
 
 #include <QColor>
+#include <QImage>
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QPoint>
@@ -52,6 +53,10 @@ class ImageLayoutWidget : public QWidget {
   // A color map that's set when Render() is called and used to render the
   // image layout.
   std::vector<QColor> image_class_colors_;
+
+  // This image is assigned colors to represent the layout when Render() is
+  // called. Every time the widget is repainted, this image is drawn.
+  QImage layout_visualization_image_;
 
   // True if the mouse is currently being dragged to draw a new rectange.
   bool is_mouse_dragging_;
