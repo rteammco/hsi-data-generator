@@ -18,6 +18,8 @@
 
 namespace hsi_data_generator {
 
+// A simple struct that keeps track of a rectangle's shape. This is used to
+// track sub-layout and layout primitive positions within a root layout.
 struct LayoutComponentShape {
   LayoutComponentShape(
       const double left_x,
@@ -52,8 +54,8 @@ class ImageLayout {
       const double height,
       const int spectral_class);
 
-  // TODO: Possibly, add the option to modify individual pixels, so that the
-  // GUI can allow manual user editing.
+  // TODO: Possibly, add the option to modify individual pixels (or manually
+  // insert layout primitives), so that the GUI can allow manual user editing.
 
   // Generates a stripe pattern for the given number of spectral classes.
   //
