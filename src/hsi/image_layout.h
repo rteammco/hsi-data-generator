@@ -32,16 +32,6 @@ struct LayoutComponentShape {
   const double height;
 };
 
-// TODO: Remove?
-enum ImageLayoutType {
-  LAYOUT_TYPE_NONE,
-  LAYOUT_TYPE_HORIZONTAL_STRIPES,
-  LAYOUT_TYPE_VERTICAL_STRIPES,
-  LAYOUT_TYPE_GRID,
-  LAYOUT_TYPE_RANDOM,
-  LAYOUT_TYPE_IMPORTED_IMAGE
-};
-
 class ImageLayout {
  public:
   ImageLayout(const int image_width, const int image_height);
@@ -165,12 +155,6 @@ class ImageLayout {
   // classes. The class indices start at 0 to indicate the first spectrum
   // class.
   std::vector<int> spectral_class_map_;
-
-  // Tracks the previous layout generation variables in case the layout needs
-  // to be recomputed (e.g. when resizing the image).
-  ImageLayoutType previous_layout_ = LAYOUT_TYPE_NONE;
-  int previous_num_classes_ = 0;
-  int previous_size_parameter_ = 0;
 };
 
 }  // namespace hsi_data_generator

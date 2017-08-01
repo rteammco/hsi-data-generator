@@ -50,11 +50,7 @@ double GetAppropriateShapeSize(
 }  // namespace
 
 ImageLayout::ImageLayout(const int image_width, const int image_height)
-    : image_width_(image_width),
-      image_height_(image_height),
-      previous_layout_(LAYOUT_TYPE_NONE),
-      previous_num_classes_(0),
-      previous_size_parameter_(0) {
+    : image_width_(image_width), image_height_(image_height) {
 
   // All pixels will be mapped to 0 (the default class index) initially.
   // TODO: Fill with 0 or a "non-class" id, such as -1?
@@ -146,6 +142,7 @@ void ImageLayout::GenerateRandomLayout(
     const int num_classes, const int random_blob_size) {
 
   // TODO: Fix to new standards.
+  /*
   const int width = GetWidth();
   const int height = GetHeight();
   int num_pixels_remaining = spectral_class_map_.size();
@@ -214,10 +211,7 @@ void ImageLayout::GenerateRandomLayout(
       }
     }
   }
-
-  previous_layout_ = LAYOUT_TYPE_RANDOM;
-  previous_num_classes_ = num_classes;
-  previous_size_parameter_ = random_blob_size;
+  */
 }
 
 void ImageLayout::GenerateLayoutFromImage(
@@ -295,29 +289,6 @@ void ImageLayout::SetImageSize(const int width, const int height) {
   image_width_ = width;
   image_height_ = height;
   Render();
-/*  image_width_ = width;
-  image_height_ = height;
-  spectral_class_map_.resize(image_width_ * image_height_);
-  switch (previous_layout_) {
-  case LAYOUT_TYPE_HORIZONTAL_STRIPES:
-    GenerateHorizontalStripesLayout(
-        previous_num_classes_, previous_size_parameter_);
-    break;
-  case LAYOUT_TYPE_VERTICAL_STRIPES:
-    GenerateVerticalStripesLayout(
-        previous_num_classes_, previous_size_parameter_);
-    break;
-  case LAYOUT_TYPE_GRID:
-    GenerateGridLayout(previous_num_classes_, previous_size_parameter_);
-    break;
-  case LAYOUT_TYPE_RANDOM:
-    GenerateRandomLayout(previous_num_classes_, previous_size_parameter_);
-    break;
-  case LAYOUT_TYPE_NONE:
-  default:
-    break;
-  }
-  */
 }
 
 int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {

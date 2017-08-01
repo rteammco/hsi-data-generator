@@ -26,6 +26,16 @@
 namespace hsi_data_generator {
 namespace {
 
+// Identifiers for the layout type for the GenerateLayout() method.
+enum ImageLayoutType {
+  LAYOUT_TYPE_NONE,
+  LAYOUT_TYPE_HORIZONTAL_STRIPES,
+  LAYOUT_TYPE_VERTICAL_STRIPES,
+  LAYOUT_TYPE_GRID,
+  LAYOUT_TYPE_RANDOM,
+  LAYOUT_TYPE_IMPORTED_IMAGE
+};
+
 static const QString kQtImageLayoutViewStyle =
     "qt_stylesheets/image_layout_view.qss";
 
