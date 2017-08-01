@@ -218,6 +218,11 @@ ImageLayoutView::ImageLayoutView(
   class_names_list_ = new QListWidget();
   class_names_list_->viewport()->setAutoFillBackground(false);
   layout->addWidget(class_names_list_);
+  connect(
+      class_names_list_,
+      SIGNAL(itemClicked(QListWidgetItem*)),
+      this,
+      SLOT(ClassLabelSelected(QListWidgetItem*)));
 
   // Center column is the image display widget.
   QVBoxLayout* center_layout = new QVBoxLayout();
@@ -382,6 +387,13 @@ void ImageLayoutView::SizeInputChanged() {
   // the user's input):
   width_input_->setText(QString::number(image_layout_->GetWidth()));
   height_input_->setText(QString::number(image_layout_->GetHeight()));
+}
+
+void ImageLayoutView::ClassLabelSelected(
+    QListWidgetItem* selected_item) {
+
+  const int class_index = class_names_list_->row(selected_item);
+  image_layout_widget_->SetUserSelectedClass(class_index);
 }
 
 }  // namespace hsi_data_generator

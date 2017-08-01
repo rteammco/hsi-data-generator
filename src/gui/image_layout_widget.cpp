@@ -32,7 +32,9 @@ constexpr int kDragRectangleWidth = 1;
 }  // namespace
 
 ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
-    : image_layout_(image_layout), is_mouse_dragging_(false) {
+    : image_layout_(image_layout),
+      is_mouse_dragging_(false),
+      user_selected_class_index_(0) {
 
   setStyleSheet(util::GetStylesheetRelativePath(kQtImageLayoutStyle));
 
@@ -132,14 +134,13 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
     }
     const double component_width = component_end_x - component_start_x;
     const double component_height = component_end_y - component_start_y;
-    const int component_class = 0;  // TODO: select the right class!
     image_layout_->AddLayoutPrimitive(
         component_start_x,
         component_start_y,
         component_width,
         component_height,
-        component_class);
-    image_layout_->Render();  // TODO: Handle this in Render() here.
+        user_selected_class_index_);
+    image_layout_->Render();
     Render();
   }
 }

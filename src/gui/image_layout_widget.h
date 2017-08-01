@@ -28,6 +28,15 @@ class ImageLayoutWidget : public QWidget {
   // modified later to reside the image.
   explicit ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout);
 
+  // Set the selected class index. This is typically selected by the user
+  // through a GUI action. This class index will be used when filling in
+  // primitive shapes drawn in by the user.
+  //
+  // It is assumed that the given class index will be valid.
+  void SetUserSelectedClass(const int class_index) {
+    user_selected_class_index_ = class_index;
+  }
+
   // Set the class colors that will be used to render the layout visualization.
   // The given number of colors should match the number of classes in the
   // layout; otherwise a warning will be reported.
@@ -70,6 +79,11 @@ class ImageLayoutWidget : public QWidget {
   bool is_mouse_dragging_;
   QPoint drag_start_point_;
   QPoint drag_end_point_;
+
+  // The index of the class that the user currently selected (0 by default).
+  // This can be updated using the SetUserSelectedClass() method via user
+  // interaction.
+  int user_selected_class_index_;
 };
 
 }  // namespace hsi_data_generator

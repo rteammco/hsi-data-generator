@@ -8,6 +8,7 @@
 
 #include <QLineEdit>
 #include <QListWidget>
+#include <QListWidgetItem>
 #include <QPaintEvent>
 #include <QShowEvent>
 #include <QWidget>
@@ -44,6 +45,7 @@ class ImageLayoutView : public QWidget {
   void RandomButtonPressed();
   void ImportImageButtonPressed();
   void SizeInputChanged();
+  void ClassLabelSelected(QListWidgetItem* selected_item);
 
  private:
   // The Spectrum objects generated in the ClassSpectrumView.
