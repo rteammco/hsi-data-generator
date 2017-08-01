@@ -1,9 +1,14 @@
-QPushButton {
+QLineEdit {
+  max-width: 150px;
+  min-width: 50px;
+}
+
+QListWidget {
   max-width: 150px;
   min-width: 150px;
 }
 
-QLineEdit {
+QPushButton {
   max-width: 150px;
-  min-width: 50px;
+  min-width: 150px;
 }

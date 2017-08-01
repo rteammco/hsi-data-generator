@@ -215,10 +215,9 @@ ImageLayoutView::ImageLayoutView(
   setLayout(layout);
 
   // Left-hand column lists the class names and colors.
-  // TODO: Maybe this should be a widget instead?
-  class_names_layout_ = new QVBoxLayout();
-  class_names_layout_->setAlignment(Qt::AlignTop);
-  layout->addLayout(class_names_layout_);
+  class_names_list_ = new QListWidget();
+  class_names_list_->viewport()->setAutoFillBackground(false);
+  layout->addWidget(class_names_list_);
 
   // Center column is the image display widget.
   QVBoxLayout* center_layout = new QVBoxLayout();
@@ -311,21 +310,12 @@ ImageLayoutView::ImageLayoutView(
 
 void ImageLayoutView::UpdateGUI() {
   // Remove all existing spectrum name labels before re-inserting them.
-  QLayoutItem* item;
-  while ((item = class_names_layout_->itemAt(0)) != nullptr) {
-    class_names_layout_->removeItem(item);
-    delete item->widget();
-    delete item;
-  }
-  // Re-insert all of the updated labels.
+  class_names_list_->clear();
   for (int i = 0; i < spectra_->size(); ++i) {
     const QString class_name = spectra_->at(i)->GetName();
     const QColor class_color = spectra_->at(i)->GetColor();
-    QLabel* new_label = new QLabel(class_name);
-    QPalette label_palette;
-    label_palette.setColor(new_label->foregroundRole(), class_color);
-    new_label->setPalette(label_palette);
-    class_names_layout_->addWidget(new_label);
+    class_names_list_->addItem(class_name);
+    class_names_list_->item(i)->setForeground(class_color);
   }
   UpdateLayoutVisualization(*spectra_, image_layout_widget_);
 }

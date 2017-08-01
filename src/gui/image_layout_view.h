@@ -8,6 +8,7 @@
 
 #include <QLayout>
 #include <QLineEdit>
+#include <QListWidget>
 #include <QPaintEvent>
 #include <QShowEvent>
 #include <QWidget>
@@ -58,7 +59,7 @@ class ImageLayoutView : public QWidget {
   QLineEdit* width_input_ = nullptr;
   QLineEdit* height_input_ = nullptr;
 
-  QLayout* class_names_layout_ = nullptr;
+  QListWidget* class_names_list_ = nullptr;
 };
 
 }  // namespace hsi_data_generator
