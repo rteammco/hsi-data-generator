@@ -255,6 +255,7 @@ ImageLayoutView::ImageLayoutView(
   connect(
       height_input_, SIGNAL(returnPressed()), this, SLOT(SizeInputChanged()));
 
+  center_layout->addStretch();
   layout->addLayout(center_layout);
 
   // Right-hand column is the set of patterns to generate over the image.
