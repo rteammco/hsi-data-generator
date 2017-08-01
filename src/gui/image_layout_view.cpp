@@ -284,6 +284,7 @@ ImageLayoutView::ImageLayoutView(
       SLOT(GridButtonPressed()));
 
   QPushButton* random_button = new QPushButton(kRandomLayoutButtonText);
+  random_button->setEnabled(false);
   pattern_list_layout->addWidget(random_button);
   connect(
       random_button,
@@ -293,6 +294,7 @@ ImageLayoutView::ImageLayoutView(
 
   QPushButton* import_image_button =
       new QPushButton(kImportImageLayoutButtonText);
+  import_image_button->setEnabled(false);
   pattern_list_layout->addWidget(import_image_button);
   connect(
       import_image_button,
