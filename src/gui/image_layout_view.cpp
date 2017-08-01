@@ -72,6 +72,21 @@ static const QString kOpenLayoutImageErrorDialogTitle = "Error Loading Image";
 static const QString kOpenLayoutImageErrorMessage =
     "Could not load file " + util::kTextSubPlaceholder + ".";
 
+// Updates the rendered visualization colors in the ImageLayoutWidget. This is
+// used when a new layout is generated or if the spectrum colors are changed.
+// The new layout display is then rendered.
+void UpdateLayoutVisualization(
+    const std::vector<std::shared_ptr<Spectrum>>& spectra,
+    ImageLayoutWidget* image_layout_widget) {
+
+  std::vector<QColor> class_colors;
+  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
+    class_colors.push_back(spectrum->GetColor());
+  }
+  image_layout_widget->SetClassColors(class_colors);
+  image_layout_widget->Render();
+}
+
 // The layout options for the image controlled by the buttons.
 void GenerateLayout(
     const ImageLayoutType layout_type,
@@ -183,12 +198,7 @@ void GenerateLayout(
     break;
   }
   // Render the results using the ImageLayoutWidget.
-  std::vector<QColor> class_colors;
-  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
-    class_colors.push_back(spectrum->GetColor());
-  }
-  image_layout_widget->SetClassColors(class_colors);
-  image_layout_widget->Render();
+  UpdateLayoutVisualization(spectra, image_layout_widget);
 }
 
 }  // namespace
@@ -315,6 +325,7 @@ void ImageLayoutView::UpdateGUI() {
     new_label->setPalette(label_palette);
     class_names_layout_->addWidget(new_label);
   }
+  UpdateLayoutVisualization(*spectra_, image_layout_widget_);
 }
 
 void ImageLayoutView::showEvent(QShowEvent* event) {
