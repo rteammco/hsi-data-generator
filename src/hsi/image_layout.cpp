@@ -260,7 +260,6 @@ void ImageLayout::ResetLayout() {
 }
 
 void ImageLayout::Render() {
-  qInfo() << "Render()," << layout_primitives_.size();
   const int num_pixels = GetNumPixels();
   spectral_class_map_.resize(num_pixels);
   std::fill(

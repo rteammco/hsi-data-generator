@@ -55,8 +55,8 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
   // TODO: Paint this into the QImage buffer in Render(). Then just transfer
   // the buffer. This will save a lot of compute power when repainting for the
   // sake of the drag animations.
-  const int layout_width = width();
-  const int layout_height = height();
+  const int layout_width = image_layout_->GetWidth();
+  const int layout_height = image_layout_->GetHeight();
   const std::vector<int>& image_class_map = image_layout_->GetClassMap();
   QImage image(layout_width, layout_height, QImage::Format_RGB32);
   for (int x = 0; x < layout_width; ++x) {
@@ -105,21 +105,32 @@ void ImageLayoutWidget::mouseMoveEvent(QMouseEvent* event) {
 
 void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
   if (event->button() == Qt::LeftButton) {
+    drag_end_point_ = event->pos();
     is_mouse_dragging_ = false;
-    const int layout_width = width();
-    const int layout_height = width();
-    const double component_start_x =
+    const int widget_width = width();
+    const int widget_height = height();
+    double component_start_x =
         static_cast<double>(drag_start_point_.x()) /
-        static_cast<double>(layout_width);
-    const double component_start_y =
-        static_cast<double>(drag_start_point_.y()) /
-        static_cast<double>(layout_height);
-    const double component_end_x =
+        static_cast<double>(widget_width);
+    double component_end_x =
         static_cast<double>(drag_end_point_.x()) /
-        static_cast<double>(layout_width);
-    const double component_end_y =
+        static_cast<double>(widget_width);
+    if (component_start_x > component_end_x) {
+      const double temp = component_start_x;
+      component_start_x = component_end_x;
+      component_end_x = temp;
+    }
+    double component_start_y =
+        static_cast<double>(drag_start_point_.y()) /
+        static_cast<double>(widget_height);
+    double component_end_y =
         static_cast<double>(drag_end_point_.y()) /
-        static_cast<double>(layout_height);
+        static_cast<double>(widget_height);
+    if (component_start_y > component_end_y) {
+      const double temp = component_start_y;
+      component_start_y = component_end_y;
+      component_end_y = temp;
+    }
     const double component_width = component_end_x - component_start_x;
     const double component_height = component_end_y - component_start_y;
     const int component_class = 0;  // TODO: select the right class!
