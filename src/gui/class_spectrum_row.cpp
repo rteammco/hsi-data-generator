@@ -29,10 +29,27 @@ static const QString kQtClassColorBoxName = "class_color_box";
 
 // The text displayed on the edit button during its two modes as it gets
 // toggled between them.
-static const QString kEditButtonEditString = "Edit";
-static const QString kEditButtonDoneString = "Done";
-static const QString kClearButtonString = "Clear";
-static const QString kCloneButtonString = "Clone";
+static const QString kEditButtonEditText = "Edit";
+static const QString kEditButtonDoneText = "Done";
+static const QString kEditButtonToolTip(
+    "Toggle edit mode. In edit mode, you can click on the spectrum to "
+    "add, remove, or modify the Gaussian peaks that define it.");
+static const QString kClearButtonText = "Clear";
+static const QString kClearButtonToolTip(
+    "Removes all the peaks to reset this spectrum to be like new. "
+    "Press again to delete the spectrum entirely.");
+static const QString kCloneButtonText = "Clone";
+static const QString kCloneButtonToolTip(
+    "Adds a new spectrum that is an exact copy of this spectrum. "
+    "You can edit the new spectrum to make changes later.");
+
+// Other tooltips:
+static const QString kClassNameInputToolTip(
+    "Rename this spectrum. "
+    "This name does not impact the final exported HSI file.");
+static const QString kColorBoxToolTip(
+    "Change the color of this spectrum. "
+    "This color is for visualization purposes only.");
 
 // Prompt dialog strings:
 static const QString kDeleteSpectrumName = "Delete Spectrum";
@@ -54,6 +71,7 @@ ClassSpectrumRow::ClassSpectrumRow(
   setLayout(layout);
 
   QLineEdit* class_name_field = new QLineEdit(spectrum_->GetName());
+  class_name_field->setToolTip(kClassNameInputToolTip);
   layout->addWidget(class_name_field);
   connect(
       class_name_field,
@@ -62,6 +80,7 @@ ClassSpectrumRow::ClassSpectrumRow(
       SLOT(ClassNameFieldChanged(const QString&)));
 
   ColorBoxWidget* class_color_box = new ColorBoxWidget(spectrum_);
+  class_color_box->setToolTip(kColorBoxToolTip);
   class_color_box->setObjectName(kQtClassColorBoxName);  // Name for stylesheet.
   layout->addWidget(class_color_box);
 
@@ -71,7 +90,8 @@ ClassSpectrumRow::ClassSpectrumRow(
   // Add the buttons. Stack these vertically at the end of the row.
   QVBoxLayout* button_layout = new QVBoxLayout();
 
-  spectrum_edit_button_ = new QPushButton(kEditButtonEditString);
+  spectrum_edit_button_ = new QPushButton(kEditButtonEditText);
+  spectrum_edit_button_->setToolTip(kEditButtonToolTip);
   button_layout->addWidget(spectrum_edit_button_);
   connect(
       spectrum_edit_button_,
@@ -79,11 +99,13 @@ ClassSpectrumRow::ClassSpectrumRow(
       this,
       SLOT(EditButtonPressed()));
 
-  QPushButton* clear_button = new QPushButton(kClearButtonString);
+  QPushButton* clear_button = new QPushButton(kClearButtonText);
+  clear_button->setToolTip(kClearButtonToolTip);
   button_layout->addWidget(clear_button);
   connect(clear_button, SIGNAL(released()), this, SLOT(ClearButtonPressed()));
 
-  QPushButton* clone_button = new QPushButton(kCloneButtonString);
+  QPushButton* clone_button = new QPushButton(kCloneButtonText);
+  clone_button->setToolTip(kCloneButtonToolTip);
   button_layout->addWidget(clone_button);
 
   // Map the clone button to the parent ClassSpectraView's slot method. The
@@ -137,10 +159,10 @@ void ClassSpectrumRow::EditButtonPressed() {
   }
   if (spectrum_widget_->GetDisplayMode() == SPECTRUM_RENDER_MODE) {
     spectrum_widget_->SetDisplayMode(SPECTRUM_EDIT_MODE);
-    spectrum_edit_button_->setText(kEditButtonDoneString);
+    spectrum_edit_button_->setText(kEditButtonDoneText);
   } else {
     spectrum_widget_->SetDisplayMode(SPECTRUM_RENDER_MODE);
-    spectrum_edit_button_->setText(kEditButtonEditString);
+    spectrum_edit_button_->setText(kEditButtonEditText);
   }
 }
 

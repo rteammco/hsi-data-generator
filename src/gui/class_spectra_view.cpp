@@ -25,8 +25,14 @@ static const QString kQtClassSpectraViewStyle =
     "qt_stylesheets/class_spectra_view.qss";
 
 static const QString kNumberOfBandsInputLabel = "Number of Bands:";
+static const QString kNumberOfBandsInputToolTip(
+    "The number of spectral bands (spectral resolution). "
+    "A spectrum can be generated at any resolution.");
 static const QString kDefaultSpectrumName = "Background";
-static const QString kNewSpectrumButtonString = "Add Spectrum";
+static const QString kNewSpectrumButtonText = "Add Spectrum";
+static const QString kNewSpectrumButtonToolTip(
+    "Add a new empty spectrum to the dictionary. "
+    "You can edit or remove it later.");
 
 }  // namespace
 
@@ -45,6 +51,7 @@ ClassSpectraView::ClassSpectraView(
 
   // Add the input field to change the number of spectral bands.
   number_of_bands_input_ = new QLineEdit(QString::number(*num_bands_));
+  number_of_bands_input_->setToolTip(kNumberOfBandsInputToolTip);
   QHBoxLayout* number_of_bands_input_layout = new QHBoxLayout();
   number_of_bands_input_layout->addStretch();  // Pad left to center widgets.
   number_of_bands_input_layout->addWidget(new QLabel(kNumberOfBandsInputLabel));
@@ -64,7 +71,8 @@ ClassSpectraView::ClassSpectraView(
 
   // Add a button to add a new spectrum. Pushing this button will add a new
   // blank spectrum to the list.
-  QPushButton* new_spectrum_button = new QPushButton(kNewSpectrumButtonString);
+  QPushButton* new_spectrum_button = new QPushButton(kNewSpectrumButtonText);
+  new_spectrum_button->setToolTip(kNewSpectrumButtonToolTip);
   layout_->addWidget(new_spectrum_button);
   layout_->setAlignment(new_spectrum_button, Qt::AlignCenter);
   connect(
