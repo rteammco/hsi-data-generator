@@ -17,6 +17,7 @@
 #include "gui/export_view.h"
 #include "gui/image_layout_view.h"
 #include "hsi/image_layout.h"
+#include "gui/layout_blend_view.h"
 #include "hsi/project_loader.h"
 #include "hsi/spectrum.h"
 #include "util/util.h"
@@ -45,8 +46,17 @@ static const QString kSaveActionText = "Save";
 static const QString kSaveActionTip = "Save your current workflow to a file";
 
 static const QString kClassSpectraViewString = "Class Spectra";
+static const QString kClassSpectraViewToolTip =
+    "Create and edit a spectral dictionary used to build the final image.";
 static const QString kImageLayoutViewString = "Image Layout";
-static const QString kExportViewString = "Export";
+static const QString kImageLayoutViewToolTip =
+    "Design and arrange the 2D spatial layout of the spectra.";
+static const QString kLayoutBlendViewString = "Layout Blending";
+static const QString kLayoutBlendViewToolTip =
+    "Define how neighboring spectra mix together.";
+static const QString kExportViewString = "Export HSI";
+static const QString kExportViewToolTip =
+    "Set noise and blur properties, and export the HSI data to a file.";
 
 // Dialog strings:
 static const QString kResetWarningDialogTitle = "Reset Project?";
@@ -121,12 +131,22 @@ MainWindow::MainWindow() {
 
   class_spectra_view_ = new ClassSpectraView(num_bands_, spectra_);
   tabs->addTab(class_spectra_view_, kClassSpectraViewString);
+  tabs->setTabToolTip(
+      tabs->indexOf(class_spectra_view_), kClassSpectraViewToolTip);
 
   image_layout_view_ = new ImageLayoutView(spectra_, image_layout_);
   tabs->addTab(image_layout_view_, kImageLayoutViewString);
+  tabs->setTabToolTip(
+      tabs->indexOf(image_layout_view_), kImageLayoutViewToolTip);
+
+  LayoutBlendView* layout_blend_view = new LayoutBlendView();
+  tabs->addTab(layout_blend_view, kLayoutBlendViewString);
+  tabs->setTabToolTip(
+      tabs->indexOf(layout_blend_view), kLayoutBlendViewToolTip);
 
   ExportView* export_view = new ExportView(num_bands_, spectra_, image_layout_);
   tabs->addTab(export_view, kExportViewString);
+  tabs->setTabToolTip(tabs->indexOf(export_view), kExportViewToolTip);
 
   setCentralWidget(tabs);
 }
