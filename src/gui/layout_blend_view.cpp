@@ -19,11 +19,9 @@ void UpdateLayoutVisualization(
     const std::vector<std::shared_ptr<Spectrum>>& spectra,
     ImageLayoutWidget* image_layout_widget) {
 
-  std::vector<QColor> class_colors;
-  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
-    class_colors.push_back(spectrum->GetColor());
-  }
-  image_layout_widget->SetClassColors(class_colors);
+  // TODO: Whenever it comes into view, set class colors, and do a "render" -
+  // but do a FULL render here.
+  image_layout_widget->SetClassColors(spectra);
   image_layout_widget->Render();
 }
 
@@ -44,8 +42,6 @@ LayoutBlendView::LayoutBlendView(
       QSizePolicy::Expanding, QSizePolicy::Preferred);
   layout->addWidget(image_layout_widget_);
 
-  // TODO: Whenever it comes into view, set class colors, and do a "render" -
-  // but do a FULL render here.
   UpdateLayoutVisualization(*spectra_, image_layout_widget_);
 }
 

@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "hsi/image_layout.h"
+#include "hsi/spectrum.h"
 #include "util/util.h"
 
 namespace hsi_data_generator {
@@ -52,6 +53,15 @@ ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
 
   // Required for the mouseMoveEvent method to work.
   setMouseTracking(true);
+}
+
+void ImageLayoutWidget::SetClassColors(
+    const std::vector<std::shared_ptr<Spectrum>>& spectra) {
+
+  image_class_colors_.clear();
+  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
+    image_class_colors_.push_back(spectrum->GetColor());
+  }
 }
 
 void ImageLayoutWidget::Render() {

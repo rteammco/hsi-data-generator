@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "hsi/image_layout.h"
+#include "hsi/spectrum.h"
 
 namespace hsi_data_generator {
 
@@ -58,14 +59,12 @@ class ImageLayoutWidget : public QWidget {
     adding_sub_layouts_ = false;
   }
 
-  // Set the class colors that will be used to render the layout visualization.
-  // The given number of colors should match the number of classes in the
-  // layout.
+  // Set the class colors (tracked by the Spectrum objects) that will be used
+  // to render the layout visualization.  The given number of spectra should
+  // match the number of classes in the layout.
   //
   // This does not affect the ImageLayout itself, just the visualization.
-  void SetClassColors(const std::vector<QColor>& class_colors) {
-    image_class_colors_ = class_colors;
-  }
+  void SetClassColors(const std::vector<std::shared_ptr<Spectrum>>& spectra);
 
   // Renders the layout image using the given colors (see SetClassColors()).
   // This does not repaint the widget (use update() instead), but forces the

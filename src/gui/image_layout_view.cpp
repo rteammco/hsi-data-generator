@@ -82,11 +82,7 @@ void UpdateLayoutVisualization(
     const std::vector<std::shared_ptr<Spectrum>>& spectra,
     ImageLayoutWidget* image_layout_widget) {
 
-  std::vector<QColor> class_colors;
-  for (const std::shared_ptr<Spectrum> spectrum : spectra) {
-    class_colors.push_back(spectrum->GetColor());
-  }
-  image_layout_widget->SetClassColors(class_colors);
+  image_layout_widget->SetClassColors(spectra);
   image_layout_widget->Render();
 }
 
