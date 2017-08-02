@@ -139,7 +139,8 @@ MainWindow::MainWindow() {
   tabs->setTabToolTip(
       tabs->indexOf(image_layout_view_), kImageLayoutViewToolTip);
 
-  LayoutBlendView* layout_blend_view = new LayoutBlendView();
+  LayoutBlendView* layout_blend_view =
+      new LayoutBlendView(spectra_, image_layout_);
   tabs->addTab(layout_blend_view, kLayoutBlendViewString);
   tabs->setTabToolTip(
       tabs->indexOf(layout_blend_view), kLayoutBlendViewToolTip);
