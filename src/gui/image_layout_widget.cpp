@@ -36,6 +36,7 @@ constexpr int kDragRectangleWidth = 1;
 
 ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
     : image_layout_(image_layout),
+      edits_enabled_(true),
       is_mouse_pressed_(false),
       is_mouse_dragging_(false),
       adding_sub_layouts_(false),
@@ -114,6 +115,9 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
 }
 
 void ImageLayoutWidget::mousePressEvent(QMouseEvent* event) {
+  if (!edits_enabled_) {
+    return;
+  }
   if (event->button() == Qt::LeftButton) {
     is_mouse_pressed_ = true;
     mouse_down_point_ = event->pos();
@@ -121,6 +125,9 @@ void ImageLayoutWidget::mousePressEvent(QMouseEvent* event) {
 }
 
 void ImageLayoutWidget::mouseMoveEvent(QMouseEvent* event) {
+  if (!edits_enabled_) {
+    return;
+  }
   if (!is_mouse_pressed_) {
     return;
   }
@@ -130,6 +137,9 @@ void ImageLayoutWidget::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
+  if (!edits_enabled_) {
+    return;
+  }
   // If mouse was dragged, run the code to fill in a new primitive or
   // sub-layout.
   if (event->button() == Qt::LeftButton && is_mouse_dragging_) {

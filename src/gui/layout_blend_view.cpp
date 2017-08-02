@@ -39,7 +39,8 @@ LayoutBlendView::LayoutBlendView(
   setLayout(layout);
 
   image_layout_widget_ = new ImageLayoutWidget(image_layout_);
-  image_layout_widget_->setSizePolicy(
+  image_layout_widget_->LockEdits();  // Disallow editing in this tab.
+  image_layout_widget_->setSizePolicy(  // TODO: Fix sizing.
       QSizePolicy::Expanding, QSizePolicy::Preferred);
   layout->addWidget(image_layout_widget_);
 

@@ -28,6 +28,15 @@ class ImageLayoutWidget : public QWidget {
   // modified later to reside the image.
   explicit ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout);
 
+  // If this method is called, this instance of ImageLayoutWidget cannot modify
+  // the given ImageLayout. Edits are enabled by default.
+  //
+  // Use this if you only need to display and render the layout, and not make
+  // changes to it.
+  void LockEdits() {
+    edits_enabled_ = false;
+  }
+
   // Set the selected class index. This is typically selected by the user
   // through a GUI action. This class index will be used when filling in
   // primitive shapes drawn in by the user.
@@ -51,7 +60,9 @@ class ImageLayoutWidget : public QWidget {
 
   // Set the class colors that will be used to render the layout visualization.
   // The given number of colors should match the number of classes in the
-  // layout; otherwise a warning will be reported.
+  // layout.
+  //
+  // This does not affect the ImageLayout itself, just the visualization.
   void SetClassColors(const std::vector<QColor>& class_colors) {
     image_class_colors_ = class_colors;
   }
@@ -78,6 +89,12 @@ class ImageLayoutWidget : public QWidget {
  private:
   // The internal layout.
   std::shared_ptr<ImageLayout> image_layout_;
+
+  // This flag controls whether or not the ImageLayout can be modified by the
+  // GUI.
+  //
+  // Enabled by default.
+  bool edits_enabled_;
 
   // A color map that's set when Render() is called and used to render the
   // image layout.
