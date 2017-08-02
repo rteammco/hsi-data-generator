@@ -36,6 +36,7 @@ constexpr int kDragRectangleWidth = 1;
 
 ImageLayoutWidget::ImageLayoutWidget(std::shared_ptr<ImageLayout> image_layout)
     : image_layout_(image_layout),
+      is_mouse_pressed_(false),
       is_mouse_dragging_(false),
       adding_sub_layouts_(false),
       user_selected_class_index_(0) {
@@ -73,6 +74,7 @@ void ImageLayoutWidget::Render() {
         // If the class does not match the number of colors given, or the index
         // is invalid, just set it to the default color.
         color = kDefaultBackgroundColor;
+        // TODO: Special color/design for sub-layout index?
       }
       layout_visualization_image_.setPixelColor(x, y, color);
     }
@@ -88,7 +90,7 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
   painter.drawImage(0, 0, scaled_image);
   // If the user is dragging to draw a rectangle, draw that in.
   if (is_mouse_dragging_) {
-    const QRect drag_rectangle(drag_start_point_, drag_end_point_);
+    const QRect drag_rectangle(mouse_down_point_, mouse_up_point_);
     QPen drag_pen;
     drag_pen.setWidth(kDragRectangleWidth);
     drag_pen.setCapStyle(Qt::RoundCap);
@@ -113,30 +115,32 @@ void ImageLayoutWidget::paintEvent(QPaintEvent* event) {
 
 void ImageLayoutWidget::mousePressEvent(QMouseEvent* event) {
   if (event->button() == Qt::LeftButton) {
-    is_mouse_dragging_ = true;
-    drag_start_point_ = event->pos();
+    is_mouse_pressed_ = true;
+    mouse_down_point_ = event->pos();
   }
 }
 
 void ImageLayoutWidget::mouseMoveEvent(QMouseEvent* event) {
-  if (!is_mouse_dragging_) {
+  if (!is_mouse_pressed_) {
     return;
   }
-  drag_end_point_ = event->pos();
+  is_mouse_dragging_ = true;
+  mouse_up_point_ = event->pos();
   update();
 }
 
 void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
-  if (event->button() == Qt::LeftButton) {
-    drag_end_point_ = event->pos();
-    is_mouse_dragging_ = false;
+  // If mouse was dragged, run the code to fill in a new primitive or
+  // sub-layout.
+  if (event->button() == Qt::LeftButton && is_mouse_dragging_) {
+    mouse_up_point_ = event->pos();
     const int widget_width = width();
     const int widget_height = height();
     double component_start_x =
-        static_cast<double>(drag_start_point_.x()) /
+        static_cast<double>(mouse_down_point_.x()) /
         static_cast<double>(widget_width);
     double component_end_x =
-        static_cast<double>(drag_end_point_.x()) /
+        static_cast<double>(mouse_up_point_.x()) /
         static_cast<double>(widget_width);
     if (component_start_x > component_end_x) {
       const double temp = component_start_x;
@@ -144,10 +148,10 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
       component_end_x = temp;
     }
     double component_start_y =
-        static_cast<double>(drag_start_point_.y()) /
+        static_cast<double>(mouse_down_point_.y()) /
         static_cast<double>(widget_height);
     double component_end_y =
-        static_cast<double>(drag_end_point_.y()) /
+        static_cast<double>(mouse_up_point_.y()) /
         static_cast<double>(widget_height);
     if (component_start_y > component_end_y) {
       const double temp = component_start_y;
@@ -172,7 +176,24 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
     }
     image_layout_->Render();
     Render();
+  } else {
+    // If mouse was just clicked, check if any sub-layout was moused over, and
+    // if so then zoom in to that sub-layout.
+    const double click_x =
+        static_cast<double>(mouse_down_point_.x()) /
+        static_cast<double>(width());
+    const double click_y =
+        static_cast<double>(mouse_down_point_.y()) /
+        static_cast<double>(height());
+    if (image_layout_->ZoomInToSubLayout(click_x, click_y)) {
+      qInfo() << "Zoomed in";
+      // TODO: Re-render.
+    } else {
+      qInfo() << "Pressed but no zoom";
+    }
   }
+  is_mouse_pressed_ = false;
+  is_mouse_dragging_ = false;
 }
 
 }  // namespace hsi_data_generator

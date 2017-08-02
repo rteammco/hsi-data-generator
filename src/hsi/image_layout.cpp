@@ -312,6 +312,26 @@ void ImageLayout::ResetLayout() {
       kDefaultSpectralClassIndex);
 }
 
+bool ImageLayout::ZoomInToSubLayout(const double x, const double y) {
+  // TODO: Implement.
+  for (const auto& shape_and_sub_layout : sub_layouts_) {
+    const LayoutComponentShape& component_shape = shape_and_sub_layout.first;
+    const double start_x = component_shape.left_x;
+    const double end_x = start_x + component_shape.width;
+    const double start_y = component_shape.top_y;
+    const double end_y = start_y + component_shape.height;
+    if (x >= start_x && x <= end_x && y >= start_y && y <= end_y) {
+      // TODO: Implement zoom operation here.
+      return true;
+    }
+  }
+  return false;
+}
+
+void ImageLayout::ZoomOutToRoot() {
+  // TODO: Implement.
+}
+
 void ImageLayout::Render() {
   const int num_pixels = GetNumPixels();
   spectral_class_map_.resize(num_pixels);
@@ -328,6 +348,7 @@ void ImageLayout::Render() {
         &spectral_class_map_);
   }
   for (const auto& shape_and_sub_layout : sub_layouts_) {
+    // TODO: (possibly) fill the region with the rendered sub-layout.
     FillLayoutRenderRegion(
         shape_and_sub_layout.first,
         GetWidth(),

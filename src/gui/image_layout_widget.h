@@ -88,9 +88,10 @@ class ImageLayoutWidget : public QWidget {
   QImage layout_visualization_image_;
 
   // True if the mouse is currently being dragged to draw a new rectange.
-  bool is_mouse_dragging_;
-  QPoint drag_start_point_;
-  QPoint drag_end_point_;
+  bool is_mouse_pressed_;  // If pressed down, before release event.
+  bool is_mouse_dragging_;  // If pressed and moved.
+  QPoint mouse_down_point_;
+  QPoint mouse_up_point_;
 
   // If adding_sub_layouts_ is false, dragging will add layout primitives
   // instead of sub-layouts. The primitive class will be this index that the

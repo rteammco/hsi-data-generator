@@ -102,6 +102,19 @@ class ImageLayout {
   // Resets the layout, re-initializing everything to unassigned.
   void ResetLayout();
 
+  // Attempts to "zoom in" to a sub-layout, which would make all Render and
+  // edit operations display and act on that sub-layout instead. This should
+  // only be used for editing and visualization.
+  //
+  // If the given coordinates do not intersect a sub-layout, nothing will
+  // happen and this method will return false.
+  bool ZoomInToSubLayout(const double x, const double y);
+
+  // Resets the displayed interactive layout to the top-level. That means if it
+  // is currently "zoomed in" to a sub-layout, that sub-layout will no longer
+  // be shown in full.
+  void ZoomOutToRoot();
+
   // Renders the layout at the current image size, which will assign each pixel
   // to the appropriate spectral class value. This will generate assignments
   // for the spectral class map (see GetClassMap() and GetClassAtPixel()).
