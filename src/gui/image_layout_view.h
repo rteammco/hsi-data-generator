@@ -46,6 +46,7 @@ class ImageLayoutView : public QWidget {
   void ImportImageButtonPressed();
   void AddSubLayoutButtonPressed(const bool toggled);
   void ClearButtonPressed();
+  void ZoomOutButtonPressed();
   void SizeInputChanged();
   void ClassLabelSelected(QListWidgetItem* selected_item);
 

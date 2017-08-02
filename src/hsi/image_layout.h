@@ -125,14 +125,10 @@ class ImageLayout {
   void SetImageSize(const int width, const int height);
 
   // Returns the width in pixels (number of columns) in the image.
-  int GetWidth() const {
-    return image_width_;
-  }
+  int GetWidth() const;
 
   // Returns the height in pixels (number of rows) in the image.
-  int GetHeight() const {
-    return image_height_;
-  }
+  int GetHeight() const;
 
   // Returns the total number of pixels in this image layout.
   int GetNumPixels() const {
@@ -140,9 +136,7 @@ class ImageLayout {
   }
 
   // Used for referencing the layout externally.
-  const std::vector<int>& GetClassMap() const {
-    return spectral_class_map_;
-  }
+  const std::vector<int>& GetClassMap() const;
 
   // Returns the value at the given index.
   int GetClassAtPixel(const int x_col, const int y_row) const;
@@ -169,6 +163,11 @@ class ImageLayout {
   // classes. The class indices start at 0 to indicate the first spectrum
   // class.
   std::vector<int> spectral_class_map_;
+
+  // If a sub-layout is zoomed-in on, a pointer to it will be stored here. If
+  // this pointer is not null, all operations and renderring will defer to this
+  // sub-layout instead.
+  ImageLayout* displayed_sub_layout_ = nullptr;
 };
 
 }  // namespace hsi_data_generator

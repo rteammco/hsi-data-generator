@@ -186,10 +186,8 @@ void ImageLayoutWidget::mouseReleaseEvent(QMouseEvent* event) {
         static_cast<double>(mouse_down_point_.y()) /
         static_cast<double>(height());
     if (image_layout_->ZoomInToSubLayout(click_x, click_y)) {
-      qInfo() << "Zoomed in";
-      // TODO: Re-render.
-    } else {
-      qInfo() << "Pressed but no zoom";
+      image_layout_->Render();
+      Render();
     }
   }
   is_mouse_pressed_ = false;

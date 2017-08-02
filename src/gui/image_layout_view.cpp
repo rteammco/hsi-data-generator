@@ -49,6 +49,7 @@ static const QString kRandomLayoutButtonText = "Random";
 static const QString kImportImageLayoutButtonText = "Import Image";
 static const QString kAddSubLayoutButtonText = "Add Sub-Layout";
 static const QString kClearLayoutButtonText = "Clear";
+static const QString kZoomOutLayoutButtonText = "Zoom Out";
 
 // Popup dialog notification text.
 static const QString kNoSpectraErrorDialogTitle = "No Spectra Available";
@@ -323,6 +324,11 @@ ImageLayoutView::ImageLayoutView(
   edit_buttons_layout->addWidget(clear_button);
   connect(clear_button, SIGNAL(released()), this, SLOT(ClearButtonPressed()));
 
+  QPushButton* zoom_out_button = new QPushButton(kZoomOutLayoutButtonText);
+  edit_buttons_layout->addWidget(zoom_out_button);
+  connect(
+      zoom_out_button, SIGNAL(released()), this, SLOT(ZoomOutButtonPressed()));
+
   // TODO: Add these more advanced options.
 //  edit_buttons_layout->addWidget(new QLabel("Markov"));
 //  edit_buttons_layout->addWidget(new QLabel("Custom Draw"));
@@ -398,6 +404,12 @@ void ImageLayoutView::AddSubLayoutButtonPressed(const bool toggled) {
 void ImageLayoutView::ClearButtonPressed() {
   // TODO: Add a confirmation dialog.
   image_layout_->ResetLayout();
+  image_layout_widget_->Render();
+}
+
+void ImageLayoutView::ZoomOutButtonPressed() {
+  image_layout_->ZoomOutToRoot();
+  image_layout_->Render();
   image_layout_widget_->Render();
 }
 
