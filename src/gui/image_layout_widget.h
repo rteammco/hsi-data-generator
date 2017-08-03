@@ -67,10 +67,15 @@ class ImageLayoutWidget : public QWidget {
   void SetClassColors(const std::vector<std::shared_ptr<Spectrum>>& spectra);
 
   // Renders the layout image using the given colors (see SetClassColors()).
-  // This does not repaint the widget (use update() instead), but forces the
-  // layout to render the class map and generates the color representation
-  // image.
-  void Render();
+  // Sub-layouts within the displayed root layout will only be rendered as
+  // visual representations, and they will not be fully rendered.
+  //
+  // If root_render is false, the current zoom level sub-layout will be
+  // rendered. Set to true to force rendering of the top-level layout for a
+  // true visualization of the layout.
+  //
+  // This does not render the ImageLayout itself to assign class mappings.
+  void Render(const bool root_render = false);
 
  protected:
   void paintEvent(QPaintEvent* event) override;

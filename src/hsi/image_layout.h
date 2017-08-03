@@ -118,6 +118,18 @@ class ImageLayout {
   // Renders the layout at the current image size, which will assign each pixel
   // to the appropriate spectral class value. This will generate assignments
   // for the spectral class map (see GetClassMap() and GetClassAtPixel()).
+  //
+  // This will render the root layout in the sub-layout heirarchy at its set
+  // resolution, and all sub-layouts will be recursively rendered.
+  //
+  // TODO: Fix comments.
+  //The
+  // resulting spectral class mapping will be a complete representation of the
+  // final HSI.
+  //
+  // Otherwise, if a sub-layout is zoomed in, that will be rendered instead.
+  // Any sub-layouts below the rendered layout will be represented with a
+  // special non-index value.
   void Render();
 
   // Updates the image size. This causes the layout to be recomputed for the
@@ -138,12 +150,22 @@ class ImageLayout {
   // Used for referencing the layout externally.
   const std::vector<int>& GetClassMap() const;
 
+  // Returns the class map at the root level of the sub-layout heirarchy,
+  // regardless of current zoom-in level.
+  const std::vector<int>& GetClassMapRoot() const;
+
   // Returns the value at the given index.
   int GetClassAtPixel(const int x_col, const int y_row) const;
+
+  // Same as GetClassAtPixel(), but ignores zoom level.
+  int GetClassAtPixelRoot(const int x_col, const int y_row) const;
 
   // Returns the 1D index (into the vector returned by GetClassMap() from a
   // given (X = col, Y = row) 2D image coordinate.
   int GetMapIndex(const int x_col, const int y_row) const;
+
+  // Same as GetMapIndex(), but ignores zoom level.
+  int GetMapIndexRoot(const int x_col, const int y_row) const;
 
  private:
   // The spatial dimensions (pixels) of the hyperspectral image when it is

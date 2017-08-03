@@ -64,7 +64,7 @@ void ImageLayoutWidget::SetClassColors(
   }
 }
 
-void ImageLayoutWidget::Render() {
+void ImageLayoutWidget::Render(const bool root_render) {
   // Do nothing if no colors were set (this can also be the case if there are
   // no spectra available).
   if (image_class_colors_.size() == 0) {
@@ -72,12 +72,18 @@ void ImageLayoutWidget::Render() {
   }
   const int layout_width = image_layout_->GetWidth();
   const int layout_height = image_layout_->GetHeight();
-  const std::vector<int>& image_class_map = image_layout_->GetClassMap();
+  const std::vector<int>& image_class_map =
+      root_render ?
+      image_layout_->GetClassMapRoot() :
+      image_layout_->GetClassMap();
   layout_visualization_image_ =
       QImage(layout_width, layout_height, QImage::Format_RGB32);
   for (int x = 0; x < layout_width; ++x) {
     for (int y = 0; y < layout_height; ++y) {
-      const int class_index = image_layout_->GetClassAtPixel(x, y);
+      const int class_index =
+          root_render ?
+          image_layout_->GetClassAtPixelRoot(x, y) :
+          image_layout_->GetClassAtPixel(x, y);
       QColor color;
       if (class_index >= 0 && class_index < image_class_colors_.size()) {
         color = image_class_colors_[class_index];

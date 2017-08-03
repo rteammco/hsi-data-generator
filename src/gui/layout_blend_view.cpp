@@ -22,7 +22,7 @@ void UpdateLayoutVisualization(
   // TODO: Whenever it comes into view, set class colors, and do a "render" -
   // but do a FULL render here.
   image_layout_widget->SetClassColors(spectra);
-  image_layout_widget->Render();
+  image_layout_widget->Render(true);  // root_level = true
 }
 
 }  // namespace
@@ -46,6 +46,7 @@ LayoutBlendView::LayoutBlendView(
 }
 
 void LayoutBlendView::showEvent(QShowEvent* event) {
+  image_layout_->Render();
   UpdateLayoutVisualization(*spectra_, image_layout_widget_);
 }
 

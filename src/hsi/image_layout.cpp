@@ -357,7 +357,6 @@ void ImageLayout::ZoomOutToRoot() {
 void ImageLayout::Render() {
   if (displayed_sub_layout_ != nullptr) {
     displayed_sub_layout_->Render();
-    return;
   }
   const int num_pixels = GetNumPixels();
   spectral_class_map_.resize(num_pixels);
@@ -384,6 +383,50 @@ void ImageLayout::Render() {
   }
 }
 
+/*
+// TODO: Temporary for reference, remove when done implementing full render.
+void ImageLayout::FullRender() {
+  const int num_pixels = GetNumPixels();
+  spectral_class_map_.resize(num_pixels);
+  std::fill(
+      spectral_class_map_.begin(),
+      spectral_class_map_.end(),
+      kDefaultSpectralClassIndex);
+  for (const auto& shape_and_class : layout_primitives_) {
+    FillLayoutRenderRegion(
+        shape_and_class.first,
+        GetWidth(),
+        GetHeight(),
+        shape_and_class.second,
+        &spectral_class_map_);
+  }
+  const int layout_width = GetWidth();
+  const int layout_height = GetHeight();
+  for (int i = 0; i < sub_layouts_.size(); ++i) {
+    const LayoutComponentShape& component_shape = sub_layouts_[i].first;
+    const int start_x = static_cast<int>(
+        component_shape.left_x * static_cast<double>(layout_width));
+    const int end_x = start_x + static_cast<int>(
+        component_shape.width * static_cast<double>(layout_height));
+    const int start_y = static_cast<int>(
+        component_shape.top_y * static_cast<double>(layout_height));
+    const int end_y = start_y + static_cast<int>(
+        component_shape.height * static_cast<double>(layout_height));
+    const int start_x_index = std::max(start_x, 0);
+    const int end_x_index = std::min(end_x, layout_width - 1);
+    const int start_y_index = std::max(start_y, 0);
+    const int end_y_index = std::min(end_y, layout_height - 1);
+
+    sub_layouts_[i].second.FullRender();
+    for (int x = start_x_index; x < end_x_index; ++x) {
+      for (int y = start_y_index; y < end_y_index; ++y) {
+        spectral_class_map_[GetMapIndex(x, y)] =
+            sub_layouts_[i].second.GetClassAtPixel(x - start_x_index, y - start_y_index);
+      }
+    }
+  }
+}*/
+
 void ImageLayout::SetImageSize(const int width, const int height) {
   // TODO: Set size of all sub-layouts as well?
   // TODO: Check width and height validity.
@@ -409,15 +452,25 @@ int ImageLayout::GetHeight() const {
 const std::vector<int>& ImageLayout::GetClassMap() const {
   if (displayed_sub_layout_ != nullptr) {
     return displayed_sub_layout_->GetClassMap();
+  } else {
+    return GetClassMapRoot();
   }
+}
+
+const std::vector<int>& ImageLayout::GetClassMapRoot() const {
   return spectral_class_map_;
 }
 
 int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
   if (displayed_sub_layout_ != nullptr) {
     return displayed_sub_layout_->GetClassAtPixel(x_col, y_row);
+  } else {
+    return GetClassAtPixelRoot(x_col, y_row);
   }
-  const int map_index = GetMapIndex(x_col, y_row);
+}
+
+int ImageLayout::GetClassAtPixelRoot(const int x_col, const int y_row) const {
+  const int map_index = GetMapIndexRoot(x_col, y_row);
   // TODO: Some range checking?
   return spectral_class_map_[map_index];
 }
@@ -425,7 +478,12 @@ int ImageLayout::GetClassAtPixel(const int x_col, const int y_row) const {
 int ImageLayout::GetMapIndex(const int x_col, const int y_row) const {
   if (displayed_sub_layout_ != nullptr) {
     return displayed_sub_layout_->GetMapIndex(x_col, y_row);
+  } else {
+    return GetMapIndexRoot(x_col, y_row);
   }
+}
+
+int ImageLayout::GetMapIndexRoot(const int x_col, const int y_row) const {
   return GetIndexFromXY(x_col, y_row, GetWidth());
 }
 
